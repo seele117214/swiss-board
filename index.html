@@ -63,15 +63,31 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
 .mast-share:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .has-sync .mast-share,.has-cloud .mast-share{display:inline-block}
 
+/* ============ 模式切换 ============ */
+.modebar{
+  position:sticky;top:60px;z-index:55;display:flex;
+  padding:0 var(--pad);background:var(--paper);
+  border-bottom:1px solid var(--rule);overflow-x:auto;scrollbar-width:none;
+}
+.modebar::-webkit-scrollbar{display:none}
+.mode-tab{
+  margin-right:28px;padding:12px 0 11px;border-bottom:2px solid transparent;
+  font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;
+  color:var(--muted);white-space:nowrap;transition:color .12s,border-color .12s;
+}
+.mode-tab:hover{color:var(--ink)}
+.mode-tab.is-on{color:var(--ink);border-bottom-color:var(--red)}
+.mode-tab .m-num{color:var(--red);margin-right:8px}
+
 /* ============ 布局 ============ */
 .layout{flex:1;display:grid;grid-template-columns:clamp(232px,18vw,300px) minmax(0,1fr);align-items:stretch}
 
 /* ============ 左侧事件索引 ============ */
 .rail{
-  position:sticky;top:60px;align-self:start;
+  position:sticky;top:100px;align-self:start;
   display:flex;flex-direction:column;
-  min-height:calc(100vh - 60px);
-  max-height:calc(100vh - 60px);overflow-y:auto;
+  min-height:calc(100vh - 100px);
+  max-height:calc(100vh - 100px);overflow-y:auto;
   padding:22px 20px 24px;
   border-right:1px solid var(--ink);background:var(--paper);
   scrollbar-width:thin;scrollbar-color:var(--rule-2) transparent;
@@ -86,17 +102,28 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
 .rail-add:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .event-list{margin-top:2px}
 .event-item{
-  display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;width:100%;
+  display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;width:100%;
   padding:11px 8px 11px 10px;border-left:2px solid transparent;border-bottom:1px solid var(--rule);
-  text-align:left;transition:background .12s;
+  text-align:left;transition:background .12s;position:relative;
 }
 .event-item:hover{background:rgba(21,21,21,.045)}
 .event-item.is-active{border-left-color:var(--red);background:rgba(21,21,21,.05)}
+.rail-del{
+  width:18px;height:18px;display:grid;place-items:center;flex:none;align-self:center;
+  border:1px solid transparent;font-size:12px;line-height:1;color:var(--muted);
+  opacity:0;transition:opacity .12s,color .12s,border-color .12s;
+}
+.event-item:hover .rail-del,.event-item:focus-within .rail-del{opacity:1}
+.rail-del:hover{color:var(--red);border-color:var(--red)}
 .e-idx{font-size:10px;letter-spacing:.05em;color:var(--muted);padding-top:3px}
 .event-item.is-active .e-idx{color:var(--red);font-weight:600}
 .e-body{display:block;min-width:0}
 .e-title{display:block;font-size:13px;line-height:1.35;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .event-item.is-active .e-title{font-weight:700}
+.event-item.is-pinned .e-title::before{
+  content:"";display:inline-block;width:5px;height:5px;
+  background:var(--red);margin-right:6px;vertical-align:1px;
+}
 .e-meta{display:block;margin-top:3px;font-size:9px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
 .rail-note{margin-top:18px;font-size:10.5px;line-height:1.75;color:var(--muted);letter-spacing:.02em}
 .rail-foot{
@@ -156,6 +183,7 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
 .progress{position:relative;height:3px;background:var(--rule);margin-top:10px}
 .progress span{display:block;width:0;height:100%;background:var(--ink);transition:width .3s ease}
 .meta-pct{margin-top:6px;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.meta-block .danger-link{display:block;margin-bottom:6px;text-align:left}
 .danger-link{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid transparent;padding-bottom:1px}
 .danger-link:hover{color:var(--red);border-bottom-color:var(--red)}
 
@@ -208,7 +236,71 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
 .search:focus{border-bottom-color:var(--ink)}
 
 /* ============ 便签网格 ============ */
-.notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
+.notes{display:block;margin-top:18px}
+.note-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.notes-section{margin-top:24px}
+.notes-section:first-child{margin-top:0}
+.section-head{
+  display:flex;align-items:center;gap:12px;
+  padding:0 0 9px;margin-bottom:12px;
+  border-bottom:1px solid var(--rule-2);cursor:pointer;
+  transition:border-color .12s;
+}
+.section-head:hover{border-bottom-color:var(--ink)}
+.section-head.is-target{border-bottom-color:var(--red)}
+.section-idx{flex:none;width:22px;font-size:10px;letter-spacing:.06em;color:var(--muted)}
+.section-title{
+  min-width:30px;max-width:60vw;font-size:15px;font-weight:600;letter-spacing:.01em;
+  outline:none;white-space:pre-wrap;overflow-wrap:anywhere;caret-color:var(--red);
+}
+.section-title:empty::before{content:"未命名小标题";color:rgba(21,21,21,.25);font-weight:500}
+.section-count{flex:none;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.section-acts{display:flex;gap:10px;margin-left:auto;opacity:0;transition:opacity .12s}
+.section-head:hover .section-acts,.section-head:focus-within .section-acts{opacity:1}
+.section-head .act{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid transparent;padding-bottom:1px}
+.section-head .act:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.section-head .act.del:hover{color:var(--red);border-bottom-color:var(--red)}
+.section-head.is-loose .section-title{color:var(--ink-2);font-weight:500}
+.section-add{
+  padding:6px 11px 5px;border:1px solid var(--rule-2);
+  font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
+}
+.section-add:hover{color:var(--ink);border-color:var(--ink)}
+.section-empty{padding:2px 0 6px;font-size:11px;letter-spacing:.02em;color:var(--muted)}
+
+/* 记录目标选择 */
+.target-wrap{position:relative;display:inline-flex}
+.target-chip{
+  display:inline-flex;align-items:center;gap:7px;padding:4px 9px;
+  border:1px solid var(--rule-2);
+  font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);
+  background:transparent;cursor:pointer;
+}
+.target-chip:hover{color:var(--ink);border-color:var(--ink)}
+.target-chip .t-dot{width:5px;height:5px;background:var(--red);flex:none}
+.target-menu{
+  position:absolute;left:0;bottom:calc(100% + 6px);z-index:80;
+  min-width:200px;max-height:280px;overflow:auto;
+  background:var(--paper);border:1px solid var(--ink);padding:4px 0;
+}
+.target-menu[hidden]{display:none}
+.target-menu button{
+  display:block;width:100%;padding:7px 12px;text-align:left;
+  font-size:11px;letter-spacing:.04em;color:var(--ink-2);
+}
+.target-menu button:hover{background:rgba(21,21,21,.06);color:var(--ink)}
+.target-menu button.is-on{color:var(--red)}
+.move-menu{
+  position:fixed;z-index:120;min-width:200px;max-height:280px;overflow:auto;
+  background:var(--paper);border:1px solid var(--ink);padding:4px 0;
+}
+.move-menu button{
+  display:block;width:100%;padding:7px 12px;text-align:left;
+  font-size:11px;letter-spacing:.04em;color:var(--ink-2);
+}
+.move-menu button:hover{background:rgba(21,21,21,.06);color:var(--ink)}
+.move-menu button.is-on{color:var(--red)}
+
 .note{
   position:relative;display:flex;flex-direction:column;gap:14px;
   min-height:160px;padding:15px 17px 13px;
@@ -313,9 +405,62 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
 #shareBtn{display:none}
 .has-sync #shareBtn,.has-cloud #shareBtn{display:inline-block}
 
+/* ============ 好点子模式（白底） ============ */
+body.mode-ideas{
+  --paper:#FFFFFF;--paper-2:#FFFFFF;
+  --rule:rgba(21,21,21,.12);--rule-2:rgba(21,21,21,.36);
+  background:#FFFFFF;
+}
+body.mode-ideas .rail{display:none}
+body.mode-ideas .layout{grid-template-columns:1fr}
+body.mode-ideas .hero,
+body.mode-ideas #composer,
+body.mode-ideas #composer + .composer-hint,
+body.mode-ideas #recordsHead,
+body.mode-ideas #notes{display:none!important}
+.ideas-stage{display:none}
+body.mode-ideas .ideas-stage{display:block}
+.ideas-hero{
+  display:grid;
+  grid-template-columns:clamp(84px,8vw,132px) minmax(0,1fr) clamp(150px,13vw,200px);
+  gap:clamp(18px,2.6vw,38px);align-items:start;
+  padding:26px 0 30px;
+  border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+}
+.ideas-num{font-size:clamp(54px,6vw,92px);line-height:.8;font-weight:500;letter-spacing:-.06em}
+.ideas-idx-k{margin-top:14px;font-size:8.5px;line-height:1.5;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.ideas-title{font-size:clamp(32px,4.4vw,60px);line-height:1.02;font-weight:700;letter-spacing:-.02em}
+.ideas-desc{margin-top:16px;max-width:50ch;font-size:14px;line-height:1.7;color:var(--ink-2)}
+.ideas-meta{display:flex;flex-direction:column;gap:18px}
+.ideas-date{font-size:12.5px;letter-spacing:.04em}
+.idea-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+.idea-card{
+  position:relative;display:flex;flex-direction:column;gap:14px;
+  min-height:170px;padding:16px 18px 13px;
+  background:#FFFFFF;border:1px solid var(--rule);
+  transition:border-color .14s;
+}
+.idea-card:hover{border-color:var(--rule-2)}
+.idea-card.is-fav{box-shadow:inset 3px 0 0 var(--red)}
+.idea-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.idea-num{font-weight:600;color:var(--red)}
+.idea-time{font-variant-numeric:tabular-nums;letter-spacing:.08em}
+.idea-text{flex:1;font-size:17px;line-height:1.55;font-weight:500;letter-spacing:.005em;white-space:pre-wrap;overflow-wrap:anywhere;cursor:text;caret-color:var(--red)}
+.idea-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:9px;border-top:1px solid var(--rule)}
+.idea-fav{display:inline-flex;align-items:center;gap:7px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.idea-fav:hover{color:var(--ink)}
+.idea-fav .fav-dot{width:6px;height:6px;border:1px solid var(--ink);flex:none}
+.idea-card.is-fav .idea-fav .fav-dot{background:var(--red);border-color:var(--red)}
+.idea-acts{display:flex;gap:11px;opacity:0;transition:opacity .12s}
+.idea-card:hover .idea-acts,.idea-card:focus-within .idea-acts{opacity:1}
+.idea-acts .act{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid transparent;padding-bottom:1px}
+.idea-acts .act:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.idea-acts .act.del:hover{color:var(--red);border-bottom-color:var(--red)}
+.idea-acts .act.is-on{color:var(--red)}
+
 /* ============ 响应式 ============ */
 @media (max-width:1279px){
-  .notes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .note-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:1080px){
   .hero{grid-template-columns:76px minmax(0,1fr);gap:18px 24px}
@@ -355,7 +500,15 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
   .composer-btn{padding:9px 13px;font-size:9px}
   .notes-head{margin-top:26px;align-items:flex-start}
   .notes-tools{width:100%;justify-content:space-between}
-  .notes{grid-template-columns:1fr;gap:10px}
+  .note-grid{grid-template-columns:1fr;gap:10px}
+  .section-head{flex-wrap:wrap;gap:8px 10px}
+  .section-title{font-size:14px;max-width:60vw}
+  .section-count{margin-left:0}
+  .ideas-hero{grid-template-columns:1fr;gap:14px;padding:20px 0 22px}
+  .ideas-num{font-size:38px}
+  .ideas-meta{flex-direction:row;flex-wrap:wrap;gap:18px 28px}
+  .idea-grid{grid-template-columns:1fr}
+  .modebar{padding:0 var(--pad)}
   .search{width:130px}
   .footer{gap:12px 20px}
 }
@@ -373,6 +526,9 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
 }
 @media (hover:none){
   .acts{opacity:1;gap:14px}
+  .section-acts{opacity:1}
+  .rail-del{opacity:1}
+  .idea-acts{opacity:1;gap:14px}
   .act{padding:5px 2px;font-size:10px}
   .toggle{padding:5px 0}
   .rail-add{width:30px;height:30px;font-size:16px}
@@ -389,7 +545,7 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
 @media print{
   :root{--paper:#fff;--paper-2:#fff}
   html,body{background:#fff}
-  .masthead,.rail,.composer,.composer-hint,.notes-tools,.notes-sub,.footer,.toast,.modal,.danger-link,.act,.note-edit{display:none!important}
+  .masthead,.rail,.composer,.composer-hint,.notes-tools,.notes-sub,.footer,.toast,.modal,.danger-link,.act,.note-edit,.modebar{display:none!important}
   .layout{display:block}
   .stage{padding:0}
   .stage::before{display:none}
@@ -399,7 +555,11 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
   .meta-k{color:#666}
   .meta-done,.meta-pct,.e-meta{color:#666}
   .notes-head{border-bottom:1px solid #000}
-  .notes{grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .note-grid{grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .notes-section{margin-top:14px}
+  .section-head{border-bottom:1px solid #000;cursor:default}
+  .section-idx,.section-count{color:#666}
+  .section-title{font-size:12pt}
   .note{min-height:0;background:#fff;border:1px solid #999;box-shadow:none!important;padding:9px}
   .note.is-pinned{box-shadow:none}
   .note-foot{border-top:1px solid #ccc}
@@ -425,6 +585,11 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
       <span class="mast-date" id="mastDate">—</span>
     </div>
   </header>
+
+  <nav class="modebar" aria-label="模式">
+    <button type="button" class="mode-tab is-on" data-mode="notes"><span class="m-num">01</span>记录 / Notes</button>
+    <button type="button" class="mode-tab" data-mode="ideas"><span class="m-num">02</span>好点子 / Good Ideas</button>
+  </nav>
 
   <div class="layout">
     <aside class="rail" aria-label="事件索引">
@@ -468,6 +633,7 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
           </div>
           <div class="meta-block">
             <div class="meta-k">操作 / Actions</div>
+            <button type="button" class="danger-link" id="pinEvent">置顶此主事件</button>
             <button type="button" class="danger-link" id="delEvent">删除此主事件</button>
           </div>
         </div>
@@ -479,15 +645,20 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
         <button type="submit" class="composer-btn">记录</button>
       </form>
       <div class="composer-hint">
+        <span class="target-wrap">
+          <button type="button" class="target-chip" id="targetChip" aria-haspopup="true" aria-expanded="false"><span class="t-dot"></span><span>记录到：未分组</span></button>
+          <div class="target-menu" id="targetMenu" hidden></div>
+        </span>
         <span>回车 记录</span><span>Shift + 回车 换行</span><span>双击便签 编辑</span><span>N 新建便签</span><span>Ctrl + S 保存</span>
       </div>
 
-      <div class="notes-head">
+      <div class="notes-head" id="recordsHead">
         <div class="notes-label-wrap">
           <div class="notes-label">记录 / Notes <b id="notesCount">00</b></div>
           <div class="notes-sub">由主事件引导 · Derived from the main event</div>
         </div>
         <div class="notes-tools">
+          <button type="button" class="section-add" id="addSection">＋ 小标题</button>
           <div class="filters" role="group" aria-label="筛选记录">
             <button type="button" class="filter is-on" data-filter="all">全部</button>
             <button type="button" class="filter" data-filter="open">未完成</button>
@@ -497,11 +668,59 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
         </div>
       </div>
       <div class="notes" id="notes"></div>
+
+      <section class="ideas-stage" aria-label="好点子">
+        <section class="ideas-hero">
+          <div class="ideas-idx">
+            <div class="ideas-num" id="ideasBig">00</div>
+            <div class="ideas-idx-k">想法<br>Ideas</div>
+          </div>
+          <div class="ideas-main">
+            <div class="eyebrow"><span class="sq"></span>Good Idea / 好点子</div>
+            <h1 class="ideas-title">想到什么，先记下来。</h1>
+            <p class="ideas-desc">灵感不等人。写一句就够，之后慢慢展开。这个白底模式只用来收集好点子。</p>
+          </div>
+          <div class="ideas-meta">
+            <div class="meta-block">
+              <div class="meta-k">日期 / Date</div>
+              <div class="ideas-date" id="ideasDate">—</div>
+            </div>
+            <div class="meta-block">
+              <div class="meta-k">想法 / Ideas</div>
+              <div class="meta-nums"><span class="stat-num" id="ideasTotal">00</span><span class="meta-done">条想法</span></div>
+            </div>
+          </div>
+        </section>
+
+        <form class="composer" id="ideaComposer" autocomplete="off">
+          <span class="composer-mark" aria-hidden="true">＋</span>
+          <textarea id="ideaInput" rows="1" placeholder="写下一个好点子，回车记录…" aria-label="新想法内容"></textarea>
+          <button type="submit" class="composer-btn">记录</button>
+        </form>
+        <div class="composer-hint ideas-hint">
+          <span>回车 记录</span><span>Shift + 回车 换行</span><span>收藏 留住最想做的</span><span>Ctrl + S 保存</span>
+        </div>
+
+        <div class="notes-head" id="ideasHead">
+          <div class="notes-label-wrap">
+            <div class="notes-label">想法 / Ideas <b id="ideasCount">00</b></div>
+            <div class="notes-sub">Good ideas never wait</div>
+          </div>
+          <div class="notes-tools">
+            <div class="filters" role="group" aria-label="筛选想法">
+              <button type="button" class="filter is-on" data-idea-filter="all">全部</button>
+              <button type="button" class="filter" data-idea-filter="fav">收藏</button>
+            </div>
+            <input type="search" class="search" id="ideaSearch" placeholder="搜索想法…" aria-label="搜索想法">
+          </div>
+        </div>
+        <div class="notes" id="ideas"></div>
+      </section>
     </main>
   </div>
 
   <footer class="footer">
-    <div class="foot-note">数据保存在本机浏览器 · 无需联网</div>
+    <div class="foot-note" id="footNote">数据保存在本机浏览器 · 无需联网</div>
     <div class="foot-actions">
       <button type="button" class="link" data-act="share" id="shareBtn">手机访问 / 二维码</button>
       <button type="button" class="link" data-act="cloud" id="cloudBtn">云同步</button>
@@ -561,7 +780,7 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
   })();
 
   var state = null;
-  var ui = { filter: 'all', search: '', newId: null };
+  var ui = { filter: 'all', search: '', newId: null, sectionId: null, mode: 'notes', ideaFilter: 'all', ideaSearch: '', ideaNewId: null };
   var saveTimer = null;
   var toastTimer = null;
   var remote = {
@@ -635,16 +854,22 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     if (!remote.enabled && !cloud.enabled) {
       if (kind === 'warn') { el.classList.add('is-warn'); el.innerHTML = dot + '无法保存'; }
       else el.innerHTML = dot + '本机保存';
-      return;
-    }
-    var cloudOn = cloud.enabled && !remote.enabled;
-    if (kind === 'saving') {
-      el.innerHTML = dot + (cloudOn ? '上云中…' : '同步中…');
-    } else if (kind === 'offline') {
-      el.classList.add('is-warn');
-      el.innerHTML = dot + '离线 · 本机';
     } else {
-      el.innerHTML = dot + (cloudOn ? '云同步 ' : '已同步 ') + timeHM(new Date());
+      var cloudOn = cloud.enabled && !remote.enabled;
+      if (kind === 'saving') {
+        el.innerHTML = dot + (cloudOn ? '上云中…' : '同步中…');
+      } else if (kind === 'offline') {
+        el.classList.add('is-warn');
+        el.innerHTML = dot + '离线 · 本机';
+      } else {
+        el.innerHTML = dot + (cloudOn ? '云同步 ' : '已同步 ') + timeHM(new Date());
+      }
+    }
+    var foot = $('#footNote');
+    if (foot) {
+      if (cloud.enabled && !remote.enabled) foot.textContent = '数据存在你的私有 Gist · 自动同步';
+      else if (remote.enabled) foot.textContent = '数据存在电脑上的 board-data.json';
+      else foot.textContent = '数据保存在本机浏览器 · 无需联网';
     }
   }
   function autoGrow(el, min, max) {
@@ -658,18 +883,31 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
 
   /* ---------------- 数据 ---------------- */
   function newEvent(title, desc) {
-    return { id: uid(), title: title || '新事件', desc: desc || '', date: todayISO(), createdAt: Date.now(), updatedAt: Date.now() };
+    return {
+      id: uid(),
+      title: title || '新事件',
+      desc: desc || '',
+      date: todayISO(),
+      pinned: false,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
   }
   function seedState() {
     var ev = newEvent('开始使用便签板', '一个主事件，从这里引导出下面所有记录。');
     var now = Date.now();
     function note(text, done, pinned, offset) {
-      return { id: uid(), eventId: ev.id, text: text, done: !!done, pinned: !!pinned, createdAt: now - offset, updatedAt: now - offset };
+      return { id: uid(), eventId: ev.id, sectionId: null, text: text, done: !!done, pinned: !!pinned, createdAt: now - offset, updatedAt: now - offset };
     }
     return {
       version: 1,
       activeEventId: ev.id,
       events: [ev],
+      sections: [],
+      ideas: [
+        { id: uid(), text: '把便签板做成手机也能用的云同步工具', favorite: true, createdAt: now - 200000, updatedAt: now - 200000 },
+        { id: uid(), text: '每周日晚上回顾一次这周的记录', favorite: false, createdAt: now - 100000, updatedAt: now - 100000 }
+      ],
       notes: [
         note('在下面的输入框写下第一条便签，按回车记录；双击便签文字可以直接修改。', false, false, 180000),
         note('左侧每个条目是一个主事件：切换它，下面的记录就跟着切换；点「＋」新建。', false, false, 120000),
@@ -681,6 +919,8 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
   function normalize() {
     if (!state || typeof state !== 'object') state = seedState();
     var events = Array.isArray(state.events) ? state.events : [];
+    var sections = Array.isArray(state.sections) ? state.sections : [];
+    var ideas = Array.isArray(state.ideas) ? state.ideas : [];
     var notes = Array.isArray(state.notes) ? state.notes : [];
     state.events = events.filter(function (e) { return e && e.id; }).map(function (e) {
       return {
@@ -688,14 +928,34 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
         title: e.title || '未命名事件',
         desc: e.desc || '',
         date: e.date || todayISO(),
+        pinned: !!e.pinned,
         createdAt: e.createdAt || Date.now(),
         updatedAt: e.updatedAt || Date.now()
+      };
+    });
+    state.sections = sections.filter(function (s) { return s && s.id && s.eventId; }).map(function (s) {
+      return {
+        id: s.id,
+        eventId: s.eventId,
+        title: s.title || '未命名小标题',
+        createdAt: s.createdAt || Date.now(),
+        updatedAt: s.updatedAt || s.createdAt || Date.now()
+      };
+    });
+    state.ideas = ideas.filter(function (idea) { return idea && idea.id && typeof idea.text === 'string'; }).map(function (idea) {
+      return {
+        id: idea.id,
+        text: idea.text,
+        favorite: !!idea.favorite,
+        createdAt: idea.createdAt || Date.now(),
+        updatedAt: idea.updatedAt || idea.createdAt || Date.now()
       };
     });
     state.notes = notes.filter(function (n) { return n && n.id && typeof n.text === 'string'; }).map(function (n) {
       return {
         id: n.id,
         eventId: n.eventId,
+        sectionId: (typeof n.sectionId === 'string' && n.sectionId) ? n.sectionId : null,
         text: n.text,
         done: !!n.done,
         pinned: !!n.pinned,
@@ -706,13 +966,21 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     if (!state.events.length) state.events.push(newEvent('新事件', ''));
     var ids = {};
     state.events.forEach(function (e) { ids[e.id] = true; });
-    state.notes = state.notes.filter(function (n) { return ids[n.eventId]; });
+    state.sections = state.sections.filter(function (s) { return ids[s.eventId]; });
+    var sectionIds = {};
+    state.sections.forEach(function (s) { sectionIds[s.id] = true; });
+    state.notes = state.notes.filter(function (n) { return ids[n.eventId]; }).map(function (n) {
+      if (n.sectionId && !sectionIds[n.sectionId]) n.sectionId = null;
+      return n;
+    });
     if (!ids[state.activeEventId]) state.activeEventId = state.events[0].id;
-    if (!state.tombstones || typeof state.tombstones !== 'object') state.tombstones = { events: {}, notes: {} };
+    if (!state.tombstones || typeof state.tombstones !== 'object') state.tombstones = { events: {}, sections: {}, notes: {}, ideas: {} };
     if (!state.tombstones.events || typeof state.tombstones.events !== 'object') state.tombstones.events = {};
+    if (!state.tombstones.sections || typeof state.tombstones.sections !== 'object') state.tombstones.sections = {};
     if (!state.tombstones.notes || typeof state.tombstones.notes !== 'object') state.tombstones.notes = {};
+    if (!state.tombstones.ideas || typeof state.tombstones.ideas !== 'object') state.tombstones.ideas = {};
     var cutoff = Date.now() - 30 * 24 * 3600 * 1000;
-    ['events', 'notes'].forEach(function (kind) {
+    ['events', 'sections', 'notes', 'ideas'].forEach(function (kind) {
       var grave = state.tombstones[kind];
       for (var id in grave) {
         if (!Object.prototype.hasOwnProperty.call(grave, id)) continue;
@@ -771,6 +1039,16 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     if (!ev) { ev = state.events[0]; state.activeEventId = ev.id; }
     return ev;
   }
+  function orderedEvents() {
+    return state.events.slice().sort(function (a, b) {
+      return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+    });
+  }
+  function sortNotesByTime(a, b) {
+    var pa = a.pinned ? 1 : 0, pb = b.pinned ? 1 : 0;
+    if (pa !== pb) return pb - pa;
+    return b.createdAt - a.createdAt;
+  }
   function updateDocTitle() {
     var ev = activeEvent();
     document.title = (ev.title || '便签板') + ' — 便签板';
@@ -794,10 +1072,10 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
   function mergeStates(a, b) {
     a = (a && typeof a === 'object') ? a : {};
     b = (b && typeof b === 'object') ? b : {};
-    var tombstones = { events: {}, notes: {} };
+    var tombstones = { events: {}, sections: {}, notes: {}, ideas: {} };
     [a.tombstones, b.tombstones].forEach(function (t) {
       if (!t || typeof t !== 'object') return;
-      ['events', 'notes'].forEach(function (kind) {
+      ['events', 'sections', 'notes', 'ideas'].forEach(function (kind) {
         var src = t[kind];
         if (!src || typeof src !== 'object') return;
         for (var id in src) {
@@ -832,17 +1110,28 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     var events = pickNewer(a.events, b.events, 'events');
     var ids = {};
     events.forEach(function (e) { ids[e.id] = true; });
+    var sections = pickNewer(a.sections, b.sections, 'sections').filter(function (s) {
+      return s && ids[s.eventId];
+    });
+    var sectionIds = {};
+    sections.forEach(function (s) { sectionIds[s.id] = true; });
     var notes = pickNewer(a.notes, b.notes, 'notes').filter(function (n) {
       return n && ids[n.eventId];
+    }).map(function (n) {
+      if (n.sectionId && !sectionIds[n.sectionId]) n.sectionId = null;
+      return n;
     });
     var prefer = null;
     if (b.activeEventId && ids[b.activeEventId]) prefer = b.activeEventId;
     else if (a.activeEventId && ids[a.activeEventId]) prefer = a.activeEventId;
     else if (events.length) prefer = events[0].id;
+    var ideas = pickNewer(a.ideas, b.ideas, 'ideas');
     return {
       version: 1,
       activeEventId: prefer,
       events: events,
+      sections: sections,
+      ideas: ideas,
       notes: notes,
       tombstones: tombstones
     };
@@ -1087,7 +1376,13 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
   }
   function boardJson(wrapper) {
     var s = wrapper || {};
-    return JSON.stringify({ e: s.events || [], n: s.notes || [], t: s.tombstones || {} });
+    return JSON.stringify({
+      e: s.events || [],
+      s: s.sections || [],
+      i: s.ideas || [],
+      n: s.notes || [],
+      t: s.tombstones || {}
+    });
   }
   function readCloudConfig() {
     if (!storageOK) return null;
@@ -1484,15 +1779,18 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
   function renderRail() {
     var list = $('#eventList');
     var frag = document.createDocumentFragment();
-    state.events.forEach(function (ev, i) {
+    orderedEvents().forEach(function (ev, i) {
       var evNotes = state.notes.filter(function (n) { return n.eventId === ev.id; });
       var evDone = evNotes.filter(function (n) { return n.done; }).length;
 
       var li = document.createElement('li');
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'event-item' + (ev.id === state.activeEventId ? ' is-active' : '');
+      var btn = document.createElement('div');
+      btn.className = 'event-item'
+        + (ev.id === state.activeEventId ? ' is-active' : '')
+        + (ev.pinned ? ' is-pinned' : '');
       btn.setAttribute('data-event', ev.id);
+      btn.setAttribute('role', 'button');
+      btn.tabIndex = 0;
 
       var idx = document.createElement('span');
       idx.className = 'e-idx';
@@ -1505,12 +1803,32 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
       title.textContent = ev.title || '未命名事件';
       var meta = document.createElement('span');
       meta.className = 'e-meta';
-      meta.textContent = pad(evNotes.length) + ' 条 · ' + pad(evDone) + ' 完成';
+      meta.textContent = (ev.pinned ? '置顶 · ' : '') + pad(evNotes.length) + ' 条 · ' + pad(evDone) + ' 完成';
 
       body.appendChild(title);
       body.appendChild(meta);
       btn.appendChild(idx);
       btn.appendChild(body);
+
+      var del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'rail-del';
+      del.textContent = '×';
+      del.setAttribute('aria-label', '删除主事件');
+      del.title = '删除主事件';
+      del.addEventListener('click', function (e) {
+        e.stopPropagation();
+        deleteEventById(ev.id);
+      });
+      btn.appendChild(del);
+
+      btn.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          activateEvent(ev.id);
+        }
+      });
+
       li.appendChild(btn);
       frag.appendChild(li);
     });
@@ -1521,13 +1839,16 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
   function renderHero() {
     var ev = activeEvent();
     var idx = 0, i;
-    for (i = 0; i < state.events.length; i++) {
-      if (state.events[i].id === ev.id) { idx = i; break; }
+    var ordered = orderedEvents();
+    for (i = 0; i < ordered.length; i++) {
+      if (ordered[i].id === ev.id) { idx = i; break; }
     }
     $('#heroIdx').textContent = pad(idx + 1);
     $('#heroTitle').textContent = ev.title || '';
     $('#heroDesc').textContent = ev.desc || '';
     $('#eventDate').value = ev.date || todayISO();
+    var pinBtn = $('#pinEvent');
+    if (pinBtn) pinBtn.textContent = ev.pinned ? '取消置顶' : '置顶此主事件';
     updateDocTitle();
   }
 
@@ -1580,6 +1901,15 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     edit.textContent = '编辑';
     edit.addEventListener('click', function () { startEdit(n, card); });
 
+    var move = document.createElement('button');
+    move.type = 'button';
+    move.className = 'act';
+    move.textContent = '移动';
+    move.addEventListener('click', function (e) {
+      e.stopPropagation();
+      openMoveMenu(n, move);
+    });
+
     var pin = document.createElement('button');
     pin.type = 'button';
     pin.className = 'act' + (n.pinned ? ' is-on' : '');
@@ -1604,6 +1934,7 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     });
 
     acts.appendChild(edit);
+    acts.appendChild(move);
     acts.appendChild(pin);
     acts.appendChild(del);
     foot.appendChild(toggle);
@@ -1614,48 +1945,533 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     return card;
   }
 
+  function emptyState(total) {
+    var empty = document.createElement('div');
+    empty.className = 'empty';
+    var numEl = document.createElement('div');
+    numEl.className = 'empty-num';
+    numEl.textContent = '00';
+    var msg = document.createElement('p');
+    var q = ui.search.trim();
+    if (total && q) msg.textContent = '没有匹配「' + q + '」的记录。';
+    else if (total && ui.filter === 'done') msg.textContent = '还没有完成的记录。';
+    else if (total && ui.filter === 'open') msg.textContent = '没有未完成的记录。';
+    else msg.textContent = '还没有记录。在上面的输入框写下第一条便签。';
+    empty.appendChild(numEl);
+    empty.appendChild(msg);
+    return empty;
+  }
+
+  function sectionsForActive() {
+    var ev = activeEvent();
+    return state.sections.filter(function (s) { return s.eventId === ev.id; })
+      .sort(function (a, b) { return (a.createdAt || 0) - (b.createdAt || 0); });
+  }
+
+  function updateTargetChip() {
+    var chip = $('#targetChip');
+    if (!chip) return;
+    var label = '未分组';
+    if (ui.sectionId) {
+      var found = null, i;
+      for (i = 0; i < state.sections.length; i++) {
+        if (state.sections[i].id === ui.sectionId) { found = state.sections[i]; break; }
+      }
+      if (!found) ui.sectionId = null;
+      else label = found.title || '未命名小标题';
+    }
+    while (chip.firstChild) chip.removeChild(chip.firstChild);
+    var dot = document.createElement('span');
+    dot.className = 't-dot';
+    var text = document.createElement('span');
+    text.textContent = '记录到：' + label;
+    chip.appendChild(dot);
+    chip.appendChild(text);
+    var menu = $('#targetMenu');
+    chip.setAttribute('aria-expanded', (menu && !menu.hidden) ? 'true' : 'false');
+  }
+
+  function setTarget(id) {
+    ui.sectionId = id || null;
+    $$('#notes .section-head').forEach(function (h) {
+      h.classList.toggle('is-target', (h.getAttribute('data-section-id') || '') === (ui.sectionId || ''));
+    });
+    updateTargetChip();
+  }
+
+  function openTargetMenu() {
+    var menu = $('#targetMenu');
+    if (!menu) return;
+    if (!menu.hidden) { closeTargetMenu(); return; }
+    menu.innerHTML = '';
+    function option(label, id) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = ((ui.sectionId || '') === (id || '')) ? 'is-on' : '';
+      b.textContent = label;
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setTarget(id || null);
+        closeTargetMenu();
+      });
+      menu.appendChild(b);
+    }
+    option('未分组', null);
+    sectionsForActive().forEach(function (sec, i) {
+      option(pad(i + 1) + '  ' + (sec.title || '未命名小标题'), sec.id);
+    });
+    var add = document.createElement('button');
+    add.type = 'button';
+    add.textContent = '＋ 新建小标题';
+    add.addEventListener('click', function (e) {
+      e.stopPropagation();
+      closeTargetMenu();
+      addSection();
+    });
+    menu.appendChild(add);
+    menu.hidden = false;
+    updateTargetChip();
+  }
+
+  function closeTargetMenu() {
+    var menu = $('#targetMenu');
+    if (menu) menu.hidden = true;
+    updateTargetChip();
+  }
+
+  var moveMenuEl = null;
+  function closeMoveMenu() {
+    if (moveMenuEl && moveMenuEl.parentNode) moveMenuEl.parentNode.removeChild(moveMenuEl);
+    moveMenuEl = null;
+  }
+  function openMoveMenu(n, anchor) {
+    closeMoveMenu();
+    var menu = document.createElement('div');
+    menu.className = 'move-menu';
+    function option(label, id) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = ((n.sectionId || '') === (id || '')) ? 'is-on' : '';
+      b.textContent = label;
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if ((n.sectionId || '') !== (id || '')) {
+          n.sectionId = id || null;
+          n.updatedAt = Date.now();
+          save();
+          refresh();
+          toast('已移动到「' + label + '」');
+        }
+        closeMoveMenu();
+      });
+      menu.appendChild(b);
+    }
+    option('未分组', null);
+    sectionsForActive().forEach(function (sec, i) {
+      option(pad(i + 1) + '  ' + (sec.title || '未命名小标题'), sec.id);
+    });
+    document.body.appendChild(menu);
+    var rect = anchor.getBoundingClientRect();
+    var left = Math.max(8, Math.min(rect.left, window.innerWidth - 220));
+    var top = rect.bottom + 6;
+    if (top + menu.offsetHeight > window.innerHeight - 8) {
+      top = Math.max(8, rect.top - menu.offsetHeight - 6);
+    }
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+    moveMenuEl = menu;
+  }
+
+  function addSection() {
+    var ev = activeEvent();
+    var count = state.sections.filter(function (s) { return s.eventId === ev.id; }).length;
+    var sec = {
+      id: uid(),
+      eventId: ev.id,
+      title: '小标题 ' + (count + 1),
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    state.sections.push(sec);
+    ui.sectionId = sec.id;
+    save();
+    renderNotes();
+    var wrap = $('.notes-section[data-section-wrap="' + sec.id + '"]');
+    var title = wrap ? wrap.querySelector('.section-title') : null;
+    if (title) {
+      title.focus();
+      var range = document.createRange();
+      range.selectNodeContents(title);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+    toast('已新建小标题');
+  }
+
+  function deleteSection(id) {
+    var sec = null, i;
+    for (i = 0; i < state.sections.length; i++) {
+      if (state.sections[i].id === id) { sec = state.sections[i]; break; }
+    }
+    if (!sec) return;
+    var label = sec.title || '未命名小标题';
+    if (!window.confirm('删除小标题「' + label + '」？\n它下面的便签会移到「未分组」。')) return;
+    var now = Date.now();
+    state.tombstones.sections[id] = now;
+    state.notes.forEach(function (n) {
+      if (n.sectionId === id) {
+        n.sectionId = null;
+        n.updatedAt = now;
+      }
+    });
+    state.sections = state.sections.filter(function (s) { return s.id !== id; });
+    if (ui.sectionId === id) ui.sectionId = null;
+    save();
+    renderNotes();
+    toast('已删除小标题');
+  }
+
+  function togglePinEvent() {
+    var ev = activeEvent();
+    ev.pinned = !ev.pinned;
+    ev.updatedAt = Date.now();
+    save();
+    renderAll();
+    toast(ev.pinned ? '已置顶主事件' : '已取消置顶');
+  }
+
+  function sectionHead(sec, number, count, isLoose) {
+    var head = document.createElement('div');
+    head.className = 'section-head' + (isLoose ? ' is-loose' : '');
+    head.setAttribute('data-section-id', isLoose ? '' : sec.id);
+    if (!isLoose && ui.sectionId === sec.id) head.classList.add('is-target');
+
+    var idx = document.createElement('span');
+    idx.className = 'section-idx';
+    idx.textContent = isLoose ? '—' : pad(number + 1);
+
+    var title = document.createElement('span');
+    title.className = 'section-title';
+    if (isLoose) {
+      title.textContent = '未分组';
+    } else {
+      title.setAttribute('contenteditable', 'true');
+      title.setAttribute('spellcheck', 'false');
+      title.textContent = sec.title || '';
+      title.addEventListener('input', function () {
+        sec.title = title.textContent.replace(/\s+/g, ' ').trimStart();
+        sec.updatedAt = Date.now();
+        saveSoon();
+      });
+      title.addEventListener('blur', function () {
+        var t = title.textContent.replace(/\s+/g, ' ').trim();
+        if (!t) {
+          t = '未命名小标题';
+          title.textContent = t;
+        }
+        sec.title = t;
+        sec.updatedAt = Date.now();
+        save();
+        updateTargetChip();
+      });
+      title.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          title.blur();
+        }
+      });
+    }
+
+    var countEl = document.createElement('span');
+    countEl.className = 'section-count';
+    countEl.textContent = pad(count) + ' 条';
+
+    var acts = document.createElement('div');
+    acts.className = 'section-acts';
+    if (!isLoose) {
+      var del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'act del';
+      del.textContent = '删除';
+      del.addEventListener('click', function (e) {
+        e.stopPropagation();
+        deleteSection(sec.id);
+      });
+      acts.appendChild(del);
+    }
+
+    head.appendChild(idx);
+    head.appendChild(title);
+    head.appendChild(countEl);
+    head.appendChild(acts);
+    head.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('.section-acts')) return;
+      setTarget(isLoose ? null : sec.id);
+      if (!isLoose && e.target === title) title.focus();
+    });
+    return head;
+  }
+
   function renderNotes() {
     var ev = activeEvent();
     var all = state.notes.filter(function (n) { return n.eventId === ev.id; });
-    all.sort(function (a, b) {
-      var pa = a.pinned ? 1 : 0, pb = b.pinned ? 1 : 0;
-      if (pa !== pb) return pb - pa;
-      return b.createdAt - a.createdAt;
-    });
+    all.sort(sortNotesByTime);
     var q = ui.search.trim().toLowerCase();
-    var shown = all.filter(function (n) {
+    function match(n) {
       if (ui.filter === 'open' && n.done) return false;
       if (ui.filter === 'done' && !n.done) return false;
       if (q && n.text.toLowerCase().indexOf(q) === -1) return false;
       return true;
-    });
-
+    }
+    var sections = sectionsForActive();
+    var filtering = ui.filter !== 'all' || !!q;
     var box = $('#notes');
     box.innerHTML = '';
-    if (!shown.length) {
-      var empty = document.createElement('div');
-      empty.className = 'empty';
-      var numEl = document.createElement('div');
-      numEl.className = 'empty-num';
-      numEl.textContent = '00';
-      var msg = document.createElement('p');
-      if (all.length && q) msg.textContent = '没有匹配「' + ui.search.trim() + '」的记录。';
-      else if (all.length && ui.filter === 'done') msg.textContent = '还没有完成的记录。';
-      else if (all.length && ui.filter === 'open') msg.textContent = '没有未完成的记录。';
-      else msg.textContent = '还没有记录。在上面的输入框写下第一条便签。';
-      empty.appendChild(numEl);
-      empty.appendChild(msg);
-      box.appendChild(empty);
+    var shownTotal = 0;
+
+    if (!sections.length) {
+      var shown = all.filter(match);
+      shownTotal = shown.length;
+      if (!shown.length) {
+        box.appendChild(emptyState(all.length));
+      } else {
+        var grid = document.createElement('div');
+        grid.className = 'note-grid';
+        shown.forEach(function (n, i) {
+          grid.appendChild(noteCard(n, i + 1));
+        });
+        box.appendChild(grid);
+      }
     } else {
-      var frag = document.createDocumentFragment();
-      shown.forEach(function (n) {
-        frag.appendChild(noteCard(n, all.indexOf(n) + 1));
+      var loose = all.filter(function (n) { return !n.sectionId; });
+      sections.forEach(function (sec, i) {
+        var list = all.filter(function (n) { return n.sectionId === sec.id; }).filter(match);
+        if (filtering && !list.length) return;
+        shownTotal += list.length;
+        var block = document.createElement('section');
+        block.className = 'notes-section';
+        block.setAttribute('data-section-wrap', sec.id);
+        block.appendChild(sectionHead(sec, i, list.length, false));
+        if (list.length) {
+          var g = document.createElement('div');
+          g.className = 'note-grid';
+          list.forEach(function (n, j) {
+            g.appendChild(noteCard(n, j + 1));
+          });
+          block.appendChild(g);
+        }
+        box.appendChild(block);
       });
-      box.appendChild(frag);
+
+      var looseShown = loose.filter(match);
+      var showLoose = looseShown.length > 0;
+      if (showLoose) {
+        shownTotal += looseShown.length;
+        var block2 = document.createElement('section');
+        block2.className = 'notes-section';
+        block2.appendChild(sectionHead(null, -1, looseShown.length, true));
+        if (looseShown.length) {
+          var g2 = document.createElement('div');
+          g2.className = 'note-grid';
+          looseShown.forEach(function (n, j) {
+            g2.appendChild(noteCard(n, j + 1));
+          });
+          block2.appendChild(g2);
+        }
+        box.appendChild(block2);
+      }
+      if (filtering && !shownTotal) box.appendChild(emptyState(all.length));
     }
-    $('#notesCount').textContent = shown.length === all.length
+    $('#notesCount').textContent = (shownTotal === all.length)
+      ? pad(all.length)
+      : pad(shownTotal) + ' / ' + pad(all.length);
+    updateTargetChip();
+  }
+
+  /* ---------------- 好点子模式 ---------------- */
+  function readStoredMode() {
+    try {
+      return localStorage.getItem('sb-mode-v1') === 'ideas' ? 'ideas' : 'notes';
+    } catch (e) { return 'notes'; }
+  }
+  function applyMode(mode, silent) {
+    ui.mode = mode === 'ideas' ? 'ideas' : 'notes';
+    document.body.classList.toggle('mode-ideas', ui.mode === 'ideas');
+    $$('.mode-tab').forEach(function (b) {
+      b.classList.toggle('is-on', b.getAttribute('data-mode') === ui.mode);
+    });
+    try { localStorage.setItem('sb-mode-v1', ui.mode); } catch (e) {}
+    if (ui.mode === 'ideas') renderIdeas();
+    else updateTargetChip();
+    if (!silent) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function syncIdeaFilters() {
+    $$('[data-idea-filter]').forEach(function (b) {
+      b.classList.toggle('is-on', b.getAttribute('data-idea-filter') === ui.ideaFilter);
+    });
+  }
+  function ideaEmpty(total) {
+    var empty = document.createElement('div');
+    empty.className = 'empty';
+    var numEl = document.createElement('div');
+    numEl.className = 'empty-num';
+    numEl.textContent = '00';
+    var msg = document.createElement('p');
+    var q = ui.ideaSearch.trim();
+    if (total && q) msg.textContent = '没有匹配「' + q + '」的想法。';
+    else if (total && ui.ideaFilter === 'fav') msg.textContent = '还没有收藏的想法。';
+    else msg.textContent = '还没有想法。写下一个好点子，回车记录。';
+    empty.appendChild(numEl);
+    empty.appendChild(msg);
+    return empty;
+  }
+  function ideaCard(idea, number) {
+    var card = document.createElement('article');
+    card.className = 'idea-card' + (idea.favorite ? ' is-fav' : '');
+    card.setAttribute('data-idea-id', idea.id);
+
+    var top = document.createElement('div');
+    top.className = 'idea-top';
+    var num = document.createElement('span');
+    num.className = 'idea-num';
+    num.textContent = pad(number);
+    var time = document.createElement('span');
+    time.className = 'idea-time';
+    time.textContent = stamp(idea.createdAt);
+    top.appendChild(num);
+    top.appendChild(time);
+
+    var text = document.createElement('p');
+    text.className = 'idea-text';
+    text.textContent = idea.text;
+    text.title = '双击编辑';
+    text.addEventListener('dblclick', function () { startIdeaEdit(idea, card); });
+
+    var foot = document.createElement('div');
+    foot.className = 'idea-foot';
+
+    var fav = document.createElement('button');
+    fav.type = 'button';
+    fav.className = 'idea-fav';
+    fav.setAttribute('aria-pressed', idea.favorite ? 'true' : 'false');
+    fav.innerHTML = '<span class="fav-dot"></span><span>' + (idea.favorite ? '已收藏' : '收藏') + '</span>';
+    fav.addEventListener('click', function () {
+      idea.favorite = !idea.favorite;
+      idea.updatedAt = Date.now();
+      save();
+      renderIdeas();
+    });
+
+    var acts = document.createElement('div');
+    acts.className = 'idea-acts';
+    var edit = document.createElement('button');
+    edit.type = 'button';
+    edit.className = 'act';
+    edit.textContent = '编辑';
+    edit.addEventListener('click', function () { startIdeaEdit(idea, card); });
+    var del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'act del';
+    del.textContent = '删除';
+    del.addEventListener('click', function () {
+      state.tombstones.ideas[idea.id] = Date.now();
+      state.ideas = state.ideas.filter(function (x) { return x.id !== idea.id; });
+      save();
+      renderIdeas();
+      toast('已删除想法');
+    });
+    acts.appendChild(edit);
+    acts.appendChild(del);
+
+    foot.appendChild(fav);
+    foot.appendChild(acts);
+    card.appendChild(top);
+    card.appendChild(text);
+    card.appendChild(foot);
+    return card;
+  }
+  function renderIdeas() {
+    var box = $('#ideas');
+    if (!box) return;
+    var all = state.ideas.slice().sort(function (a, b) {
+      var fa = a.favorite ? 1 : 0, fb = b.favorite ? 1 : 0;
+      if (fa !== fb) return fb - fa;
+      return b.createdAt - a.createdAt;
+    });
+    var q = ui.ideaSearch.trim().toLowerCase();
+    var shown = all.filter(function (idea) {
+      if (ui.ideaFilter === 'fav' && !idea.favorite) return false;
+      if (q && idea.text.toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+    box.innerHTML = '';
+    if (!shown.length) {
+      box.appendChild(ideaEmpty(all.length));
+    } else {
+      var grid = document.createElement('div');
+      grid.className = 'idea-grid';
+      shown.forEach(function (idea) {
+        grid.appendChild(ideaCard(idea, all.indexOf(idea) + 1));
+      });
+      box.appendChild(grid);
+    }
+    $('#ideasCount').textContent = shown.length === all.length
       ? pad(all.length)
       : pad(shown.length) + ' / ' + pad(all.length);
+    $('#ideasTotal').textContent = pad(all.length);
+    $('#ideasBig').textContent = pad(all.length);
+    $('#ideasDate').textContent = mastDate();
+    syncIdeaFilters();
+  }
+  function startIdeaEdit(idea, card) {
+    if (card.querySelector('.note-edit')) return;
+    var body = card.querySelector('.idea-text');
+    if (!body) return;
+    var ta = document.createElement('textarea');
+    ta.className = 'note-edit';
+    ta.value = idea.text;
+    ta.rows = 3;
+    body.parentNode.replaceChild(ta, body);
+    autoResize(ta);
+    ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
+    ta.addEventListener('input', function () { autoResize(ta); });
+    var closed = false;
+    function finish(commit) {
+      if (closed) return;
+      closed = true;
+      var val = ta.value.trim();
+      if (commit && val && val !== idea.text) {
+        idea.text = val;
+        idea.updatedAt = Date.now();
+        save();
+      }
+      renderIdeas();
+    }
+    ta.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); finish(true); }
+      else if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+    });
+    ta.addEventListener('blur', function () { finish(true); });
+  }
+  function addIdea() {
+    var input = $('#ideaInput');
+    var text = input.value.trim();
+    if (!text) { input.focus(); return; }
+    if (ui.ideaFilter !== 'all') {
+      ui.ideaFilter = 'all';
+      syncIdeaFilters();
+    }
+    var idea = { id: uid(), text: text, favorite: false, createdAt: Date.now(), updatedAt: Date.now() };
+    state.ideas.push(idea);
+    ui.ideaNewId = idea.id;
+    input.value = '';
+    autoGrow(input, 38, 168);
+    save();
+    renderIdeas();
+    input.focus();
+    setTimeout(function () { ui.ideaNewId = null; }, 700);
   }
 
   function renderStats() {
@@ -1679,6 +2495,7 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     renderHero();
     renderRail();
     renderNotes();
+    renderIdeas();
     renderStats();
   }
   function refresh() {
@@ -1744,7 +2561,7 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     if (ui.filter !== 'all') { ui.filter = 'all'; syncFilters(); }
     var ev = activeEvent();
     var n = {
-      id: uid(), eventId: ev.id, text: text,
+      id: uid(), eventId: ev.id, sectionId: ui.sectionId || null, text: text,
       done: false, pinned: false,
       createdAt: Date.now(), updatedAt: Date.now()
     };
@@ -1764,7 +2581,9 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     state.activeEventId = ev.id;
     ui.filter = 'all';
     ui.search = '';
+    ui.sectionId = null;
     $('#searchInput').value = '';
+    closeTargetMenu();
     syncFilters();
     save();
     renderAll();
@@ -1778,27 +2597,57 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     toast('已新建主事件');
   }
 
-  function deleteEvent() {
-    var ev = activeEvent();
-    var n = state.notes.filter(function (x) { return x.eventId === ev.id; }).length;
+  function activateEvent(id) {
+    if (!id || id === state.activeEventId) return;
+    state.activeEventId = id;
+    ui.filter = 'all';
+    ui.search = '';
+    ui.sectionId = null;
+    $('#searchInput').value = '';
+    closeTargetMenu();
+    closeMoveMenu();
+    syncFilters();
+    save();
+    renderAll();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function deleteEventById(id) {
+    var ev = null, i;
+    for (i = 0; i < state.events.length; i++) {
+      if (state.events[i].id === id) { ev = state.events[i]; break; }
+    }
+    if (!ev) return;
+    var n = state.notes.filter(function (x) { return x.eventId === id; }).length;
     var label = ev.title || '未命名事件';
     if (!window.confirm('删除主事件「' + label + '」及其 ' + n + ' 条便签？\n此操作不可撤销。')) return;
     var now = Date.now();
-    state.tombstones.events[ev.id] = now;
+    state.tombstones.events[id] = now;
     state.notes.forEach(function (x) {
-      if (x.eventId === ev.id) state.tombstones.notes[x.id] = now;
+      if (x.eventId === id) state.tombstones.notes[x.id] = now;
     });
-    state.notes = state.notes.filter(function (x) { return x.eventId !== ev.id; });
-    state.events = state.events.filter(function (x) { return x.id !== ev.id; });
+    state.sections.forEach(function (s) {
+      if (s.eventId === id) state.tombstones.sections[s.id] = now;
+    });
+    state.notes = state.notes.filter(function (x) { return x.eventId !== id; });
+    state.sections = state.sections.filter(function (s) { return s.eventId !== id; });
+    state.events = state.events.filter(function (x) { return x.id !== id; });
     if (!state.events.length) state.events.push(newEvent('新事件', ''));
-    state.activeEventId = state.events[0].id;
+    if (state.activeEventId === id) state.activeEventId = orderedEvents()[0].id;
     ui.filter = 'all';
     ui.search = '';
+    ui.sectionId = null;
     $('#searchInput').value = '';
+    closeTargetMenu();
+    closeMoveMenu();
     syncFilters();
     save();
     renderAll();
     toast('已删除主事件');
+  }
+
+  function deleteEvent() {
+    deleteEventById(activeEvent().id);
   }
 
   /* ---------------- 导入导出 ---------------- */
@@ -1819,6 +2668,8 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
       exportedAt: new Date().toISOString(),
       activeEventId: state.activeEventId,
       events: state.events,
+      sections: state.sections,
+      ideas: state.ideas,
       notes: state.notes,
       tombstones: state.tombstones
     };
@@ -1833,16 +2684,37 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
       if (ev.desc) out += ev.desc + '\n\n';
       var list = state.notes.filter(function (n) { return n.eventId === ev.id; })
         .sort(function (a, b) { return b.createdAt - a.createdAt; });
+      var secs = state.sections.filter(function (s) { return s.eventId === ev.id; })
+        .sort(function (a, b) { return (a.createdAt || 0) - (b.createdAt || 0); });
       if (!list.length) out += '_暂无记录_\n\n';
-      list.forEach(function (n) {
-        out += '- [' + (n.done ? 'x' : ' ') + '] ' + n.text.replace(/\n/g, '\n  ') + '\n';
+      var loose = list.filter(function (n) { return !n.sectionId; });
+      secs.forEach(function (sec) {
+        var arr = list.filter(function (n) { return n.sectionId === sec.id; });
+        if (!arr.length) return;
+        out += '### ' + (sec.title || '未命名小标题') + '\n\n';
+        arr.forEach(function (n) {
+          out += '- [' + (n.done ? 'x' : ' ') + '] ' + n.text.replace(/\n/g, '\n  ') + '\n';
+        });
+        out += '\n';
+      });
+      if (loose.length) {
+        if (secs.length) out += '### 未分组\n\n';
+        loose.forEach(function (n) {
+          out += '- [' + (n.done ? 'x' : ' ') + '] ' + n.text.replace(/\n/g, '\n  ') + '\n';
+        });
+        out += '\n';
+      }
+    });
+    if (state.ideas.length) {
+      out += '## 好点子 / Good Ideas\n\n';
+      state.ideas.slice().sort(function (a, b) { return b.createdAt - a.createdAt; }).forEach(function (idea) {
+        out += '- ' + (idea.favorite ? '★ ' : '') + idea.text.replace(/\n/g, '\n  ') + '\n';
       });
       out += '\n';
-    });
+    }
     download('便签板-' + dateStamp() + '.md', out, 'text/markdown');
     toast('已导出 Markdown');
-  }
-  function importFile(e) {
+  }  function importFile(e) {
     var file = e.target.files && e.target.files[0];
     if (!file) return;
     var reader = new FileReader();
@@ -1992,22 +2864,51 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     var descEl = $('#heroDesc');
 
     $('#eventList').addEventListener('click', function (e) {
-      var btn = e.target.closest ? e.target.closest('.event-item') : null;
-      if (!btn) return;
-      var id = btn.getAttribute('data-event');
-      if (id === state.activeEventId) return;
-      state.activeEventId = id;
-      ui.filter = 'all';
-      ui.search = '';
-      $('#searchInput').value = '';
-      syncFilters();
-      save();
-      renderAll();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      var item = e.target.closest ? e.target.closest('.event-item') : null;
+      if (!item) return;
+      if (e.target.closest && e.target.closest('.rail-del')) return;
+      activateEvent(item.getAttribute('data-event'));
     });
 
     $('#addEvent').addEventListener('click', addEvent);
     $('#delEvent').addEventListener('click', deleteEvent);
+    $('#pinEvent').addEventListener('click', togglePinEvent);
+    $('#addSection').addEventListener('click', addSection);
+    $$('.mode-tab').forEach(function (b) {
+      b.addEventListener('click', function () { applyMode(b.getAttribute('data-mode')); });
+    });
+    var ideaComposer = $('#ideaComposer');
+    var ideaInput = $('#ideaInput');
+    ideaComposer.addEventListener('submit', function (e) {
+      e.preventDefault();
+      addIdea();
+    });
+    ideaInput.addEventListener('input', function () { autoGrow(ideaInput, 38, 168); });
+    ideaInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+        e.preventDefault();
+        addIdea();
+      }
+    });
+    $$('[data-idea-filter]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        ui.ideaFilter = b.getAttribute('data-idea-filter');
+        syncIdeaFilters();
+        renderIdeas();
+      });
+    });
+    $('#ideaSearch').addEventListener('input', function (e) {
+      ui.ideaSearch = e.target.value;
+      renderIdeas();
+    });
+    $('#targetChip').addEventListener('click', function (e) {
+      e.stopPropagation();
+      openTargetMenu();
+    });
+    document.addEventListener('click', function (e) {
+      if (!(e.target.closest && e.target.closest('.target-wrap'))) closeTargetMenu();
+      if (!(e.target.closest && e.target.closest('.move-menu'))) closeMoveMenu();
+    });
 
     titleEl.addEventListener('input', function () {
       var ev = activeEvent();
@@ -2108,6 +3009,8 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     });
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
+      closeTargetMenu();
+      closeMoveMenu();
       if (!$('#shareModal').hidden) closeShare();
       if (!$('#cloudModal').hidden) closeCloud();
     });
@@ -2185,6 +3088,7 @@ input[type="search"]::-webkit-search-cancel-button{display:none}
     $('#mastDate').textContent = mastDate();
     bind();
     syncFilters();
+    applyMode(readStoredMode(), true);
     renderAll();
     save();
     tickClock();
