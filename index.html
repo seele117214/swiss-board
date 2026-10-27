@@ -429,8 +429,10 @@ body.mode-ideas .ideas-stage{display:block}
 }
 .ideas-num{font-size:clamp(54px,6vw,92px);line-height:.8;font-weight:500;letter-spacing:-.06em}
 .ideas-idx-k{margin-top:14px;font-size:8.5px;line-height:1.5;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.ideas-title{font-size:clamp(32px,4.4vw,60px);line-height:1.02;font-weight:700;letter-spacing:-.02em}
-.ideas-desc{margin-top:16px;max-width:50ch;font-size:14px;line-height:1.7;color:var(--ink-2)}
+.ideas-title{font-size:clamp(32px,4.4vw,60px);line-height:1.02;font-weight:700;letter-spacing:-.02em;outline:none;overflow-wrap:break-word}
+.ideas-title:empty::before{content:attr(data-placeholder);color:rgba(21,21,21,.22)}
+.ideas-desc{margin-top:16px;max-width:50ch;min-height:1.7em;font-size:14px;line-height:1.7;color:var(--ink-2);outline:none}
+.ideas-desc:empty::before{content:attr(data-placeholder);color:rgba(21,21,21,.28)}
 .ideas-meta{display:flex;flex-direction:column;gap:18px}
 .ideas-date{font-size:12.5px;letter-spacing:.04em}
 .idea-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
@@ -446,6 +448,12 @@ body.mode-ideas .ideas-stage{display:block}
 .idea-num{font-weight:600;color:var(--red)}
 .idea-time{font-variant-numeric:tabular-nums;letter-spacing:.08em}
 .idea-text{flex:1;font-size:17px;line-height:1.55;font-weight:500;letter-spacing:.005em;white-space:pre-wrap;overflow-wrap:anywhere;cursor:text;caret-color:var(--red)}
+.idea-image{border:1px solid var(--rule);background:#fff;overflow:hidden}
+.idea-image img{display:block;width:100%;height:168px;object-fit:cover;cursor:zoom-in}
+.note-image{border:1px solid var(--rule);background:#fff;overflow:hidden}
+.note-image img{display:block;width:100%;height:150px;object-fit:cover;cursor:zoom-in}
+.image-view{position:relative;z-index:1;max-width:min(94vw,1200px);max-height:88vh;padding:8px;background:#fff;border:1px solid var(--ink)}
+.image-view img{display:block;max-width:100%;max-height:82vh;margin:0 auto}
 .idea-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:9px;border-top:1px solid var(--rule)}
 .idea-fav{display:inline-flex;align-items:center;gap:7px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
 .idea-fav:hover{color:var(--ink)}
@@ -561,6 +569,7 @@ body.mode-ideas .ideas-stage{display:block}
   .section-idx,.section-count{color:#666}
   .section-title{font-size:12pt}
   .note{min-height:0;background:#fff;border:1px solid #999;box-shadow:none!important;padding:9px}
+  .note-image img,.idea-image img{height:auto;max-height:55mm;object-fit:contain}
   .note.is-pinned{box-shadow:none}
   .note-foot{border-top:1px solid #ccc}
   .note-text{font-size:10pt}
@@ -677,8 +686,8 @@ body.mode-ideas .ideas-stage{display:block}
           </div>
           <div class="ideas-main">
             <div class="eyebrow"><span class="sq"></span>Good Idea / 好点子</div>
-            <h1 class="ideas-title">想到什么，先记下来。</h1>
-            <p class="ideas-desc">灵感不等人。写一句就够，之后慢慢展开。这个白底模式只用来收集好点子。</p>
+            <h1 class="ideas-title" id="ideaBoardTitle" contenteditable="true" spellcheck="false" data-placeholder="给这组好点子起个名"></h1>
+            <p class="ideas-desc" id="ideaBoardDesc" contenteditable="true" spellcheck="false" data-placeholder="一句话说明（选填）"></p>
           </div>
           <div class="ideas-meta">
             <div class="meta-block">
@@ -689,6 +698,10 @@ body.mode-ideas .ideas-stage{display:block}
               <div class="meta-k">想法 / Ideas</div>
               <div class="meta-nums"><span class="stat-num" id="ideasTotal">00</span><span class="meta-done">条想法</span></div>
             </div>
+            <div class="meta-block">
+              <div class="meta-k">小主题 / Topics</div>
+              <div class="meta-nums"><span class="stat-num" id="ideaTopicsTotal">00</span><span class="meta-done">个</span></div>
+            </div>
           </div>
         </section>
 
@@ -698,6 +711,10 @@ body.mode-ideas .ideas-stage{display:block}
           <button type="submit" class="composer-btn">记录</button>
         </form>
         <div class="composer-hint ideas-hint">
+          <span class="target-wrap">
+            <button type="button" class="target-chip" id="ideaTargetChip" aria-haspopup="true" aria-expanded="false"><span class="t-dot"></span><span>记录到：未分组</span></button>
+            <div class="target-menu" id="ideaTargetMenu" hidden></div>
+          </span>
           <span>回车 记录</span><span>Shift + 回车 换行</span><span>收藏 留住最想做的</span><span>Ctrl + S 保存</span>
         </div>
 
@@ -707,6 +724,7 @@ body.mode-ideas .ideas-stage{display:block}
             <div class="notes-sub">Good ideas never wait</div>
           </div>
           <div class="notes-tools">
+            <button type="button" class="section-add" id="addIdeaTopic">＋ 小主题</button>
             <div class="filters" role="group" aria-label="筛选想法">
               <button type="button" class="filter is-on" data-idea-filter="all">全部</button>
               <button type="button" class="filter" data-idea-filter="fav">收藏</button>
@@ -761,6 +779,11 @@ body.mode-ideas .ideas-stage{display:block}
   </div>
 </div>
 
+<div class="modal" id="imageModal" hidden>
+  <div class="modal-back" data-image-close></div>
+  <div class="image-view"><img id="imageView" alt="图片预览"></div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -780,7 +803,7 @@ body.mode-ideas .ideas-stage{display:block}
   })();
 
   var state = null;
-  var ui = { filter: 'all', search: '', newId: null, sectionId: null, mode: 'notes', ideaFilter: 'all', ideaSearch: '', ideaNewId: null };
+  var ui = { filter: 'all', search: '', newId: null, sectionId: null, mode: 'notes', ideaFilter: 'all', ideaSearch: '', ideaNewId: null, ideaTopicId: null };
   var saveTimer = null;
   var toastTimer = null;
   var remote = {
@@ -881,6 +904,72 @@ body.mode-ideas .ideas-stage{display:block}
     el.style.height = Math.max(el.scrollHeight, 72) + 'px';
   }
 
+  /* ---------------- 图片 ---------------- */
+  function openImageModal(src) {
+    var modal = $('#imageModal');
+    var img = $('#imageView');
+    if (!modal || !img || !src) return;
+    img.src = src;
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeImageModal() {
+    var modal = $('#imageModal');
+    var img = $('#imageView');
+    if (!modal) return;
+    modal.hidden = true;
+    if (img) img.removeAttribute('src');
+    document.body.style.overflow = '';
+  }
+  function compressImage(dataUrl, cb) {
+    var img = new Image();
+    img.onload = function () {
+      function render(maxSide, quality) {
+        var w = img.naturalWidth || img.width;
+        var h = img.naturalHeight || img.height;
+        var scale = Math.min(1, maxSide / Math.max(w, h));
+        var cw = Math.max(1, Math.round(w * scale));
+        var ch = Math.max(1, Math.round(h * scale));
+        var canvas = document.createElement('canvas');
+        canvas.width = cw;
+        canvas.height = ch;
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, cw, ch);
+        ctx.drawImage(img, 0, 0, cw, ch);
+        try { return canvas.toDataURL('image/jpeg', quality); } catch (e) { return ''; }
+      }
+      var out = render(1100, 0.78);
+      if (!out) { cb(null); return; }
+      if (out.length > 420000) out = render(820, 0.7);
+      if (out.length > 320000) out = render(640, 0.66);
+      cb(out);
+    };
+    img.onerror = function () { cb(null); };
+    img.src = dataUrl;
+  }
+  function pickImageFor(apply) {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.addEventListener('change', function () {
+      var file = input.files && input.files[0];
+      if (!file) return;
+      if (!/^image\//i.test(file.type)) { toast('请选择图片文件'); return; }
+      if (file.size > 12 * 1024 * 1024) { toast('图片太大，请选 12MB 以内的'); return; }
+      toast('正在压缩图片…');
+      var reader = new FileReader();
+      reader.onload = function () {
+        compressImage(String(reader.result), function (dataUrl) {
+          if (!dataUrl) { toast('图片处理失败'); return; }
+          apply(dataUrl);
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+    input.click();
+  }
+
   /* ---------------- 数据 ---------------- */
   function newEvent(title, desc) {
     return {
@@ -897,16 +986,18 @@ body.mode-ideas .ideas-stage{display:block}
     var ev = newEvent('开始使用便签板', '一个主事件，从这里引导出下面所有记录。');
     var now = Date.now();
     function note(text, done, pinned, offset) {
-      return { id: uid(), eventId: ev.id, sectionId: null, text: text, done: !!done, pinned: !!pinned, createdAt: now - offset, updatedAt: now - offset };
+      return { id: uid(), eventId: ev.id, sectionId: null, image: '', text: text, done: !!done, pinned: !!pinned, createdAt: now - offset, updatedAt: now - offset };
     }
     return {
       version: 1,
       activeEventId: ev.id,
       events: [ev],
       sections: [],
+      ideaBoard: { title: '我的好点子', desc: '想到什么，先记下来。灵感不等人，写一句就够。', updatedAt: now },
+      ideaTopics: [],
       ideas: [
-        { id: uid(), text: '把便签板做成手机也能用的云同步工具', favorite: true, createdAt: now - 200000, updatedAt: now - 200000 },
-        { id: uid(), text: '每周日晚上回顾一次这周的记录', favorite: false, createdAt: now - 100000, updatedAt: now - 100000 }
+        { id: uid(), topicId: null, image: '', text: '把便签板做成手机也能用的云同步工具', favorite: true, createdAt: now - 200000, updatedAt: now - 200000 },
+        { id: uid(), topicId: null, image: '', text: '每周日晚上回顾一次这周的记录', favorite: false, createdAt: now - 100000, updatedAt: now - 100000 }
       ],
       notes: [
         note('在下面的输入框写下第一条便签，按回车记录；双击便签文字可以直接修改。', false, false, 180000),
@@ -916,12 +1007,25 @@ body.mode-ideas .ideas-stage{display:block}
       ]
     };
   }
+  function safeImage(value) {
+    if (typeof value !== 'string') return '';
+    if (value.indexOf('data:image/') !== 0) return '';
+    if (value.length > 3000000) return '';
+    return value;
+  }
   function normalize() {
     if (!state || typeof state !== 'object') state = seedState();
     var events = Array.isArray(state.events) ? state.events : [];
     var sections = Array.isArray(state.sections) ? state.sections : [];
     var ideas = Array.isArray(state.ideas) ? state.ideas : [];
+    var ideaTopics = Array.isArray(state.ideaTopics) ? state.ideaTopics : [];
     var notes = Array.isArray(state.notes) ? state.notes : [];
+    var rawBoard = (state.ideaBoard && typeof state.ideaBoard === 'object') ? state.ideaBoard : {};
+    state.ideaBoard = {
+      title: (typeof rawBoard.title === 'string' && rawBoard.title) ? rawBoard.title : '我的好点子',
+      desc: typeof rawBoard.desc === 'string' ? rawBoard.desc : '想到什么，先记下来。',
+      updatedAt: Number(rawBoard.updatedAt) || 0
+    };
     state.events = events.filter(function (e) { return e && e.id; }).map(function (e) {
       return {
         id: e.id,
@@ -942,9 +1046,19 @@ body.mode-ideas .ideas-stage{display:block}
         updatedAt: s.updatedAt || s.createdAt || Date.now()
       };
     });
+    state.ideaTopics = ideaTopics.filter(function (t) { return t && t.id; }).map(function (t) {
+      return {
+        id: t.id,
+        title: t.title || '未命名小主题',
+        createdAt: t.createdAt || Date.now(),
+        updatedAt: t.updatedAt || t.createdAt || Date.now()
+      };
+    });
     state.ideas = ideas.filter(function (idea) { return idea && idea.id && typeof idea.text === 'string'; }).map(function (idea) {
       return {
         id: idea.id,
+        topicId: (typeof idea.topicId === 'string' && idea.topicId) ? idea.topicId : null,
+        image: safeImage(idea.image),
         text: idea.text,
         favorite: !!idea.favorite,
         createdAt: idea.createdAt || Date.now(),
@@ -956,6 +1070,7 @@ body.mode-ideas .ideas-stage{display:block}
         id: n.id,
         eventId: n.eventId,
         sectionId: (typeof n.sectionId === 'string' && n.sectionId) ? n.sectionId : null,
+        image: safeImage(n.image),
         text: n.text,
         done: !!n.done,
         pinned: !!n.pinned,
@@ -973,14 +1088,20 @@ body.mode-ideas .ideas-stage{display:block}
       if (n.sectionId && !sectionIds[n.sectionId]) n.sectionId = null;
       return n;
     });
+    var topicIds = {};
+    state.ideaTopics.forEach(function (t) { topicIds[t.id] = true; });
+    state.ideas.forEach(function (idea) {
+      if (idea.topicId && !topicIds[idea.topicId]) idea.topicId = null;
+    });
     if (!ids[state.activeEventId]) state.activeEventId = state.events[0].id;
-    if (!state.tombstones || typeof state.tombstones !== 'object') state.tombstones = { events: {}, sections: {}, notes: {}, ideas: {} };
+    if (!state.tombstones || typeof state.tombstones !== 'object') state.tombstones = { events: {}, sections: {}, notes: {}, ideas: {}, ideaTopics: {} };
     if (!state.tombstones.events || typeof state.tombstones.events !== 'object') state.tombstones.events = {};
     if (!state.tombstones.sections || typeof state.tombstones.sections !== 'object') state.tombstones.sections = {};
     if (!state.tombstones.notes || typeof state.tombstones.notes !== 'object') state.tombstones.notes = {};
     if (!state.tombstones.ideas || typeof state.tombstones.ideas !== 'object') state.tombstones.ideas = {};
+    if (!state.tombstones.ideaTopics || typeof state.tombstones.ideaTopics !== 'object') state.tombstones.ideaTopics = {};
     var cutoff = Date.now() - 30 * 24 * 3600 * 1000;
-    ['events', 'sections', 'notes', 'ideas'].forEach(function (kind) {
+    ['events', 'sections', 'notes', 'ideas', 'ideaTopics'].forEach(function (kind) {
       var grave = state.tombstones[kind];
       for (var id in grave) {
         if (!Object.prototype.hasOwnProperty.call(grave, id)) continue;
@@ -1064,7 +1185,7 @@ body.mode-ideas .ideas-stage{display:block}
     var ae = document.activeElement;
     if (!ae) return false;
     var id = ae.id || '';
-    if (id === 'heroTitle' || id === 'heroDesc') return true;
+    if (id === 'heroTitle' || id === 'heroDesc' || id === 'ideaBoardTitle' || id === 'ideaBoardDesc') return true;
     if (ae.classList && ae.classList.contains('note-edit')) return true;
     return false;
   }
@@ -1072,10 +1193,10 @@ body.mode-ideas .ideas-stage{display:block}
   function mergeStates(a, b) {
     a = (a && typeof a === 'object') ? a : {};
     b = (b && typeof b === 'object') ? b : {};
-    var tombstones = { events: {}, sections: {}, notes: {}, ideas: {} };
+    var tombstones = { events: {}, sections: {}, notes: {}, ideas: {}, ideaTopics: {} };
     [a.tombstones, b.tombstones].forEach(function (t) {
       if (!t || typeof t !== 'object') return;
-      ['events', 'sections', 'notes', 'ideas'].forEach(function (kind) {
+      ['events', 'sections', 'notes', 'ideas', 'ideaTopics'].forEach(function (kind) {
         var src = t[kind];
         if (!src || typeof src !== 'object') return;
         for (var id in src) {
@@ -1121,16 +1242,32 @@ body.mode-ideas .ideas-stage{display:block}
       if (n.sectionId && !sectionIds[n.sectionId]) n.sectionId = null;
       return n;
     });
+
+    var ideaTopics = pickNewer(a.ideaTopics, b.ideaTopics, 'ideaTopics');
+    var topicIds = {};
+    ideaTopics.forEach(function (t) { topicIds[t.id] = true; });
+    var ideas = pickNewer(a.ideas, b.ideas, 'ideas').map(function (idea) {
+      if (idea.topicId && !topicIds[idea.topicId]) idea.topicId = null;
+      return idea;
+    });
+    var boardA = (a.ideaBoard && typeof a.ideaBoard === 'object') ? a.ideaBoard : {};
+    var boardB = (b.ideaBoard && typeof b.ideaBoard === 'object') ? b.ideaBoard : {};
+    var ideaBoard = (Number(boardB.updatedAt) || 0) >= (Number(boardA.updatedAt) || 0) ? boardB : boardA;
+    if (!ideaBoard || (!ideaBoard.title && !ideaBoard.desc)) {
+      ideaBoard = boardB.title || boardB.desc ? boardB : boardA;
+    }
+
     var prefer = null;
     if (b.activeEventId && ids[b.activeEventId]) prefer = b.activeEventId;
     else if (a.activeEventId && ids[a.activeEventId]) prefer = a.activeEventId;
     else if (events.length) prefer = events[0].id;
-    var ideas = pickNewer(a.ideas, b.ideas, 'ideas');
     return {
       version: 1,
       activeEventId: prefer,
       events: events,
       sections: sections,
+      ideaBoard: ideaBoard,
+      ideaTopics: ideaTopics,
       ideas: ideas,
       notes: notes,
       tombstones: tombstones
@@ -1379,6 +1516,8 @@ body.mode-ideas .ideas-stage{display:block}
     return JSON.stringify({
       e: s.events || [],
       s: s.sections || [],
+      ib: s.ideaBoard || {},
+      it: s.ideaTopics || [],
       i: s.ideas || [],
       n: s.notes || [],
       t: s.tombstones || {}
@@ -1871,6 +2010,21 @@ body.mode-ideas .ideas-stage{display:block}
     top.appendChild(num);
     top.appendChild(time);
 
+    var imageWrap = null;
+    if (n.image) {
+      imageWrap = document.createElement('div');
+      imageWrap.className = 'note-image';
+      var img = document.createElement('img');
+      img.src = n.image;
+      img.alt = '便签图片';
+      img.loading = 'lazy';
+      img.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openImageModal(n.image);
+      });
+      imageWrap.appendChild(img);
+    }
+
     var text = document.createElement('p');
     text.className = 'note-text';
     text.textContent = n.text;
@@ -1900,6 +2054,20 @@ body.mode-ideas .ideas-stage{display:block}
     edit.className = 'act';
     edit.textContent = '编辑';
     edit.addEventListener('click', function () { startEdit(n, card); });
+
+    var imageBtn = document.createElement('button');
+    imageBtn.type = 'button';
+    imageBtn.className = 'act';
+    imageBtn.textContent = n.image ? '换图' : '图片';
+    imageBtn.addEventListener('click', function () {
+      pickImageFor(function (dataUrl) {
+        n.image = dataUrl;
+        n.updatedAt = Date.now();
+        save();
+        refresh();
+        toast('已插入图片');
+      });
+    });
 
     var move = document.createElement('button');
     move.type = 'button';
@@ -1934,12 +2102,30 @@ body.mode-ideas .ideas-stage{display:block}
     });
 
     acts.appendChild(edit);
-    acts.appendChild(move);
+    acts.appendChild(imageBtn);
+    if (n.image) {
+      var noImg = document.createElement('button');
+      noImg.type = 'button';
+      noImg.className = 'act del';
+      noImg.textContent = '删图';
+      noImg.addEventListener('click', function () {
+        n.image = '';
+        n.updatedAt = Date.now();
+        save();
+        refresh();
+        toast('已移除图片');
+      });
+      acts.appendChild(noImg);
+    }
+    if (state.sections.some(function (s) { return s.eventId === n.eventId; })) {
+      acts.appendChild(move);
+    }
     acts.appendChild(pin);
     acts.appendChild(del);
     foot.appendChild(toggle);
     foot.appendChild(acts);
     card.appendChild(top);
+    if (imageWrap) card.appendChild(imageWrap);
     card.appendChild(text);
     card.appendChild(foot);
     return card;
@@ -2326,6 +2512,230 @@ body.mode-ideas .ideas-stage{display:block}
     empty.appendChild(msg);
     return empty;
   }
+  function sortIdeasByTime(a, b) {
+    var fa = a.favorite ? 1 : 0, fb = b.favorite ? 1 : 0;
+    if (fa !== fb) return fb - fa;
+    return b.createdAt - a.createdAt;
+  }
+  function ideaTopicsSorted() {
+    return state.ideaTopics.slice().sort(function (a, b) { return (a.createdAt || 0) - (b.createdAt || 0); });
+  }
+  function updateIdeaTargetChip() {
+    var chip = $('#ideaTargetChip');
+    if (!chip) return;
+    var label = '未分组';
+    if (ui.ideaTopicId) {
+      var found = null, i;
+      for (i = 0; i < state.ideaTopics.length; i++) {
+        if (state.ideaTopics[i].id === ui.ideaTopicId) { found = state.ideaTopics[i]; break; }
+      }
+      if (!found) ui.ideaTopicId = null;
+      else label = found.title || '未命名小主题';
+    }
+    while (chip.firstChild) chip.removeChild(chip.firstChild);
+    var dot = document.createElement('span');
+    dot.className = 't-dot';
+    var text = document.createElement('span');
+    text.textContent = '记录到：' + label;
+    chip.appendChild(dot);
+    chip.appendChild(text);
+    var menu = $('#ideaTargetMenu');
+    chip.setAttribute('aria-expanded', (menu && !menu.hidden) ? 'true' : 'false');
+  }
+  function setIdeaTarget(id) {
+    ui.ideaTopicId = id || null;
+    $$('#ideas .section-head').forEach(function (h) {
+      h.classList.toggle('is-target', (h.getAttribute('data-idea-topic') || '') === (ui.ideaTopicId || ''));
+    });
+    updateIdeaTargetChip();
+  }
+  function closeIdeaTargetMenu() {
+    var menu = $('#ideaTargetMenu');
+    if (menu) menu.hidden = true;
+    updateIdeaTargetChip();
+  }
+  function openIdeaTargetMenu() {
+    var menu = $('#ideaTargetMenu');
+    if (!menu) return;
+    if (!menu.hidden) { closeIdeaTargetMenu(); return; }
+    menu.innerHTML = '';
+    function option(label, id) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = ((ui.ideaTopicId || '') === (id || '')) ? 'is-on' : '';
+      b.textContent = label;
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setIdeaTarget(id || null);
+        closeIdeaTargetMenu();
+      });
+      menu.appendChild(b);
+    }
+    option('未分组', null);
+    ideaTopicsSorted().forEach(function (topic, i) {
+      option(pad(i + 1) + '  ' + (topic.title || '未命名小主题'), topic.id);
+    });
+    var add = document.createElement('button');
+    add.type = 'button';
+    add.textContent = '＋ 新建小主题';
+    add.addEventListener('click', function (e) {
+      e.stopPropagation();
+      closeIdeaTargetMenu();
+      addIdeaTopic();
+    });
+    menu.appendChild(add);
+    menu.hidden = false;
+    updateIdeaTargetChip();
+  }
+  function addIdeaTopic() {
+    var count = state.ideaTopics.length;
+    var topic = { id: uid(), title: '小主题 ' + (count + 1), createdAt: Date.now(), updatedAt: Date.now() };
+    state.ideaTopics.push(topic);
+    ui.ideaTopicId = topic.id;
+    save();
+    renderIdeas();
+    var wrap = $('.notes-section[data-idea-wrap="' + topic.id + '"]');
+    var title = wrap ? wrap.querySelector('.section-title') : null;
+    if (title) {
+      title.focus();
+      var range = document.createRange();
+      range.selectNodeContents(title);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+    toast('已新建小主题');
+  }
+  function deleteIdeaTopic(id) {
+    var topic = null, i;
+    for (i = 0; i < state.ideaTopics.length; i++) {
+      if (state.ideaTopics[i].id === id) { topic = state.ideaTopics[i]; break; }
+    }
+    if (!topic) return;
+    var label = topic.title || '未命名小主题';
+    if (!window.confirm('删除小主题「' + label + '」？\n它下面的想法会移到「未分组」。')) return;
+    var now = Date.now();
+    state.tombstones.ideaTopics[id] = now;
+    state.ideas.forEach(function (idea) {
+      if (idea.topicId === id) {
+        idea.topicId = null;
+        idea.updatedAt = now;
+      }
+    });
+    state.ideaTopics = state.ideaTopics.filter(function (t) { return t.id !== id; });
+    if (ui.ideaTopicId === id) ui.ideaTopicId = null;
+    save();
+    renderIdeas();
+    toast('已删除小主题');
+  }
+  function ideaTopicHead(topic, number, count, isLoose) {
+    var head = document.createElement('div');
+    head.className = 'section-head' + (isLoose ? ' is-loose' : '');
+    head.setAttribute('data-idea-topic', isLoose ? '' : topic.id);
+    if (!isLoose && ui.ideaTopicId === topic.id) head.classList.add('is-target');
+
+    var idx = document.createElement('span');
+    idx.className = 'section-idx';
+    idx.textContent = isLoose ? '—' : pad(number + 1);
+
+    var title = document.createElement('span');
+    title.className = 'section-title';
+    if (isLoose) {
+      title.textContent = '未分组';
+    } else {
+      title.setAttribute('contenteditable', 'true');
+      title.setAttribute('spellcheck', 'false');
+      title.textContent = topic.title || '';
+      title.addEventListener('input', function () {
+        topic.title = title.textContent.replace(/\s+/g, ' ').trimStart();
+        topic.updatedAt = Date.now();
+        saveSoon();
+      });
+      title.addEventListener('blur', function () {
+        var t = title.textContent.replace(/\s+/g, ' ').trim();
+        if (!t) {
+          t = '未命名小主题';
+          title.textContent = t;
+        }
+        topic.title = t;
+        topic.updatedAt = Date.now();
+        save();
+        updateIdeaTargetChip();
+      });
+      title.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          title.blur();
+        }
+      });
+    }
+
+    var countEl = document.createElement('span');
+    countEl.className = 'section-count';
+    countEl.textContent = pad(count) + ' 条';
+
+    var acts = document.createElement('div');
+    acts.className = 'section-acts';
+    if (!isLoose) {
+      var del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'act del';
+      del.textContent = '删除';
+      del.addEventListener('click', function (e) {
+        e.stopPropagation();
+        deleteIdeaTopic(topic.id);
+      });
+      acts.appendChild(del);
+    }
+
+    head.appendChild(idx);
+    head.appendChild(title);
+    head.appendChild(countEl);
+    head.appendChild(acts);
+    head.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('.section-acts')) return;
+      setIdeaTarget(isLoose ? null : topic.id);
+      if (!isLoose && e.target === title) title.focus();
+    });
+    return head;
+  }
+  function openIdeaMoveMenu(idea, anchor) {
+    closeMoveMenu();
+    var menu = document.createElement('div');
+    menu.className = 'move-menu';
+    function option(label, id) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = ((idea.topicId || '') === (id || '')) ? 'is-on' : '';
+      b.textContent = label;
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if ((idea.topicId || '') !== (id || '')) {
+          idea.topicId = id || null;
+          idea.updatedAt = Date.now();
+          save();
+          renderIdeas();
+          toast('已移动到「' + label + '」');
+        }
+        closeMoveMenu();
+      });
+      menu.appendChild(b);
+    }
+    option('未分组', null);
+    ideaTopicsSorted().forEach(function (topic, i) {
+      option(pad(i + 1) + '  ' + (topic.title || '未命名小主题'), topic.id);
+    });
+    document.body.appendChild(menu);
+    var rect = anchor.getBoundingClientRect();
+    var left = Math.max(8, Math.min(rect.left, window.innerWidth - 220));
+    var top = rect.bottom + 6;
+    if (top + menu.offsetHeight > window.innerHeight - 8) {
+      top = Math.max(8, rect.top - menu.offsetHeight - 6);
+    }
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+    moveMenuEl = menu;
+  }
   function ideaCard(idea, number) {
     var card = document.createElement('article');
     card.className = 'idea-card' + (idea.favorite ? ' is-fav' : '');
@@ -2341,6 +2751,21 @@ body.mode-ideas .ideas-stage{display:block}
     time.textContent = stamp(idea.createdAt);
     top.appendChild(num);
     top.appendChild(time);
+
+    var imageWrap = null;
+    if (idea.image) {
+      imageWrap = document.createElement('div');
+      imageWrap.className = 'idea-image';
+      var img = document.createElement('img');
+      img.src = idea.image;
+      img.alt = '想法图片';
+      img.loading = 'lazy';
+      img.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openImageModal(idea.image);
+      });
+      imageWrap.appendChild(img);
+    }
 
     var text = document.createElement('p');
     text.className = 'idea-text';
@@ -2365,11 +2790,56 @@ body.mode-ideas .ideas-stage{display:block}
 
     var acts = document.createElement('div');
     acts.className = 'idea-acts';
+
     var edit = document.createElement('button');
     edit.type = 'button';
     edit.className = 'act';
     edit.textContent = '编辑';
     edit.addEventListener('click', function () { startIdeaEdit(idea, card); });
+
+    var imageBtn = document.createElement('button');
+    imageBtn.type = 'button';
+    imageBtn.className = 'act';
+    imageBtn.textContent = idea.image ? '换图' : '图片';
+    imageBtn.addEventListener('click', function () {
+      pickImageFor(function (dataUrl) {
+        idea.image = dataUrl;
+        idea.updatedAt = Date.now();
+        save();
+        renderIdeas();
+        toast('已插入图片');
+      });
+    });
+
+    acts.appendChild(edit);
+    acts.appendChild(imageBtn);
+
+    if (idea.image) {
+      var noImg = document.createElement('button');
+      noImg.type = 'button';
+      noImg.className = 'act del';
+      noImg.textContent = '删图';
+      noImg.addEventListener('click', function () {
+        idea.image = '';
+        idea.updatedAt = Date.now();
+        save();
+        renderIdeas();
+        toast('已移除图片');
+      });
+      acts.appendChild(noImg);
+    }
+    if (state.ideaTopics.length) {
+      var move = document.createElement('button');
+      move.type = 'button';
+      move.className = 'act';
+      move.textContent = '移动';
+      move.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openIdeaMoveMenu(idea, move);
+      });
+      acts.appendChild(move);
+    }
+
     var del = document.createElement('button');
     del.type = 'button';
     del.className = 'act del';
@@ -2381,12 +2851,12 @@ body.mode-ideas .ideas-stage{display:block}
       renderIdeas();
       toast('已删除想法');
     });
-    acts.appendChild(edit);
     acts.appendChild(del);
 
     foot.appendChild(fav);
     foot.appendChild(acts);
     card.appendChild(top);
+    if (imageWrap) card.appendChild(imageWrap);
     card.appendChild(text);
     card.appendChild(foot);
     return card;
@@ -2394,35 +2864,83 @@ body.mode-ideas .ideas-stage{display:block}
   function renderIdeas() {
     var box = $('#ideas');
     if (!box) return;
-    var all = state.ideas.slice().sort(function (a, b) {
-      var fa = a.favorite ? 1 : 0, fb = b.favorite ? 1 : 0;
-      if (fa !== fb) return fb - fa;
-      return b.createdAt - a.createdAt;
-    });
+    var board = state.ideaBoard || {};
+    var boardTitle = $('#ideaBoardTitle');
+    var boardDesc = $('#ideaBoardDesc');
+    if (boardTitle && document.activeElement !== boardTitle) boardTitle.textContent = board.title || '';
+    if (boardDesc && document.activeElement !== boardDesc) boardDesc.textContent = board.desc || '';
+
+    var all = state.ideas.slice().sort(sortIdeasByTime);
     var q = ui.ideaSearch.trim().toLowerCase();
-    var shown = all.filter(function (idea) {
+    function match(idea) {
       if (ui.ideaFilter === 'fav' && !idea.favorite) return false;
       if (q && idea.text.toLowerCase().indexOf(q) === -1) return false;
       return true;
-    });
-    box.innerHTML = '';
-    if (!shown.length) {
-      box.appendChild(ideaEmpty(all.length));
-    } else {
-      var grid = document.createElement('div');
-      grid.className = 'idea-grid';
-      shown.forEach(function (idea) {
-        grid.appendChild(ideaCard(idea, all.indexOf(idea) + 1));
-      });
-      box.appendChild(grid);
     }
-    $('#ideasCount').textContent = shown.length === all.length
+    var topics = ideaTopicsSorted();
+    var filtering = ui.ideaFilter !== 'all' || !!q;
+    box.innerHTML = '';
+    var shownTotal = 0;
+
+    if (!topics.length) {
+      var shown = all.filter(match);
+      shownTotal = shown.length;
+      if (!shown.length) {
+        box.appendChild(ideaEmpty(all.length));
+      } else {
+        var grid = document.createElement('div');
+        grid.className = 'idea-grid';
+        shown.forEach(function (idea, i) {
+          grid.appendChild(ideaCard(idea, i + 1));
+        });
+        box.appendChild(grid);
+      }
+    } else {
+      topics.forEach(function (topic, i) {
+        var list = all.filter(function (idea) { return idea.topicId === topic.id; }).filter(match);
+        if (filtering && !list.length) return;
+        shownTotal += list.length;
+        var block = document.createElement('section');
+        block.className = 'notes-section';
+        block.setAttribute('data-idea-wrap', topic.id);
+        block.appendChild(ideaTopicHead(topic, i, list.length, false));
+        if (list.length) {
+          var g = document.createElement('div');
+          g.className = 'idea-grid';
+          list.forEach(function (idea, j) {
+            g.appendChild(ideaCard(idea, j + 1));
+          });
+          block.appendChild(g);
+        }
+        box.appendChild(block);
+      });
+      var loose = all.filter(function (idea) { return !idea.topicId; });
+      var looseShown = loose.filter(match);
+      if (looseShown.length) {
+        shownTotal += looseShown.length;
+        var block2 = document.createElement('section');
+        block2.className = 'notes-section';
+        block2.appendChild(ideaTopicHead(null, -1, looseShown.length, true));
+        var g2 = document.createElement('div');
+        g2.className = 'idea-grid';
+        looseShown.forEach(function (idea, j) {
+          g2.appendChild(ideaCard(idea, j + 1));
+        });
+        block2.appendChild(g2);
+        box.appendChild(block2);
+      }
+      if (filtering && !shownTotal) box.appendChild(ideaEmpty(all.length));
+    }
+
+    $('#ideasCount').textContent = shownTotal === all.length
       ? pad(all.length)
-      : pad(shown.length) + ' / ' + pad(all.length);
+      : pad(shownTotal) + ' / ' + pad(all.length);
     $('#ideasTotal').textContent = pad(all.length);
     $('#ideasBig').textContent = pad(all.length);
+    $('#ideaTopicsTotal').textContent = pad(state.ideaTopics.length);
     $('#ideasDate').textContent = mastDate();
     syncIdeaFilters();
+    updateIdeaTargetChip();
   }
   function startIdeaEdit(idea, card) {
     if (card.querySelector('.note-edit')) return;
@@ -2463,7 +2981,15 @@ body.mode-ideas .ideas-stage{display:block}
       ui.ideaFilter = 'all';
       syncIdeaFilters();
     }
-    var idea = { id: uid(), text: text, favorite: false, createdAt: Date.now(), updatedAt: Date.now() };
+    var idea = {
+      id: uid(),
+      topicId: ui.ideaTopicId || null,
+      image: '',
+      text: text,
+      favorite: false,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
     state.ideas.push(idea);
     ui.ideaNewId = idea.id;
     input.value = '';
@@ -2669,6 +3195,8 @@ body.mode-ideas .ideas-stage{display:block}
       activeEventId: state.activeEventId,
       events: state.events,
       sections: state.sections,
+      ideaBoard: state.ideaBoard,
+      ideaTopics: state.ideaTopics,
       ideas: state.ideas,
       notes: state.notes,
       tombstones: state.tombstones
@@ -2705,12 +3233,31 @@ body.mode-ideas .ideas-stage{display:block}
         out += '\n';
       }
     });
-    if (state.ideas.length) {
+    var ib = state.ideaBoard || {};
+    if (state.ideas.length || ib.title) {
       out += '## 好点子 / Good Ideas\n\n';
-      state.ideas.slice().sort(function (a, b) { return b.createdAt - a.createdAt; }).forEach(function (idea) {
-        out += '- ' + (idea.favorite ? '★ ' : '') + idea.text.replace(/\n/g, '\n  ') + '\n';
+      if (ib.title) out += '**' + ib.title + '**\n\n';
+      if (ib.desc) out += ib.desc + '\n\n';
+      var topics = state.ideaTopics.slice().sort(function (a, b) { return (a.createdAt || 0) - (b.createdAt || 0); });
+      function ideaLine(idea) {
+        return '- ' + (idea.favorite ? '★ ' : '') + idea.text.replace(/\n/g, '\n  ') + (idea.image ? ' _(含图片)_' : '') + '\n';
+      }
+      topics.forEach(function (topic) {
+        var arr = state.ideas.filter(function (idea) { return idea.topicId === topic.id; })
+          .sort(function (a, b) { return b.createdAt - a.createdAt; });
+        if (!arr.length) return;
+        out += '### ' + (topic.title || '未命名小主题') + '\n\n';
+        arr.forEach(function (idea) { out += ideaLine(idea); });
+        out += '\n';
       });
-      out += '\n';
+      var looseIdeas = state.ideas.filter(function (idea) { return !idea.topicId; })
+        .sort(function (a, b) { return b.createdAt - a.createdAt; });
+      if (looseIdeas.length) {
+        if (topics.length) out += '### 未分组\n\n';
+        looseIdeas.forEach(function (idea) { out += ideaLine(idea); });
+        out += '\n';
+      }
+      if (!state.ideas.length) out += '_暂无想法_\n\n';
     }
     download('便签板-' + dateStamp() + '.md', out, 'text/markdown');
     toast('已导出 Markdown');
@@ -2901,12 +3448,69 @@ body.mode-ideas .ideas-stage{display:block}
       ui.ideaSearch = e.target.value;
       renderIdeas();
     });
+    $('#addIdeaTopic').addEventListener('click', addIdeaTopic);
+    $('#ideaTargetChip').addEventListener('click', function (e) {
+      e.stopPropagation();
+      openIdeaTargetMenu();
+    });
+    var ideaBoardTitle = $('#ideaBoardTitle');
+    var ideaBoardDesc = $('#ideaBoardDesc');
+    if (ideaBoardTitle) {
+      ideaBoardTitle.addEventListener('input', function () {
+        state.ideaBoard.title = ideaBoardTitle.textContent.replace(/\s+/g, ' ').trimStart();
+        state.ideaBoard.updatedAt = Date.now();
+        saveSoon();
+      });
+      ideaBoardTitle.addEventListener('blur', function () {
+        var t = ideaBoardTitle.textContent.replace(/\s+/g, ' ').trim();
+        if (!t) {
+          t = '我的好点子';
+          ideaBoardTitle.textContent = t;
+        }
+        state.ideaBoard.title = t;
+        state.ideaBoard.updatedAt = Date.now();
+        save();
+      });
+      ideaBoardTitle.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          ideaBoardTitle.blur();
+        }
+      });
+    }
+    if (ideaBoardDesc) {
+      ideaBoardDesc.addEventListener('input', function () {
+        state.ideaBoard.desc = ideaBoardDesc.textContent.replace(/\s+/g, ' ').trimStart();
+        state.ideaBoard.updatedAt = Date.now();
+        saveSoon();
+      });
+      ideaBoardDesc.addEventListener('blur', function () {
+        state.ideaBoard.desc = ideaBoardDesc.textContent.replace(/\s+/g, ' ').trim();
+        state.ideaBoard.updatedAt = Date.now();
+        save();
+      });
+    }
+    [ideaBoardTitle, ideaBoardDesc].forEach(function (el) {
+      if (!el) return;
+      el.addEventListener('paste', function (e) {
+        e.preventDefault();
+        var text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        document.execCommand('insertText', false, text);
+      });
+    });
+    $$('[data-image-close]').forEach(function (el) {
+      el.addEventListener('click', closeImageModal);
+    });
     $('#targetChip').addEventListener('click', function (e) {
       e.stopPropagation();
       openTargetMenu();
     });
     document.addEventListener('click', function (e) {
-      if (!(e.target.closest && e.target.closest('.target-wrap'))) closeTargetMenu();
+      var inTarget = e.target.closest && e.target.closest('.target-wrap');
+      if (!inTarget) {
+        closeTargetMenu();
+        closeIdeaTargetMenu();
+      }
       if (!(e.target.closest && e.target.closest('.move-menu'))) closeMoveMenu();
     });
 
@@ -3010,7 +3614,9 @@ body.mode-ideas .ideas-stage{display:block}
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
       closeTargetMenu();
+      closeIdeaTargetMenu();
       closeMoveMenu();
+      if (!$('#imageModal').hidden) closeImageModal();
       if (!$('#shareModal').hidden) closeShare();
       if (!$('#cloudModal').hidden) closeCloud();
     });
