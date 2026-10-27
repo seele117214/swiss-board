@@ -1,0 +1,16 @@
+{
+  "name": "便签板 · Swiss Board",
+  "short_name": "便签板",
+  "description": "瑞士风格便签板：由主事件引导记录，多设备云同步。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ECEAE3",
+  "theme_color": "#ECEAE3",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,2207 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>便签板 · SWISS BOARD</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20fill='%23ECEAE3'/%3E%3Crect%20x='6'%20y='6'%20width='20'%20height='20'%20fill='%23E0241B'/%3E%3C/svg%3E">
+<style>
+/* ============ 设计令牌 ============ */
+:root{
+  --paper:#ECEAE3;
+  --paper-2:#F7F5EF;
+  --ink:#151515;
+  --ink-2:#4E4A43;
+  --muted:#8A8479;
+  --red:#E0241B;
+  --rule:rgba(21,21,21,.16);
+  --rule-2:rgba(21,21,21,.42);
+  --pad:clamp(20px,3.2vw,46px);
+  --font:"Helvetica Neue",Helvetica,"Inter","Segoe UI",Arial,"PingFang SC","Hiragino Sans GB","Source Han Sans SC","Microsoft YaHei",sans-serif;
+}
+
+/* ============ 基础 ============ */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--font);font-size:15px;line-height:1.5;
+  font-variant-numeric:tabular-nums;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+::selection{background:var(--red);color:#fff}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+button,input,textarea{font:inherit;color:inherit}
+button{background:none;border:0;padding:0;cursor:pointer}
+h1,p,ol,ul{margin:0;padding:0}
+ol,ul{list-style:none}
+[contenteditable]{caret-color:var(--red)}
+input[type="search"]::-webkit-search-cancel-button{display:none}
+.page{display:flex;flex-direction:column;min-height:100vh}
+
+/* ============ 顶部刊头 ============ */
+.masthead{
+  position:sticky;top:0;z-index:60;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  height:60px;padding:0 var(--pad);
+  background:var(--paper);border-bottom:1px solid var(--ink);
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-mark{width:11px;height:11px;background:var(--red);flex:none}
+.brand-name{font-size:15px;font-weight:700;letter-spacing:.01em;white-space:nowrap}
+.brand-rule{width:1px;height:15px;background:var(--rule-2);flex:none}
+.brand-sub{font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap;font-weight:600}
+.mast-right{display:flex;align-items:center;gap:20px;white-space:nowrap}
+.save-state{display:inline-flex;align-items:center;gap:7px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
+.save-state .dot{width:6px;height:6px;border-radius:50%;background:var(--red);flex:none}
+.save-state.is-warn{color:var(--red)}
+.save-state.is-warn .dot{background:transparent;border:1px solid var(--red)}
+.mast-date{font-size:11.5px;letter-spacing:.08em;color:var(--ink)}
+.mast-share{display:none;padding:5px 9px;border:1px solid var(--rule-2);font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--ink-2);transition:background .12s,color .12s,border-color .12s}
+.mast-share:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.has-sync .mast-share,.has-cloud .mast-share{display:inline-block}
+
+/* ============ 布局 ============ */
+.layout{flex:1;display:grid;grid-template-columns:clamp(232px,18vw,300px) minmax(0,1fr);align-items:stretch}
+
+/* ============ 左侧事件索引 ============ */
+.rail{
+  position:sticky;top:60px;align-self:start;
+  display:flex;flex-direction:column;
+  min-height:calc(100vh - 60px);
+  max-height:calc(100vh - 60px);overflow-y:auto;
+  padding:22px 20px 24px;
+  border-right:1px solid var(--ink);background:var(--paper);
+  scrollbar-width:thin;scrollbar-color:var(--rule-2) transparent;
+}
+.rail-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--ink)}
+.micro{font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--ink-2)}
+.rail-add{
+  width:22px;height:22px;display:grid;place-items:center;flex:none;
+  border:1px solid var(--rule-2);font-size:14px;line-height:1;
+  transition:background .12s,color .12s,border-color .12s;
+}
+.rail-add:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.event-list{margin-top:2px}
+.event-item{
+  display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;width:100%;
+  padding:11px 8px 11px 10px;border-left:2px solid transparent;border-bottom:1px solid var(--rule);
+  text-align:left;transition:background .12s;
+}
+.event-item:hover{background:rgba(21,21,21,.045)}
+.event-item.is-active{border-left-color:var(--red);background:rgba(21,21,21,.05)}
+.e-idx{font-size:10px;letter-spacing:.05em;color:var(--muted);padding-top:3px}
+.event-item.is-active .e-idx{color:var(--red);font-weight:600}
+.e-body{display:block;min-width:0}
+.e-title{display:block;font-size:13px;line-height:1.35;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.event-item.is-active .e-title{font-weight:700}
+.e-meta{display:block;margin-top:3px;font-size:9px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.rail-note{margin-top:18px;font-size:10.5px;line-height:1.75;color:var(--muted);letter-spacing:.02em}
+.rail-foot{
+  margin-top:auto;padding-top:18px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
+  border-top:1px solid var(--ink);
+}
+.rail-stat span{display:block;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.rail-stat b{display:block;margin-top:2px;font-size:19px;font-weight:600;letter-spacing:-.02em}
+
+/* ============ 主区域 ============ */
+.stage{position:relative;min-width:0;padding:clamp(24px,3vw,42px) var(--pad) 52px}
+.stage::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(90deg,var(--rule) 1px,transparent 1px);
+  background-size:calc(100% / 8) 100%;opacity:.5;
+}
+.stage>*{position:relative;z-index:1}
+
+/* ============ 主事件 ============ */
+.hero{
+  display:grid;
+  grid-template-columns:clamp(88px,8vw,132px) minmax(0,1fr) clamp(180px,15vw,230px);
+  gap:clamp(18px,2.6vw,38px);align-items:start;
+  padding:26px 0 30px;
+  border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+}
+.hero-idx{min-width:0}
+.hero-num{font-size:clamp(54px,6vw,92px);line-height:.8;font-weight:500;letter-spacing:-.06em}
+.hero-idx-k{margin-top:14px;font-size:8.5px;line-height:1.5;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.hero-main{min-width:0}
+.eyebrow{display:flex;align-items:center;gap:9px;margin-bottom:16px;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--red)}
+.eyebrow .sq{width:9px;height:9px;background:var(--red);flex:none}
+.hero-title{
+  font-size:clamp(36px,5vw,78px);line-height:1;font-weight:700;letter-spacing:-.025em;
+  outline:none;overflow-wrap:break-word;
+}
+.hero-title:empty::before{content:attr(data-placeholder);color:rgba(21,21,21,.22)}
+.hero-desc{
+  margin-top:18px;max-width:54ch;min-height:1.7em;
+  font-size:14px;line-height:1.7;color:var(--ink-2);letter-spacing:.01em;outline:none;
+}
+.hero-desc:empty::before{content:attr(data-placeholder);color:rgba(21,21,21,.28)}
+.hero-meta{display:flex;flex-direction:column;gap:20px}
+.meta-block{padding-top:8px;border-top:1px solid var(--rule)}
+.meta-k{margin-bottom:8px;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.meta-block input[type="date"]{
+  width:100%;padding:3px 0;border:0;border-bottom:1px solid var(--rule-2);
+  background:transparent;font-size:12.5px;letter-spacing:.02em;outline:none;caret-color:var(--red);
+}
+.meta-block input[type="date"]:focus{border-bottom-color:var(--red)}
+.meta-block input[type="date"]::-webkit-calendar-picker-indicator{opacity:.45;cursor:pointer}
+.meta-nums{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.stat-num{font-size:28px;font-weight:600;letter-spacing:-.04em;line-height:1}
+.meta-done{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.meta-done b{color:var(--ink-2);font-weight:600}
+.progress{position:relative;height:3px;background:var(--rule);margin-top:10px}
+.progress span{display:block;width:0;height:100%;background:var(--ink);transition:width .3s ease}
+.meta-pct{margin-top:6px;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.danger-link{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid transparent;padding-bottom:1px}
+.danger-link:hover{color:var(--red);border-bottom-color:var(--red)}
+
+/* ============ 记录输入 ============ */
+.composer{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:end;gap:14px;
+  margin-top:34px;padding-bottom:10px;border-bottom:2px solid var(--ink);
+  transition:border-color .15s;
+}
+.composer:focus-within{border-bottom-color:var(--red)}
+.composer-mark{color:var(--red);font-size:20px;line-height:1;padding-bottom:8px}
+.composer textarea{
+  width:100%;min-height:38px;max-height:168px;padding:3px 0 2px;
+  border:0;background:transparent;resize:none;outline:none;overflow:hidden;
+  font-size:20px;line-height:1.45;letter-spacing:-.005em;
+}
+.composer textarea::placeholder{color:rgba(21,21,21,.3)}
+.composer-btn{
+  align-self:end;margin-bottom:2px;padding:10px 17px;
+  background:var(--ink);color:var(--paper);
+  font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;
+  transition:background .15s;
+}
+.composer-btn:hover{background:var(--red)}
+.composer-hint{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:9px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* ============ 记录列表头 ============ */
+.notes-head{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:16px 24px;flex-wrap:wrap;
+  margin-top:32px;padding-bottom:9px;border-bottom:1px solid var(--ink);
+}
+.notes-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600}
+.notes-label b{margin-left:6px;font-weight:700}
+.notes-sub{margin-top:5px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.notes-tools{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.filters{display:flex}
+.filter{
+  padding:6px 11px 5px;border:1px solid var(--rule-2);border-right:0;
+  font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
+  transition:background .12s,color .12s;
+}
+.filter:last-child{border-right:1px solid var(--rule-2)}
+.filter:hover{color:var(--ink)}
+.filter.is-on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.search{
+  width:150px;padding:6px 2px 5px;border:0;border-bottom:1px solid var(--rule-2);
+  background:transparent;font-size:12px;letter-spacing:.02em;outline:none;caret-color:var(--red);
+}
+.search::placeholder{color:var(--muted);font-size:11px;letter-spacing:.08em}
+.search:focus{border-bottom-color:var(--ink)}
+
+/* ============ 便签网格 ============ */
+.notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
+.note{
+  position:relative;display:flex;flex-direction:column;gap:14px;
+  min-height:160px;padding:15px 17px 13px;
+  background:var(--paper-2);border:1px solid var(--rule);
+  transition:border-color .14s,background .14s;
+}
+.note:hover{border-color:var(--rule-2)}
+.note.is-pinned{box-shadow:inset 2px 0 0 var(--red)}
+.note.is-done{background:rgba(247,245,239,.5);border-color:rgba(21,21,21,.1)}
+.note.is-done .note-text{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px;text-decoration-color:var(--rule-2)}
+.note-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.n-num{font-weight:600;color:var(--ink-2)}
+.n-time{font-variant-numeric:tabular-nums;letter-spacing:.08em}
+.note-text{flex:1;font-size:14.5px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;cursor:text;letter-spacing:.005em}
+.note-edit{
+  flex:1;width:100%;min-height:66px;padding:0;border:0;background:transparent;resize:none;outline:none;
+  font-size:14.5px;line-height:1.7;overflow:hidden;box-shadow:inset 0 -1px 0 var(--red);
+}
+.note-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:9px;border-top:1px solid var(--rule)}
+.toggle{display:inline-flex;align-items:center;gap:7px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.toggle:hover{color:var(--ink)}
+.tick{position:relative;width:12px;height:12px;border:1px solid var(--ink);flex:none}
+.note.is-done .tick{background:var(--ink)}
+.note.is-done .tick::after{
+  content:"";position:absolute;left:3px;top:1px;width:4px;height:7px;
+  border:solid var(--paper);border-width:0 1.5px 1.5px 0;transform:rotate(42deg);
+}
+.acts{display:flex;gap:11px;opacity:0;transition:opacity .12s}
+.note:hover .acts,.note:focus-within .acts{opacity:1}
+.act{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid transparent;padding-bottom:1px}
+.act:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.act.is-on{color:var(--red)}
+.act.del:hover{color:var(--red);border-bottom-color:var(--red)}
+.note.is-new{animation:flash .7s ease-out}
+@keyframes flash{0%{background:#fff;box-shadow:inset 0 2px 0 var(--red)}100%{background:var(--paper-2)}}
+
+/* ============ 空状态 ============ */
+.empty{
+  grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:10px;
+  padding:64px 20px;border:1px dashed var(--rule-2);text-align:center;
+}
+.empty-num{font-size:56px;font-weight:500;letter-spacing:-.06em;line-height:1;color:rgba(21,21,21,.16)}
+.empty p{font-size:12.5px;line-height:1.7;color:var(--ink-2);max-width:34ch}
+
+/* ============ 页脚 ============ */
+.footer{
+  display:flex;align-items:center;justify-content:space-between;gap:16px 28px;flex-wrap:wrap;
+  padding:14px var(--pad);border-top:1px solid var(--ink);
+  font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);
+}
+.foot-actions{display:flex;flex-wrap:wrap;gap:8px 20px}
+.link{
+  font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
+  border-bottom:1px solid var(--rule-2);padding-bottom:1px;transition:color .12s,border-color .12s;
+}
+.link:hover{color:var(--red);border-bottom-color:var(--red)}
+.foot-clock{font-variant-numeric:tabular-nums;letter-spacing:.1em;color:var(--ink-2)}
+
+/* ============ 提示条 ============ */
+.toast{
+  position:fixed;left:50%;bottom:24px;z-index:200;
+  transform:translate(-50%,12px);padding:9px 16px;
+  background:var(--ink);color:var(--paper);
+  font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ============ 手机访问 / 二维码 ============ */
+.modal{position:fixed;inset:0;z-index:150;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal[hidden]{display:none}
+.modal-back{position:absolute;inset:0;background:rgba(21,21,21,.55)}
+.modal-panel{position:relative;z-index:1;width:min(380px,100%);max-height:90vh;overflow:auto;padding:18px 20px 22px;background:var(--paper);border:1px solid var(--ink)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--ink)}
+.modal-x{width:26px;height:26px;display:grid;place-items:center;border:1px solid var(--rule-2);font-size:16px;line-height:1}
+.modal-x:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.qr-box{margin:18px 0 12px;padding:14px;background:#fff;border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;min-height:120px}
+.qr-box svg{display:block;width:100%;height:auto;max-width:250px}
+.qr-fail{font-size:11px;line-height:1.6;color:var(--muted);text-align:center;padding:12px}
+.share-url{margin-bottom:12px;font-size:12.5px;letter-spacing:.02em;word-break:break-all;text-align:center;color:var(--ink)}
+.share-copy{width:100%;padding:9px 12px;background:var(--ink);color:var(--paper);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
+.share-copy:hover{background:var(--red)}
+.share-tip{margin:12px 0 0;font-size:10.5px;line-height:1.7;color:var(--muted);letter-spacing:.02em}
+.share-alts{display:flex;flex-direction:column;gap:2px;margin-top:12px}
+.share-alt{padding:5px 0;font-size:10.5px;letter-spacing:.04em;color:var(--ink-2);text-align:left;border-bottom:1px solid var(--rule);word-break:break-all}
+.share-alt:hover{color:var(--red)}
+.cloud-note{margin:0 0 12px;font-size:11px;line-height:1.75;color:var(--muted);letter-spacing:.02em}
+.cloud-note a{color:var(--ink);border-bottom:1px solid var(--rule-2)}
+.cloud-note a:hover{color:var(--red);border-bottom-color:var(--red)}
+.cloud-input{width:100%;margin-bottom:10px;padding:10px 12px;border:1px solid var(--rule-2);background:#fff;font-size:12px;letter-spacing:.02em;outline:none;caret-color:var(--red)}
+.cloud-input:focus{border-color:var(--ink)}
+.cloud-btn{width:100%;margin-top:4px;padding:10px 12px;background:var(--ink);color:var(--paper);font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+.cloud-btn:hover{background:var(--red)}
+.cloud-btn[disabled]{opacity:.55;cursor:default}
+.cloud-err{min-height:16px;margin:2px 0 6px;font-size:10.5px;line-height:1.5;color:var(--red);letter-spacing:.02em}
+.cloud-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--rule)}
+.cloud-k{flex:none;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.cloud-v{font-size:12px;color:var(--ink);word-break:break-all;text-align:right}
+.cloud-link{display:block;width:100%;margin-top:10px;padding:8px 0;text-align:left;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rule)}
+.cloud-link:hover{color:var(--ink)}
+.cloud-link.danger:hover{color:var(--red)}
+#shareBtn{display:none}
+.has-sync #shareBtn,.has-cloud #shareBtn{display:inline-block}
+
+/* ============ 响应式 ============ */
+@media (max-width:1279px){
+  .notes{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:1080px){
+  .hero{grid-template-columns:76px minmax(0,1fr);gap:18px 24px}
+  .hero-meta{grid-column:2;grid-row:2;flex-direction:row;flex-wrap:wrap;gap:18px 28px;margin-top:14px}
+  .meta-block{flex:1;min-width:120px}
+  .hero-title{font-size:clamp(34px,5.6vw,60px)}
+}
+@media (max-width:860px){
+  .layout{display:block}
+  .rail{
+    position:static;min-height:0;max-height:none;height:auto;overflow:visible;
+    padding:14px var(--pad) 12px;border-right:0;border-bottom:1px solid var(--ink);
+  }
+  .rail-head{padding-bottom:8px}
+  .event-list{display:flex;gap:8px;overflow-x:auto;padding:8px 0 2px}
+  .event-list li{flex:0 0 auto}
+  .event-item{
+    display:flex;align-items:center;gap:8px;max-width:240px;
+    padding:7px 10px;border:1px solid var(--rule-2);
+  }
+  .event-item.is-active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .event-item.is-active .e-idx{color:var(--paper)}
+  .e-idx{padding-top:0}
+  .e-meta{display:none}
+  .e-title{font-size:12.5px}
+  .rail-note,.rail-foot{display:none}
+  .hero{grid-template-columns:1fr;gap:12px;padding:20px 0 22px}
+  .hero-idx{display:flex;align-items:baseline;gap:12px}
+  .hero-num{font-size:38px}
+  .hero-idx-k{margin-top:0}
+  .hero-meta{grid-column:1;grid-row:auto;margin-top:4px}
+  .hero-title{font-size:clamp(30px,8vw,46px)}
+  .hero-desc{margin-top:14px;font-size:13.5px}
+  .composer{margin-top:24px;gap:10px}
+  .composer textarea{font-size:17px}
+  .composer-mark{font-size:17px;padding-bottom:6px}
+  .composer-btn{padding:9px 13px;font-size:9px}
+  .notes-head{margin-top:26px;align-items:flex-start}
+  .notes-tools{width:100%;justify-content:space-between}
+  .notes{grid-template-columns:1fr;gap:10px}
+  .search{width:130px}
+  .footer{gap:12px 20px}
+}
+@media (max-width:640px){
+  .brand-sub,.brand-rule{display:none}
+  .mast-right{gap:12px}
+  .mast-share{display:none!important}
+  .save-state{font-size:8.5px;letter-spacing:.1em}
+  .mast-date{font-size:10.5px}
+  .hero-title{font-size:clamp(28px,9vw,40px)}
+  .notes-sub{display:none}
+  .filters{flex:1}
+  .filter{flex:1;text-align:center}
+  .foot-actions{gap:8px 14px}
+}
+@media (hover:none){
+  .acts{opacity:1;gap:14px}
+  .act{padding:5px 2px;font-size:10px}
+  .toggle{padding:5px 0}
+  .rail-add{width:30px;height:30px;font-size:16px}
+  .filter{padding:9px 10px 8px}
+  .composer-btn{padding:12px 18px}
+  .modal-x{width:32px;height:32px;font-size:18px}
+  .share-alt{padding:9px 0}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+
+/* ============ 打印 ============ */
+@media print{
+  :root{--paper:#fff;--paper-2:#fff}
+  html,body{background:#fff}
+  .masthead,.rail,.composer,.composer-hint,.notes-tools,.notes-sub,.footer,.toast,.modal,.danger-link,.act,.note-edit{display:none!important}
+  .layout{display:block}
+  .stage{padding:0}
+  .stage::before{display:none}
+  .hero{grid-template-columns:70px 1fr 160px;padding:14px 0;border-top:2px solid #000;border-bottom:1px solid #000}
+  .hero-title{font-size:32px}
+  .hero-desc{font-size:11pt;color:#000}
+  .meta-k{color:#666}
+  .meta-done,.meta-pct,.e-meta{color:#666}
+  .notes-head{border-bottom:1px solid #000}
+  .notes{grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .note{min-height:0;background:#fff;border:1px solid #999;box-shadow:none!important;padding:9px}
+  .note.is-pinned{box-shadow:none}
+  .note-foot{border-top:1px solid #ccc}
+  .note-text{font-size:10pt}
+  .tick{border-color:#000}
+  @page{margin:14mm}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="masthead">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">便签板</span>
+      <span class="brand-rule" aria-hidden="true"></span>
+      <span class="brand-sub">Swiss Board · 记录与回看</span>
+    </div>
+    <div class="mast-right">
+      <button type="button" class="mast-share" data-act="share" id="shareBtnTop">手机访问</button>
+      <span class="save-state" id="saveState"><span class="dot"></span>本机保存</span>
+      <span class="mast-date" id="mastDate">—</span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="rail" aria-label="事件索引">
+      <div class="rail-head">
+        <span class="micro">事件索引 / Events</span>
+        <button type="button" class="rail-add" id="addEvent" aria-label="新建主事件" title="新建主事件">＋</button>
+      </div>
+      <ol class="event-list" id="eventList"></ol>
+      <p class="rail-note">每个事件是一个记录场。<br>便签都归属于当前主事件。</p>
+      <div class="rail-foot">
+        <div class="rail-stat"><span>事件</span><b id="railEvents">00</b></div>
+        <div class="rail-stat"><span>记录</span><b id="railNotes">00</b></div>
+        <div class="rail-stat"><span>完成</span><b id="railDone">00</b></div>
+      </div>
+    </aside>
+
+    <main class="stage">
+      <section class="hero" aria-label="主事件">
+        <div class="hero-idx">
+          <div class="hero-num" id="heroIdx">01</div>
+          <div class="hero-idx-k">主事件<br>Event</div>
+        </div>
+        <div class="hero-main">
+          <div class="eyebrow"><span class="sq"></span>主事件 / Main Event</div>
+          <h1 class="hero-title" id="heroTitle" contenteditable="true" spellcheck="false" data-placeholder="给这个事件起个名字"></h1>
+          <p class="hero-desc" id="heroDesc" contenteditable="true" spellcheck="false" data-placeholder="一句话说明这件主事件（选填）"></p>
+        </div>
+        <div class="hero-meta">
+          <div class="meta-block">
+            <div class="meta-k">日期 / Date</div>
+            <input type="date" id="eventDate" aria-label="主事件日期">
+          </div>
+          <div class="meta-block">
+            <div class="meta-k">记录 / Notes</div>
+            <div class="meta-nums">
+              <span class="stat-num" id="statTotal">00</span>
+              <span class="meta-done"><b id="statDone">00</b> 完成 · <b id="statOpen">00</b> 待办</span>
+            </div>
+            <div class="progress"><span id="progressBar"></span></div>
+            <div class="meta-pct"><span id="progressPct">0%</span> 完成率</div>
+          </div>
+          <div class="meta-block">
+            <div class="meta-k">操作 / Actions</div>
+            <button type="button" class="danger-link" id="delEvent">删除此主事件</button>
+          </div>
+        </div>
+      </section>
+
+      <form class="composer" id="composer" autocomplete="off">
+        <span class="composer-mark" aria-hidden="true">＋</span>
+        <textarea id="composerInput" rows="1" placeholder="写一条便签，回车记录…" aria-label="新便签内容"></textarea>
+        <button type="submit" class="composer-btn">记录</button>
+      </form>
+      <div class="composer-hint">
+        <span>回车 记录</span><span>Shift + 回车 换行</span><span>双击便签 编辑</span><span>N 新建便签</span><span>Ctrl + S 保存</span>
+      </div>
+
+      <div class="notes-head">
+        <div class="notes-label-wrap">
+          <div class="notes-label">记录 / Notes <b id="notesCount">00</b></div>
+          <div class="notes-sub">由主事件引导 · Derived from the main event</div>
+        </div>
+        <div class="notes-tools">
+          <div class="filters" role="group" aria-label="筛选记录">
+            <button type="button" class="filter is-on" data-filter="all">全部</button>
+            <button type="button" class="filter" data-filter="open">未完成</button>
+            <button type="button" class="filter" data-filter="done">已完成</button>
+          </div>
+          <input type="search" class="search" id="searchInput" placeholder="搜索记录…" aria-label="搜索记录">
+        </div>
+      </div>
+      <div class="notes" id="notes"></div>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="foot-note">数据保存在本机浏览器 · 无需联网</div>
+    <div class="foot-actions">
+      <button type="button" class="link" data-act="share" id="shareBtn">手机访问 / 二维码</button>
+      <button type="button" class="link" data-act="cloud" id="cloudBtn">云同步</button>
+      <button type="button" class="link" data-act="export">导出 JSON 备份</button>
+      <button type="button" class="link" data-act="import">导入备份</button>
+      <button type="button" class="link" data-act="markdown">导出 Markdown</button>
+      <button type="button" class="link" data-act="print">打印 / PDF</button>
+    </div>
+    <div class="foot-clock" id="clock">--:--:--</div>
+  </footer>
+</div>
+
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+
+<div class="modal" id="shareModal" hidden>
+  <div class="modal-back" data-share-close></div>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+    <div class="modal-head">
+      <span class="micro" id="shareTitle">手机访问 / Mobile</span>
+      <button type="button" class="modal-x" data-share-close aria-label="关闭">×</button>
+    </div>
+    <div class="qr-box" id="qrBox"></div>
+    <div class="share-url" id="shareUrl">—</div>
+    <button type="button" class="share-copy" id="shareCopy">复制链接</button>
+    <p class="share-tip" id="shareTip">手机和电脑连同一个 Wi-Fi 后，扫码或在浏览器输入上面的地址。打不开时检查电脑防火墙是否放行了 Python；跨网络使用见说明里的 Tailscale 方案。</p>
+    <div class="share-alts" id="shareAlts"></div>
+  </div>
+</div>
+
+<div class="modal" id="cloudModal" hidden>
+  <div class="modal-back" data-cloud-close></div>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="cloudTitle">
+    <div class="modal-head">
+      <span class="micro" id="cloudTitle">云同步 / Cloud Sync</span>
+      <button type="button" class="modal-x" data-cloud-close aria-label="关闭">×</button>
+    </div>
+    <div id="cloudBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var KEY = 'swiss-board.v1';
+  var $ = function (sel, root) { return (root || document).querySelector(sel); };
+  var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
+
+  var storageOK = (function () {
+    try {
+      localStorage.setItem('__sb_probe__', '1');
+      localStorage.removeItem('__sb_probe__');
+      return true;
+    } catch (e) { return false; }
+  })();
+
+  var state = null;
+  var ui = { filter: 'all', search: '', newId: null };
+  var saveTimer = null;
+  var toastTimer = null;
+  var remote = {
+    enabled: false,
+    rev: 0,
+    dirty: false,
+    sending: false,
+    pushAgain: false,
+    online: true,
+    lastSync: 0,
+    timer: null,
+    pollTimer: null
+  };
+  var shareUrls = [];
+  var shareCurrent = '';
+  var hadLocalCache = false;
+  var CLOUD_KEY = 'sb-cloud-v1';
+  var CLOUD_GIST_DESC = 'swiss-board-board-v1';
+  var cloud = {
+    enabled: false,
+    token: '',
+    gistId: '',
+    login: '',
+    base: 'https://api.github.com',
+    etag: null,
+    dirty: false,
+    sending: false,
+    online: true,
+    lastSync: 0,
+    timer: null,
+    pollTimer: null
+  };
+
+  /* ---------------- 工具 ---------------- */
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function pad(n) { n = Number(n) || 0; return n < 10 ? '0' + n : '' + n; }
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+  function dateStamp() {
+    var d = new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+  function stamp(ts) {
+    var d = new Date(ts), now = new Date();
+    var hm = pad(d.getHours()) + ':' + pad(d.getMinutes());
+    if (d.toDateString() === now.toDateString()) return hm;
+    if (d.getFullYear() === now.getFullYear()) return pad(d.getMonth() + 1) + '.' + pad(d.getDate()) + ' ' + hm;
+    return d.getFullYear() + '.' + pad(d.getMonth() + 1) + '.' + pad(d.getDate());
+  }
+  function mastDate() {
+    var d = new Date();
+    var wd = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][d.getDay()];
+    return d.getFullYear() + '.' + pad(d.getMonth() + 1) + '.' + pad(d.getDate()) + ' ' + wd;
+  }
+  function toast(msg) {
+    var el = $('#toast');
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 1900);
+  }
+  function timeHM(d) { return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function setSyncState(kind) {
+    var el = $('#saveState');
+    if (!el) return;
+    var dot = '<span class="dot"></span>';
+    el.classList.remove('is-warn');
+    if (!remote.enabled && !cloud.enabled) {
+      if (kind === 'warn') { el.classList.add('is-warn'); el.innerHTML = dot + '无法保存'; }
+      else el.innerHTML = dot + '本机保存';
+      return;
+    }
+    var cloudOn = cloud.enabled && !remote.enabled;
+    if (kind === 'saving') {
+      el.innerHTML = dot + (cloudOn ? '上云中…' : '同步中…');
+    } else if (kind === 'offline') {
+      el.classList.add('is-warn');
+      el.innerHTML = dot + '离线 · 本机';
+    } else {
+      el.innerHTML = dot + (cloudOn ? '云同步 ' : '已同步 ') + timeHM(new Date());
+    }
+  }
+  function autoGrow(el, min, max) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(Math.max(el.scrollHeight, min), max) + 'px';
+  }
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.max(el.scrollHeight, 72) + 'px';
+  }
+
+  /* ---------------- 数据 ---------------- */
+  function newEvent(title, desc) {
+    return { id: uid(), title: title || '新事件', desc: desc || '', date: todayISO(), createdAt: Date.now(), updatedAt: Date.now() };
+  }
+  function seedState() {
+    var ev = newEvent('开始使用便签板', '一个主事件，从这里引导出下面所有记录。');
+    var now = Date.now();
+    function note(text, done, pinned, offset) {
+      return { id: uid(), eventId: ev.id, text: text, done: !!done, pinned: !!pinned, createdAt: now - offset, updatedAt: now - offset };
+    }
+    return {
+      version: 1,
+      activeEventId: ev.id,
+      events: [ev],
+      notes: [
+        note('在下面的输入框写下第一条便签，按回车记录；双击便签文字可以直接修改。', false, false, 180000),
+        note('左侧每个条目是一个主事件：切换它，下面的记录就跟着切换；点「＋」新建。', false, false, 120000),
+        note('示例：这条便签已经完成，用来展示归档样式。', true, false, 60000),
+        note('所有内容自动保存在本机浏览器；底部可以导出 JSON 备份、打印成 PDF。', false, true, 0)
+      ]
+    };
+  }
+  function normalize() {
+    if (!state || typeof state !== 'object') state = seedState();
+    var events = Array.isArray(state.events) ? state.events : [];
+    var notes = Array.isArray(state.notes) ? state.notes : [];
+    state.events = events.filter(function (e) { return e && e.id; }).map(function (e) {
+      return {
+        id: e.id,
+        title: e.title || '未命名事件',
+        desc: e.desc || '',
+        date: e.date || todayISO(),
+        createdAt: e.createdAt || Date.now(),
+        updatedAt: e.updatedAt || Date.now()
+      };
+    });
+    state.notes = notes.filter(function (n) { return n && n.id && typeof n.text === 'string'; }).map(function (n) {
+      return {
+        id: n.id,
+        eventId: n.eventId,
+        text: n.text,
+        done: !!n.done,
+        pinned: !!n.pinned,
+        createdAt: n.createdAt || Date.now(),
+        updatedAt: n.updatedAt || n.createdAt || Date.now()
+      };
+    });
+    if (!state.events.length) state.events.push(newEvent('新事件', ''));
+    var ids = {};
+    state.events.forEach(function (e) { ids[e.id] = true; });
+    state.notes = state.notes.filter(function (n) { return ids[n.eventId]; });
+    if (!ids[state.activeEventId]) state.activeEventId = state.events[0].id;
+    if (!state.tombstones || typeof state.tombstones !== 'object') state.tombstones = { events: {}, notes: {} };
+    if (!state.tombstones.events || typeof state.tombstones.events !== 'object') state.tombstones.events = {};
+    if (!state.tombstones.notes || typeof state.tombstones.notes !== 'object') state.tombstones.notes = {};
+    var cutoff = Date.now() - 30 * 24 * 3600 * 1000;
+    ['events', 'notes'].forEach(function (kind) {
+      var grave = state.tombstones[kind];
+      for (var id in grave) {
+        if (!Object.prototype.hasOwnProperty.call(grave, id)) continue;
+        if (!(Number(grave[id]) > cutoff)) delete grave[id];
+      }
+    });
+    state.version = 1;
+  }
+  function load() {
+    if (!storageOK) return seedState();
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return seedState();
+      var data = JSON.parse(raw);
+      if (!data || !Array.isArray(data.events) || !Array.isArray(data.notes)) return seedState();
+      hadLocalCache = true;
+      return data;
+    } catch (e) { return seedState(); }
+  }
+  function cacheLocal() {
+    if (!storageOK) return false;
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+      return true;
+    } catch (e) {
+      storageOK = false;
+      return false;
+    }
+  }
+  function save() {
+    cacheLocal();
+    if (remote.enabled) {
+      remote.dirty = true;
+      setSyncState(remote.online ? 'saving' : 'offline');
+      schedulePush(350);
+      return;
+    }
+    if (cloud.enabled) {
+      cloud.dirty = true;
+      setSyncState(cloud.online ? 'saving' : 'offline');
+      scheduleCloudPush(600);
+      return;
+    }
+    if (!storageOK) { setSyncState('warn'); return; }
+    setSyncState('local');
+  }
+  function saveSoon() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(save, 260);
+  }
+  function activeEvent() {
+    var ev = null, i;
+    for (i = 0; i < state.events.length; i++) {
+      if (state.events[i].id === state.activeEventId) { ev = state.events[i]; break; }
+    }
+    if (!ev) { ev = state.events[0]; state.activeEventId = ev.id; }
+    return ev;
+  }
+  function updateDocTitle() {
+    var ev = activeEvent();
+    document.title = (ev.title || '便签板') + ' — 便签板';
+  }
+
+  /* ---------------- 多端同步（局域网服务） ---------------- */
+  function schedulePush(delay) {
+    clearTimeout(remote.timer);
+    remote.timer = setTimeout(pushState, delay);
+  }
+
+  function isEditingNow() {
+    var ae = document.activeElement;
+    if (!ae) return false;
+    var id = ae.id || '';
+    if (id === 'heroTitle' || id === 'heroDesc') return true;
+    if (ae.classList && ae.classList.contains('note-edit')) return true;
+    return false;
+  }
+
+  function mergeStates(a, b) {
+    a = (a && typeof a === 'object') ? a : {};
+    b = (b && typeof b === 'object') ? b : {};
+    var tombstones = { events: {}, notes: {} };
+    [a.tombstones, b.tombstones].forEach(function (t) {
+      if (!t || typeof t !== 'object') return;
+      ['events', 'notes'].forEach(function (kind) {
+        var src = t[kind];
+        if (!src || typeof src !== 'object') return;
+        for (var id in src) {
+          if (!Object.prototype.hasOwnProperty.call(src, id)) continue;
+          var ts = Number(src[id]) || 0;
+          if (!tombstones[kind][id] || ts > tombstones[kind][id]) tombstones[kind][id] = ts;
+        }
+      });
+    });
+
+    function pickNewer(listA, listB, kind) {
+      var map = {};
+      [listA, listB].forEach(function (list) {
+        if (!Array.isArray(list)) return;
+        list.forEach(function (item) {
+          if (!item || !item.id) return;
+          var cur = map[item.id];
+          if (!cur || (Number(item.updatedAt) || 0) > (Number(cur.updatedAt) || 0)) map[item.id] = item;
+        });
+      });
+      var out = [];
+      for (var id in map) {
+        if (!Object.prototype.hasOwnProperty.call(map, id)) continue;
+        var item = map[id];
+        var grave = tombstones[kind][id];
+        if (grave && grave >= (Number(item.updatedAt) || 0)) continue;
+        out.push(item);
+      }
+      return out;
+    }
+
+    var events = pickNewer(a.events, b.events, 'events');
+    var ids = {};
+    events.forEach(function (e) { ids[e.id] = true; });
+    var notes = pickNewer(a.notes, b.notes, 'notes').filter(function (n) {
+      return n && ids[n.eventId];
+    });
+    var prefer = null;
+    if (b.activeEventId && ids[b.activeEventId]) prefer = b.activeEventId;
+    else if (a.activeEventId && ids[a.activeEventId]) prefer = a.activeEventId;
+    else if (events.length) prefer = events[0].id;
+    return {
+      version: 1,
+      activeEventId: prefer,
+      events: events,
+      notes: notes,
+      tombstones: tombstones
+    };
+  }
+
+  function pushState() {
+    if (!remote.enabled) return;
+    if (remote.sending) { remote.pushAgain = true; return; }
+    remote.sending = true;
+    var snapshot = JSON.stringify(state);
+    fetch('api/state', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rev: remote.rev, state: state }),
+      cache: 'no-store'
+    }).then(function (res) {
+      return res.json().catch(function () { return null; }).then(function (body) {
+        return { status: res.status, body: body };
+      });
+    }).then(function (r) {
+      var d = r.body;
+      if (r.status === 409 && d && d.state && typeof d.rev === 'number') {
+        state = mergeStates(d.state, state);
+        normalize();
+        remote.rev = d.rev;
+        remote.dirty = true;
+        cacheLocal();
+        renderAll();
+        setSyncState('saving');
+        schedulePush(150);
+        return;
+      }
+      if (!d || d.ok !== true) throw new Error('bad response');
+      remote.rev = Number(d.rev) || remote.rev;
+      remote.lastSync = Date.now();
+      remote.online = true;
+      var unchanged = (snapshot === JSON.stringify(state));
+      remote.dirty = !unchanged;
+      setSyncState('synced');
+      if (remote.dirty || remote.pushAgain) {
+        remote.pushAgain = false;
+        schedulePush(250);
+      }
+    }).catch(function () {
+      remote.online = false;
+      remote.dirty = true;
+      setSyncState('offline');
+      schedulePush(4000);
+    }).then(function () {
+      remote.sending = false;
+    });
+  }
+
+  function pollState() {
+    if (!remote.enabled || document.hidden) return;
+    fetch('api/state?rev=' + remote.rev, { cache: 'no-store' }).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }).then(function (d) {
+      if (!d || d.ok !== true) return;
+      var wasOffline = !remote.online;
+      remote.online = true;
+      if ((typeof d.rev === 'number' && d.rev === remote.rev) || d.notModified) {
+        if (wasOffline) setSyncState('synced');
+        if (remote.dirty && !remote.sending) schedulePush(150);
+        return;
+      }
+      if (!d.state || !Array.isArray(d.state.events) || !Array.isArray(d.state.notes)) return;
+      if (!remote.dirty && !remote.sending && !isEditingNow()) {
+        remote.rev = d.rev;
+        applyRemoteState(d.state);
+      } else if (remote.dirty && !remote.sending) {
+        schedulePush(150);
+      }
+    }).catch(function () {
+      if (remote.online) {
+        remote.online = false;
+        setSyncState('offline');
+      }
+    });
+  }
+
+  function applyRemoteState(serverState) {
+    if (!serverState || !Array.isArray(serverState.events) || !Array.isArray(serverState.notes)) return;
+    var merged = mergeStates(serverState, state);
+    if (JSON.stringify(merged) === JSON.stringify(state)) return;
+    state = merged;
+    normalize();
+    cacheLocal();
+    renderAll();
+    setSyncState('synced');
+    if (JSON.stringify(state) !== JSON.stringify(serverState)) {
+      syncMarkDirty(400);
+    }
+  }
+
+  function syncMarkDirty(delay) {
+    if (remote.enabled) {
+      remote.dirty = true;
+      schedulePush(delay);
+    } else if (cloud.enabled) {
+      cloud.dirty = true;
+      scheduleCloudPush(delay);
+    }
+  }
+
+  function startPolling() {
+    clearInterval(remote.pollTimer);
+    remote.pollTimer = setInterval(pollState, 1800);
+  }
+
+  function enablePwa() {
+    try {
+      var head = document.head;
+      if (!head.querySelector('link[rel="manifest"]')) {
+        var man = document.createElement('link');
+        man.rel = 'manifest';
+        man.href = 'manifest.webmanifest';
+        head.appendChild(man);
+      }
+      if (!head.querySelector('link[rel="apple-touch-icon"]')) {
+        var apple = document.createElement('link');
+        apple.rel = 'apple-touch-icon';
+        apple.href = 'icon-192.png';
+        head.appendChild(apple);
+      }
+      if (!head.querySelector('meta[name="theme-color"]')) {
+        var m1 = document.createElement('meta');
+        m1.name = 'theme-color';
+        m1.content = '#ECEAE3';
+        head.appendChild(m1);
+      }
+      if (!head.querySelector('meta[name="apple-mobile-web-app-capable"]')) {
+        var m2 = document.createElement('meta');
+        m2.name = 'apple-mobile-web-app-capable';
+        m2.content = 'yes';
+        head.appendChild(m2);
+        var m3 = document.createElement('meta');
+        m3.name = 'apple-mobile-web-app-status-bar-style';
+        m3.content = 'default';
+        head.appendChild(m3);
+      }
+    } catch (e) {}
+  }
+
+  function detectRemote() {
+    if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+    fetch('api/state', { cache: 'no-store' }).then(function (res) {
+      if (!res.ok) {
+        var httpError = new Error('HTTP ' + res.status);
+        httpError.http = res.status;
+        throw httpError;
+      }
+      return res.json().catch(function () {
+        var parseError = new Error('not a swiss-board server');
+        parseError.http = 0;
+        throw parseError;
+      });
+    }).then(function (d) {
+      if (!d || d.ok !== true || !d.state) {
+        var payloadError = new Error('not a swiss-board server');
+        payloadError.http = 0;
+        throw payloadError;
+      }
+      remote.enabled = true;
+      remote.online = true;
+      remote.rev = Number(d.rev) || 0;
+      document.body.classList.add('has-sync');
+      enablePwa();
+      var serverEmpty = !Array.isArray(d.state.events) || d.state.events.length === 0;
+      if (serverEmpty) {
+        remote.dirty = true;
+        setSyncState('saving');
+        schedulePush(60);
+      } else {
+        state = hadLocalCache ? mergeStates(d.state, state) : d.state;
+        normalize();
+        cacheLocal();
+        renderAll();
+        setSyncState('synced');
+        if (JSON.stringify(state) !== JSON.stringify(d.state)) {
+          remote.dirty = true;
+          schedulePush(120);
+        }
+      }
+      startPolling();
+      maybeOfferShare();
+    }).catch(function (err) {
+      remote.enabled = false;
+      if (err && typeof err.http === 'number') {
+        startCloudFromConfig();
+      } else {
+        setTimeout(detectRemote, 6000);
+      }
+    });
+  }
+
+  function maybeOfferShare() {
+    try {
+      var flag = 'sb-share-hint-v1';
+      if (localStorage.getItem(flag) === '1') return;
+      localStorage.setItem(flag, '1');
+      toast('局域网同步已开启 · 底部「手机访问」可扫码连手机');
+    } catch (e) {}
+  }
+
+  /* ---------------- 云同步（GitHub 私有 Gist） ---------------- */
+  function cloudSetBase(base) {
+    var override = (typeof window.__SB_GH_BASE__ === 'string' && window.__SB_GH_BASE__) ? window.__SB_GH_BASE__ : '';
+    cloud.base = base || override || 'https://api.github.com';
+  }
+  function ghRequest(path, opts) {
+    opts = opts || {};
+    var headers = {
+      'Authorization': 'Bearer ' + cloud.token,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+    if (opts.headers) {
+      for (var key in opts.headers) {
+        if (Object.prototype.hasOwnProperty.call(opts.headers, key)) headers[key] = opts.headers[key];
+      }
+    }
+    var init = { method: opts.method || 'GET', headers: headers, cache: 'no-store' };
+    if (opts.body !== undefined) init.body = JSON.stringify(opts.body);
+    return fetch(cloud.base + path, init).then(function (res) {
+      return res.text().then(function (text) {
+        var json = null;
+        if (text) { try { json = JSON.parse(text); } catch (e) {} }
+        return { status: res.status, headers: res.headers, json: json };
+      });
+    });
+  }
+  function gistState(json) {
+    try {
+      var file = json && json.files && json.files['board.json'];
+      if (!file || typeof file.content !== 'string') return null;
+      var data = JSON.parse(file.content);
+      if (data && Array.isArray(data.events) && Array.isArray(data.notes)) return data;
+    } catch (e) {}
+    return null;
+  }
+  function boardJson(wrapper) {
+    var s = wrapper || {};
+    return JSON.stringify({ e: s.events || [], n: s.notes || [], t: s.tombstones || {} });
+  }
+  function readCloudConfig() {
+    if (!storageOK) return null;
+    try {
+      var raw = localStorage.getItem(CLOUD_KEY);
+      if (!raw) return null;
+      var cfg = JSON.parse(raw);
+      if (!cfg || typeof cfg.token !== 'string' || !cfg.token) return null;
+      return cfg;
+    } catch (e) { return null; }
+  }
+  function writeCloudConfig(cfg) {
+    if (!storageOK) return;
+    try { localStorage.setItem(CLOUD_KEY, JSON.stringify(cfg)); } catch (e) {}
+  }
+  function clearCloudConfig() {
+    try { localStorage.removeItem(CLOUD_KEY); } catch (e) {}
+  }
+  function b64urlEncode(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = '';
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  function b64urlDecode(str) {
+    var s = String(str).replace(/-/g, '+').replace(/_/g, '/');
+    while (s.length % 4) s += '=';
+    var bin = atob(s);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+  function cloudJoinUrl() {
+    var cfg = { t: cloud.token, g: cloud.gistId, l: cloud.login || '' };
+    var override = (typeof window.__SB_GH_BASE__ === 'string' && window.__SB_GH_BASE__) ? window.__SB_GH_BASE__ : '';
+    if (override) cfg.b = override;
+    else if (cloud.base && cloud.base !== 'https://api.github.com') cfg.b = cloud.base;
+    return location.origin + location.pathname + '#cfg=' + b64urlEncode(JSON.stringify(cfg));
+  }
+  function consumeJoinLink() {
+    var match = (location.hash || '').match(/#?cfg=([A-Za-z0-9_-]+)/);
+    if (!match) return null;
+    var cfg = null;
+    try {
+      var payload = JSON.parse(b64urlDecode(match[1]));
+      if (payload && payload.t && payload.g) {
+        cfg = { token: payload.t, gistId: payload.g, login: payload.l || '' };
+        if (payload.b) cfg.base = payload.b;
+      }
+    } catch (e) { cfg = null; }
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    if (cfg) {
+      writeCloudConfig(cfg);
+      toast('已导入云同步配置');
+    }
+    return cfg;
+  }
+  function startCloudFromConfig() {
+    if (remote.enabled || cloud.enabled) return;
+    var cfg = readCloudConfig();
+    if (cfg) { startCloud(cfg, true); return; }
+    if (location.protocol === 'http:' || location.protocol === 'https:') {
+      try {
+        if (localStorage.getItem('sb-cloud-hint-v1') !== '1') {
+          localStorage.setItem('sb-cloud-hint-v1', '1');
+          toast('底部「云同步」可连 GitHub，电脑关机后手机也能用');
+        }
+      } catch (e) {}
+    }
+  }
+  function startCloud(cfg, silent) {
+    if (!cfg || !cfg.token) return;
+    if (remote.enabled) { toast('当前正在使用局域网同步'); return; }
+    cloud.token = cfg.token;
+    cloudSetBase(cfg.base);
+    cloud.gistId = cfg.gistId || '';
+    cloud.login = cfg.login || '';
+    cloud.enabled = true;
+    cloud.online = true;
+    cloud.etag = null;
+    cloud.dirty = false;
+    document.body.classList.add('has-cloud');
+    enablePwa();
+    setSyncState('saving');
+    if (cloud.gistId) {
+      loadCloudGist(silent);
+    } else {
+      cloudConnectToken(cloud.token).then(function () {
+        loadCloudGist(silent);
+      }).catch(function (err) {
+        cloudFail(err && err.message ? err.message : '云同步连接失败');
+      });
+    }
+    if (!silent) toast('云同步已开启');
+  }
+  function cloudConnectToken(token) {
+    cloud.token = token;
+    cloudSetBase();
+    return ghRequest('/user').then(function (r) {
+      if (r.status === 401) throw new Error('Token 无效或已过期');
+      if (r.status !== 200 || !r.json || !r.json.login) throw new Error('连接 GitHub 失败');
+      cloud.login = r.json.login;
+      return ghRequest('/gists?per_page=100');
+    }).then(function (r) {
+      if (r.status === 401) throw new Error('Token 无效或已过期');
+      if (r.status !== 200) throw new Error('读取 Gist 列表失败');
+      var list = Array.isArray(r.json) ? r.json : [];
+      for (var i = 0; i < list.length; i++) {
+        var gist = list[i];
+        if (gist && typeof gist.description === 'string' && gist.description.indexOf('swiss-board') === 0
+          && gist.files && gist.files['board.json']) {
+          cloud.gistId = gist.id;
+          break;
+        }
+      }
+      if (cloud.gistId) return null;
+      return ghRequest('/gists', {
+        method: 'POST',
+        body: {
+          description: CLOUD_GIST_DESC,
+          public: false,
+          files: { 'board.json': { content: JSON.stringify(state) } }
+        }
+      }).then(function (created) {
+        if (created.status !== 201 || !created.json || !created.json.id) throw new Error('创建 Gist 失败');
+        cloud.gistId = created.json.id;
+      });
+    }).then(function () {
+      writeCloudConfig({
+        token: cloud.token,
+        gistId: cloud.gistId,
+        login: cloud.login,
+        base: (cloud.base && cloud.base !== 'https://api.github.com') ? cloud.base : undefined
+      });
+    });
+  }
+  function cloudFail(message) {
+    clearInterval(cloud.pollTimer);
+    clearTimeout(cloud.timer);
+    cloud.enabled = false;
+    cloud.dirty = false;
+    cloud.sending = false;
+    document.body.classList.remove('has-cloud');
+    setSyncState('warn');
+    toast(message || '云同步出错，请重新连接');
+    if ($('#cloudModal') && !$('#cloudModal').hidden) renderCloudBody();
+  }
+  function startCloudPolling() {
+    clearInterval(cloud.pollTimer);
+    cloud.pollTimer = setInterval(gistPoll, 6000);
+  }
+  function loadCloudGist(silent) {
+    ghRequest('/gists/' + cloud.gistId).then(function (r) {
+      if (r.status === 404) throw new Error('云端 Gist 不存在或已被删除');
+      if (r.status === 401 || r.status === 403) throw new Error('Token 没有访问这个 Gist 的权限');
+      if (r.status !== 200) throw new Error('读取云端数据失败');
+      var remoteState = gistState(r.json);
+      cloud.etag = r.headers.get('ETag') || null;
+      cloud.online = true;
+      if (!remoteState) {
+        cloud.dirty = true;
+        setSyncState('saving');
+        scheduleCloudPush(60);
+        startCloudPolling();
+        return;
+      }
+      if (hadLocalCache) {
+        state = mergeStates(remoteState, state);
+        normalize();
+        cacheLocal();
+        renderAll();
+        if (boardJson(state) !== boardJson(remoteState)) {
+          cloud.dirty = true;
+          scheduleCloudPush(200);
+        } else {
+          cloud.dirty = false;
+        }
+      } else {
+        state = remoteState;
+        normalize();
+        cacheLocal();
+        renderAll();
+        cloud.dirty = false;
+      }
+      setSyncState('synced');
+      startCloudPolling();
+    }).catch(function (err) {
+      cloudFail(err && err.message ? err.message : '读取云端数据失败');
+    });
+  }
+  function scheduleCloudPush(delay) {
+    clearTimeout(cloud.timer);
+    cloud.timer = setTimeout(gistPush, delay);
+  }
+  function gistPoll() {
+    if (!cloud.enabled || document.hidden) return;
+    var headers = {};
+    if (cloud.etag) headers['If-None-Match'] = cloud.etag;
+    ghRequest('/gists/' + cloud.gistId, { headers: headers }).then(function (r) {
+      if (r.status === 304) {
+        cloud.online = true;
+        if (cloud.dirty && !cloud.sending) scheduleCloudPush(150);
+        else setSyncState('synced');
+        return;
+      }
+      if (r.status === 401 || r.status === 403) { cloudFail('Token 失效或没有权限'); return; }
+      if (r.status === 404) { cloudFail('云端 Gist 不存在或已被删除'); return; }
+      if (r.status !== 200) return;
+      var remoteState = gistState(r.json);
+      var etag = r.headers.get('ETag') || null;
+      cloud.online = true;
+      if (!remoteState) return;
+      if (cloud.dirty || cloud.sending || isEditingNow()) {
+        if (cloud.dirty && !cloud.sending) scheduleCloudPush(150);
+        return;
+      }
+      var merged = mergeStates(remoteState, state);
+      if (boardJson(merged) !== boardJson(state)) {
+        state = merged;
+        normalize();
+        cacheLocal();
+        renderAll();
+      }
+      cloud.etag = etag;
+      cloud.lastSync = Date.now();
+      setSyncState('synced');
+      if (boardJson(state) !== boardJson(remoteState)) {
+        cloud.dirty = true;
+        scheduleCloudPush(300);
+      }
+    }).catch(function () {
+      if (cloud.online) {
+        cloud.online = false;
+        setSyncState('offline');
+      }
+    });
+  }
+  function gistPush() {
+    if (!cloud.enabled) return;
+    if (cloud.sending) return;
+    cloud.sending = true;
+    cloud.dirty = false;
+    ghRequest('/gists/' + cloud.gistId).then(function (r) {
+      if (r.status === 401 || r.status === 403) throw new Error('Token 失效或没有权限');
+      if (r.status === 404) throw new Error('云端 Gist 不存在或已被删除');
+      if (r.status !== 200) throw new Error('读取云端数据失败');
+      var remoteState = gistState(r.json);
+      if (remoteState) {
+        var merged = mergeStates(remoteState, state);
+        if (boardJson(merged) !== boardJson(state)) {
+          state = merged;
+          normalize();
+          cacheLocal();
+          renderAll();
+        }
+      }
+      cloud.etag = r.headers.get('ETag') || null;
+      var snapshot = JSON.stringify(state);
+      return ghRequest('/gists/' + cloud.gistId, {
+        method: 'PATCH',
+        body: { files: { 'board.json': { content: snapshot } } }
+      }).then(function (w) {
+        if (w.status === 401 || w.status === 403) throw new Error('Token 失效或没有权限');
+        if (w.status === 404) throw new Error('云端 Gist 不存在或已被删除');
+        if (w.status !== 200) throw new Error('写入云端数据失败');
+        cloud.etag = w.headers.get('ETag') || cloud.etag;
+        cloud.lastSync = Date.now();
+        cloud.online = true;
+        if (JSON.stringify(state) !== snapshot) cloud.dirty = true;
+        setSyncState('synced');
+        if (cloud.dirty) scheduleCloudPush(250);
+      });
+    }).catch(function (err) {
+      cloud.dirty = true;
+      if (err && err.message && /Token|Gist|权限/.test(err.message)) {
+        cloudFail(err.message);
+      } else {
+        cloud.online = false;
+        setSyncState('offline');
+        scheduleCloudPush(8000);
+      }
+    }).then(function () {
+      cloud.sending = false;
+    });
+  }
+  function openCloud() {
+    if (remote.enabled) { toast('当前正在使用局域网同步，云同步不需要开启'); return; }
+    var modal = $('#cloudModal');
+    if (!modal) return;
+    renderCloudBody();
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCloud() {
+    var modal = $('#cloudModal');
+    if (!modal) return;
+    modal.hidden = true;
+    document.body.style.overflow = '';
+  }
+  function renderCloudBody() {
+    var body = $('#cloudBody');
+    if (!body) return;
+    body.innerHTML = '';
+    if (cloud.enabled) {
+      var row1 = document.createElement('div');
+      row1.className = 'cloud-row';
+      row1.innerHTML = '<span class="cloud-k">账号</span><span class="cloud-v"></span>';
+      row1.querySelector('.cloud-v').textContent = cloud.login ? ('@' + cloud.login) : '—';
+      var row2 = document.createElement('div');
+      row2.className = 'cloud-row';
+      row2.innerHTML = '<span class="cloud-k">Gist</span><span class="cloud-v"></span>';
+      row2.querySelector('.cloud-v').textContent = cloud.gistId ? (cloud.gistId.slice(0, 10) + '…') : '—';
+      var note = document.createElement('p');
+      note.className = 'cloud-note';
+      note.textContent = '数据存在你的私有 Gist 里，网页本身不含数据。手机打开同一个网址即可同步，电脑关机也能用。';
+      var share = document.createElement('button');
+      share.type = 'button';
+      share.className = 'cloud-btn';
+      share.textContent = '生成手机加入二维码';
+      share.addEventListener('click', function () { closeCloud(); openShare(); });
+      var off = document.createElement('button');
+      off.type = 'button';
+      off.className = 'cloud-link danger';
+      off.textContent = '断开云同步';
+      off.addEventListener('click', function () {
+        if (!window.confirm('断开后本机数据保留，但不再与云端同步。确定？')) return;
+        clearCloudConfig();
+        cloud.enabled = false;
+        cloud.dirty = false;
+        clearInterval(cloud.pollTimer);
+        clearTimeout(cloud.timer);
+        document.body.classList.remove('has-cloud');
+        closeCloud();
+        setSyncState('local');
+        toast('已断开云同步');
+      });
+      body.appendChild(row1);
+      body.appendChild(row2);
+      body.appendChild(note);
+      body.appendChild(share);
+      body.appendChild(off);
+      return;
+    }
+    var intro = document.createElement('p');
+    intro.className = 'cloud-note';
+    intro.textContent = '手机、电脑都联网就能同步，电脑关机也不影响。数据存在你自己的 GitHub 私有 Gist 里，只需要一个只带 gist 权限的 Token。';
+    var step = document.createElement('p');
+    step.className = 'cloud-note';
+    step.innerHTML = '1) 打开 <a href="https://github.com/settings/tokens/new?scopes=gist&description=swiss-board" target="_blank" rel="noopener">github.com/settings/tokens/new</a>（已帮你勾好 gist）<br>2) 生成并复制 Token（只显示一次）<br>3) 粘贴到下面，点「连接」';
+    var input = document.createElement('input');
+    input.type = 'password';
+    input.className = 'cloud-input';
+    input.placeholder = '粘贴 GitHub Token';
+    input.autocomplete = 'off';
+    var err = document.createElement('div');
+    err.className = 'cloud-err';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'cloud-btn';
+    btn.textContent = '连接 GitHub';
+    btn.addEventListener('click', function () { connectCloud(input.value.trim(), btn, err); });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); connectCloud(input.value.trim(), btn, err); }
+    });
+    body.appendChild(intro);
+    body.appendChild(step);
+    body.appendChild(input);
+    body.appendChild(err);
+    body.appendChild(btn);
+  }
+  function connectCloud(token, btn, errEl) {
+    if (!token) { errEl.textContent = '请先粘贴 GitHub Token'; return; }
+    btn.disabled = true;
+    btn.textContent = '连接中…';
+    errEl.textContent = '';
+    cloud.enabled = true;
+    cloudSetBase();
+    cloudConnectToken(token).then(function () {
+      document.body.classList.add('has-cloud');
+      enablePwa();
+      closeCloud();
+      toast('云同步已连接');
+      loadCloudGist(true);
+    }).catch(function (err) {
+      cloud.enabled = false;
+      document.body.classList.remove('has-cloud');
+      btn.disabled = false;
+      btn.textContent = '连接 GitHub';
+      errEl.textContent = (err && err.message) ? err.message : '连接失败';
+    });
+  }
+
+  /* ---------------- 渲染 ---------------- */
+  function renderRail() {
+    var list = $('#eventList');
+    var frag = document.createDocumentFragment();
+    state.events.forEach(function (ev, i) {
+      var evNotes = state.notes.filter(function (n) { return n.eventId === ev.id; });
+      var evDone = evNotes.filter(function (n) { return n.done; }).length;
+
+      var li = document.createElement('li');
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'event-item' + (ev.id === state.activeEventId ? ' is-active' : '');
+      btn.setAttribute('data-event', ev.id);
+
+      var idx = document.createElement('span');
+      idx.className = 'e-idx';
+      idx.textContent = pad(i + 1);
+
+      var body = document.createElement('span');
+      body.className = 'e-body';
+      var title = document.createElement('span');
+      title.className = 'e-title';
+      title.textContent = ev.title || '未命名事件';
+      var meta = document.createElement('span');
+      meta.className = 'e-meta';
+      meta.textContent = pad(evNotes.length) + ' 条 · ' + pad(evDone) + ' 完成';
+
+      body.appendChild(title);
+      body.appendChild(meta);
+      btn.appendChild(idx);
+      btn.appendChild(body);
+      li.appendChild(btn);
+      frag.appendChild(li);
+    });
+    list.innerHTML = '';
+    list.appendChild(frag);
+  }
+
+  function renderHero() {
+    var ev = activeEvent();
+    var idx = 0, i;
+    for (i = 0; i < state.events.length; i++) {
+      if (state.events[i].id === ev.id) { idx = i; break; }
+    }
+    $('#heroIdx').textContent = pad(idx + 1);
+    $('#heroTitle').textContent = ev.title || '';
+    $('#heroDesc').textContent = ev.desc || '';
+    $('#eventDate').value = ev.date || todayISO();
+    updateDocTitle();
+  }
+
+  function noteCard(n, number) {
+    var card = document.createElement('article');
+    card.className = 'note'
+      + (n.pinned ? ' is-pinned' : '')
+      + (n.done ? ' is-done' : '')
+      + (ui.newId === n.id ? ' is-new' : '');
+    card.setAttribute('data-id', n.id);
+
+    var top = document.createElement('div');
+    top.className = 'note-top';
+    var num = document.createElement('span');
+    num.className = 'n-num';
+    num.textContent = pad(number);
+    var time = document.createElement('span');
+    time.className = 'n-time';
+    time.textContent = stamp(n.createdAt);
+    top.appendChild(num);
+    top.appendChild(time);
+
+    var text = document.createElement('p');
+    text.className = 'note-text';
+    text.textContent = n.text;
+    text.title = '双击编辑';
+    text.addEventListener('dblclick', function () { startEdit(n, card); });
+
+    var foot = document.createElement('div');
+    foot.className = 'note-foot';
+
+    var toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'toggle';
+    toggle.setAttribute('aria-pressed', n.done ? 'true' : 'false');
+    toggle.innerHTML = '<span class="tick"></span><span>' + (n.done ? '已完成' : '完成') + '</span>';
+    toggle.addEventListener('click', function () {
+      n.done = !n.done;
+      n.updatedAt = Date.now();
+      save();
+      refresh();
+    });
+
+    var acts = document.createElement('div');
+    acts.className = 'acts';
+
+    var edit = document.createElement('button');
+    edit.type = 'button';
+    edit.className = 'act';
+    edit.textContent = '编辑';
+    edit.addEventListener('click', function () { startEdit(n, card); });
+
+    var pin = document.createElement('button');
+    pin.type = 'button';
+    pin.className = 'act' + (n.pinned ? ' is-on' : '');
+    pin.textContent = n.pinned ? '取消置顶' : '置顶';
+    pin.addEventListener('click', function () {
+      n.pinned = !n.pinned;
+      n.updatedAt = Date.now();
+      save();
+      refresh();
+    });
+
+    var del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'act del';
+    del.textContent = '删除';
+    del.addEventListener('click', function () {
+      state.tombstones.notes[n.id] = Date.now();
+      state.notes = state.notes.filter(function (x) { return x.id !== n.id; });
+      save();
+      refresh();
+      toast('已删除便签');
+    });
+
+    acts.appendChild(edit);
+    acts.appendChild(pin);
+    acts.appendChild(del);
+    foot.appendChild(toggle);
+    foot.appendChild(acts);
+    card.appendChild(top);
+    card.appendChild(text);
+    card.appendChild(foot);
+    return card;
+  }
+
+  function renderNotes() {
+    var ev = activeEvent();
+    var all = state.notes.filter(function (n) { return n.eventId === ev.id; });
+    all.sort(function (a, b) {
+      var pa = a.pinned ? 1 : 0, pb = b.pinned ? 1 : 0;
+      if (pa !== pb) return pb - pa;
+      return b.createdAt - a.createdAt;
+    });
+    var q = ui.search.trim().toLowerCase();
+    var shown = all.filter(function (n) {
+      if (ui.filter === 'open' && n.done) return false;
+      if (ui.filter === 'done' && !n.done) return false;
+      if (q && n.text.toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+
+    var box = $('#notes');
+    box.innerHTML = '';
+    if (!shown.length) {
+      var empty = document.createElement('div');
+      empty.className = 'empty';
+      var numEl = document.createElement('div');
+      numEl.className = 'empty-num';
+      numEl.textContent = '00';
+      var msg = document.createElement('p');
+      if (all.length && q) msg.textContent = '没有匹配「' + ui.search.trim() + '」的记录。';
+      else if (all.length && ui.filter === 'done') msg.textContent = '还没有完成的记录。';
+      else if (all.length && ui.filter === 'open') msg.textContent = '没有未完成的记录。';
+      else msg.textContent = '还没有记录。在上面的输入框写下第一条便签。';
+      empty.appendChild(numEl);
+      empty.appendChild(msg);
+      box.appendChild(empty);
+    } else {
+      var frag = document.createDocumentFragment();
+      shown.forEach(function (n) {
+        frag.appendChild(noteCard(n, all.indexOf(n) + 1));
+      });
+      box.appendChild(frag);
+    }
+    $('#notesCount').textContent = shown.length === all.length
+      ? pad(all.length)
+      : pad(shown.length) + ' / ' + pad(all.length);
+  }
+
+  function renderStats() {
+    var ev = activeEvent();
+    var list = state.notes.filter(function (n) { return n.eventId === ev.id; });
+    var done = list.filter(function (n) { return n.done; }).length;
+    var total = list.length;
+    var open = total - done;
+    var pct = total ? Math.round(done / total * 100) : 0;
+    $('#statTotal').textContent = pad(total);
+    $('#statDone').textContent = pad(done);
+    $('#statOpen').textContent = pad(open);
+    $('#progressBar').style.width = pct + '%';
+    $('#progressPct').textContent = pct + '%';
+    $('#railEvents').textContent = pad(state.events.length);
+    $('#railNotes').textContent = pad(state.notes.length);
+    $('#railDone').textContent = pad(state.notes.filter(function (n) { return n.done; }).length);
+  }
+
+  function renderAll() {
+    renderHero();
+    renderRail();
+    renderNotes();
+    renderStats();
+  }
+  function refresh() {
+    renderRail();
+    renderNotes();
+    renderStats();
+  }
+  function syncFilters() {
+    $$('.filter').forEach(function (b) {
+      b.classList.toggle('is-on', b.getAttribute('data-filter') === ui.filter);
+    });
+  }
+  function updateRailTitle(ev) {
+    var items = $$('#eventList .event-item');
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].getAttribute('data-event') === ev.id) {
+        var t = items[i].querySelector('.e-title');
+        if (t) t.textContent = ev.title || '未命名事件';
+        break;
+      }
+    }
+  }
+
+  /* ---------------- 便签编辑 ---------------- */
+  function startEdit(n, card) {
+    if (card.querySelector('.note-edit')) return;
+    var body = card.querySelector('.note-text');
+    if (!body) return;
+    var ta = document.createElement('textarea');
+    ta.className = 'note-edit';
+    ta.value = n.text;
+    ta.rows = 3;
+    body.parentNode.replaceChild(ta, body);
+    autoResize(ta);
+    ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
+    ta.addEventListener('input', function () { autoResize(ta); });
+
+    var closed = false;
+    function finish(commit) {
+      if (closed) return;
+      closed = true;
+      var val = ta.value.trim();
+      if (commit && val && val !== n.text) {
+        n.text = val;
+        n.updatedAt = Date.now();
+        save();
+      }
+      refresh();
+    }
+    ta.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); finish(true); }
+      else if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+    });
+    ta.addEventListener('blur', function () { finish(true); });
+  }
+
+  /* ---------------- 主事件操作 ---------------- */
+  function addNote() {
+    var input = $('#composerInput');
+    var text = input.value.trim();
+    if (!text) { input.focus(); return; }
+    if (ui.filter !== 'all') { ui.filter = 'all'; syncFilters(); }
+    var ev = activeEvent();
+    var n = {
+      id: uid(), eventId: ev.id, text: text,
+      done: false, pinned: false,
+      createdAt: Date.now(), updatedAt: Date.now()
+    };
+    state.notes.push(n);
+    ui.newId = n.id;
+    input.value = '';
+    autoGrow(input, 38, 168);
+    save();
+    refresh();
+    input.focus();
+    setTimeout(function () { ui.newId = null; }, 700);
+  }
+
+  function addEvent() {
+    var ev = newEvent('新事件', '');
+    state.events.unshift(ev);
+    state.activeEventId = ev.id;
+    ui.filter = 'all';
+    ui.search = '';
+    $('#searchInput').value = '';
+    syncFilters();
+    save();
+    renderAll();
+    var t = $('#heroTitle');
+    t.focus();
+    var range = document.createRange();
+    range.selectNodeContents(t);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    toast('已新建主事件');
+  }
+
+  function deleteEvent() {
+    var ev = activeEvent();
+    var n = state.notes.filter(function (x) { return x.eventId === ev.id; }).length;
+    var label = ev.title || '未命名事件';
+    if (!window.confirm('删除主事件「' + label + '」及其 ' + n + ' 条便签？\n此操作不可撤销。')) return;
+    var now = Date.now();
+    state.tombstones.events[ev.id] = now;
+    state.notes.forEach(function (x) {
+      if (x.eventId === ev.id) state.tombstones.notes[x.id] = now;
+    });
+    state.notes = state.notes.filter(function (x) { return x.eventId !== ev.id; });
+    state.events = state.events.filter(function (x) { return x.id !== ev.id; });
+    if (!state.events.length) state.events.push(newEvent('新事件', ''));
+    state.activeEventId = state.events[0].id;
+    ui.filter = 'all';
+    ui.search = '';
+    $('#searchInput').value = '';
+    syncFilters();
+    save();
+    renderAll();
+    toast('已删除主事件');
+  }
+
+  /* ---------------- 导入导出 ---------------- */
+  function download(name, content, type) {
+    var blob = new Blob([content], { type: type + ';charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1500);
+  }
+  function exportJSON() {
+    save();
+    var payload = {
+      app: 'swiss-board', version: 1,
+      exportedAt: new Date().toISOString(),
+      activeEventId: state.activeEventId,
+      events: state.events,
+      notes: state.notes,
+      tombstones: state.tombstones
+    };
+    download('便签板备份-' + dateStamp() + '.json', JSON.stringify(payload, null, 2), 'application/json');
+    toast('已导出 JSON 备份');
+  }
+  function exportMarkdown() {
+    var out = '# 便签板 · ' + dateStamp() + '\n\n';
+    state.events.forEach(function (ev, i) {
+      out += '## ' + pad(i + 1) + ' ' + (ev.title || '未命名事件') + '\n\n';
+      if (ev.date) out += '日期：' + ev.date + '\n\n';
+      if (ev.desc) out += ev.desc + '\n\n';
+      var list = state.notes.filter(function (n) { return n.eventId === ev.id; })
+        .sort(function (a, b) { return b.createdAt - a.createdAt; });
+      if (!list.length) out += '_暂无记录_\n\n';
+      list.forEach(function (n) {
+        out += '- [' + (n.done ? 'x' : ' ') + '] ' + n.text.replace(/\n/g, '\n  ') + '\n';
+      });
+      out += '\n';
+    });
+    download('便签板-' + dateStamp() + '.md', out, 'text/markdown');
+    toast('已导出 Markdown');
+  }
+  function importFile(e) {
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var data = JSON.parse(String(reader.result));
+        if (!data || !Array.isArray(data.events) || !Array.isArray(data.notes)) throw new Error('文件格式不正确');
+        if (!window.confirm('导入会替换当前全部事件与便签，确定继续？')) return;
+        state = data;
+        normalize();
+        ui.filter = 'all';
+        ui.search = '';
+        $('#searchInput').value = '';
+        syncFilters();
+        save();
+        renderAll();
+        toast('已导入备份');
+      } catch (err) {
+        window.alert('导入失败：' + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  }
+  function doPrint() {
+    var prev = ui.filter;
+    ui.filter = 'all';
+    syncFilters();
+    renderNotes();
+    window.print();
+    setTimeout(function () {
+      ui.filter = prev;
+      syncFilters();
+      renderNotes();
+    }, 300);
+  }
+
+  /* ---------------- 手机访问（二维码） ---------------- */
+  function ensureQR(cb) {
+    if (window.qrcode) { cb(null); return; }
+    var s = document.createElement('script');
+    s.src = 'qrcode.js';
+    s.onload = function () { cb(window.qrcode ? null : new Error('QR')); };
+    s.onerror = function () { cb(new Error('QR')); };
+    document.head.appendChild(s);
+  }
+  function openShare() {
+    var modal = $('#shareModal');
+    if (!modal) return;
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    renderShare();
+  }
+  function closeShare() {
+    var modal = $('#shareModal');
+    if (!modal) return;
+    modal.hidden = true;
+    document.body.style.overflow = '';
+  }
+  function renderShare() {
+    var tipEl = $('#shareTip');
+    if (cloud.enabled && cloud.gistId) {
+      shareUrls = [cloudJoinUrl()];
+      if (tipEl) tipEl.textContent = '手机在任何网络下打开这个链接即可（链接里带着云同步配置，打开后自动导入）。电脑关机也不影响。';
+      $('#shareAlts').innerHTML = '';
+      setShareUrl(shareUrls[0]);
+      return;
+    }
+    if (tipEl) tipEl.textContent = '手机和电脑连同一个 Wi-Fi 后，扫码或在浏览器输入上面的地址。打不开时检查电脑防火墙是否放行了 Python；跨网络使用见说明里的 Tailscale 方案。';
+    var box = $('#qrBox');
+    box.innerHTML = '<span class="qr-fail">正在获取地址…</span>';
+    fetch('api/info', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (info) {
+      var urls = (info && Array.isArray(info.urls)) ? info.urls.slice() : [];
+      var host = location.hostname;
+      var isLoopback = /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(host);
+      if (!isLoopback && urls.indexOf(location.origin) === -1) urls.unshift(location.origin);
+      if (!urls.length) urls = [location.origin];
+      shareUrls = urls;
+      var alts = $('#shareAlts');
+      alts.innerHTML = '';
+      if (urls.length > 1) {
+        urls.slice(1).forEach(function (u) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'share-alt';
+          b.textContent = u;
+          b.addEventListener('click', function () { setShareUrl(u); });
+          alts.appendChild(b);
+        });
+      }
+      setShareUrl(urls[0]);
+    }).catch(function () {
+      shareUrls = [location.origin];
+      setShareUrl(location.origin);
+    });
+  }
+  function setShareUrl(url) {
+    shareCurrent = url;
+    $('#shareUrl').textContent = url;
+    var box = $('#qrBox');
+    box.innerHTML = '<span class="qr-fail">正在生成二维码…</span>';
+    ensureQR(function (err) {
+      if (err || !window.qrcode) {
+        box.innerHTML = '<span class="qr-fail">二维码组件没加载出来，请直接在手机浏览器输入下面的地址。</span>';
+        return;
+      }
+      try {
+        var qr = window.qrcode(0, 'M');
+        qr.addData(url);
+        qr.make();
+        box.innerHTML = qr.createSvgTag({ cellSize: 6, margin: 4, scalable: true });
+      } catch (e) {
+        box.innerHTML = '<span class="qr-fail">二维码生成失败，请直接输入下面的地址。</span>';
+      }
+    });
+  }
+  function copyShareUrl() {
+    var text = shareCurrent;
+    if (!text) return;
+    function done() { toast('链接已复制'); }
+    function fallback() {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.top = '-999px';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        done();
+      } catch (e) {
+        toast('复制失败，请手动选择地址');
+      }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  /* ---------------- 事件绑定 ---------------- */
+  function bind() {
+    var titleEl = $('#heroTitle');
+    var descEl = $('#heroDesc');
+
+    $('#eventList').addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('.event-item') : null;
+      if (!btn) return;
+      var id = btn.getAttribute('data-event');
+      if (id === state.activeEventId) return;
+      state.activeEventId = id;
+      ui.filter = 'all';
+      ui.search = '';
+      $('#searchInput').value = '';
+      syncFilters();
+      save();
+      renderAll();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    $('#addEvent').addEventListener('click', addEvent);
+    $('#delEvent').addEventListener('click', deleteEvent);
+
+    titleEl.addEventListener('input', function () {
+      var ev = activeEvent();
+      ev.title = titleEl.textContent.replace(/\s+/g, ' ').trimStart();
+      ev.updatedAt = Date.now();
+      updateRailTitle(ev);
+      updateDocTitle();
+      saveSoon();
+    });
+    titleEl.addEventListener('blur', function () {
+      var ev = activeEvent();
+      var t = titleEl.textContent.replace(/\s+/g, ' ').trim();
+      if (!t) { t = '未命名事件'; titleEl.textContent = t; }
+      ev.title = t;
+      ev.updatedAt = Date.now();
+      updateRailTitle(ev);
+      updateDocTitle();
+      save();
+    });
+    titleEl.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); titleEl.blur(); }
+    });
+
+    descEl.addEventListener('input', function () {
+      var ev = activeEvent();
+      ev.desc = descEl.textContent.replace(/\s+/g, ' ').trimStart();
+      ev.updatedAt = Date.now();
+      saveSoon();
+    });
+    descEl.addEventListener('blur', function () {
+      var ev = activeEvent();
+      ev.desc = descEl.textContent.replace(/\s+/g, ' ').trim();
+      ev.updatedAt = Date.now();
+      save();
+    });
+
+    [titleEl, descEl].forEach(function (el) {
+      el.addEventListener('paste', function (e) {
+        e.preventDefault();
+        var text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        document.execCommand('insertText', false, text);
+      });
+    });
+
+    $('#eventDate').addEventListener('change', function (e) {
+      var ev = activeEvent();
+      ev.date = e.target.value;
+      ev.updatedAt = Date.now();
+      save();
+      renderRail();
+    });
+
+    var composer = $('#composer');
+    var input = $('#composerInput');
+    composer.addEventListener('submit', function (e) {
+      e.preventDefault();
+      addNote();
+    });
+    input.addEventListener('input', function () { autoGrow(input, 38, 168); });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+        e.preventDefault();
+        addNote();
+      }
+    });
+
+    $$('.filter').forEach(function (b) {
+      b.addEventListener('click', function () {
+        ui.filter = b.getAttribute('data-filter');
+        syncFilters();
+        renderNotes();
+      });
+    });
+
+    $('#searchInput').addEventListener('input', function (e) {
+      ui.search = e.target.value;
+      renderNotes();
+    });
+
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('[data-act]') : null;
+      if (!btn) return;
+      var act = btn.getAttribute('data-act');
+      if (act === 'share') openShare();
+      else if (act === 'cloud') openCloud();
+      else if (act === 'export') exportJSON();
+      else if (act === 'import') $('#importFile').click();
+      else if (act === 'markdown') exportMarkdown();
+      else if (act === 'print') doPrint();
+    });
+
+    $$('[data-share-close]').forEach(function (el) {
+      el.addEventListener('click', closeShare);
+    });
+    $('#shareCopy').addEventListener('click', copyShareUrl);
+    $$('[data-cloud-close]').forEach(function (el) {
+      el.addEventListener('click', closeCloud);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (!$('#shareModal').hidden) closeShare();
+      if (!$('#cloudModal').hidden) closeCloud();
+    });
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) return;
+      pollState();
+      if (cloud.enabled) gistPoll();
+    });
+    window.addEventListener('focus', function () {
+      pollState();
+      if (cloud.enabled) gistPoll();
+    });
+    window.addEventListener('pagehide', function () {
+      if (remote.enabled && remote.dirty) {
+        try {
+          fetch('api/state', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rev: remote.rev, state: state }),
+            keepalive: true
+          });
+        } catch (e) {}
+        return;
+      }
+      if (cloud.enabled && cloud.dirty) {
+        try {
+          fetch(cloud.base + '/gists/' + cloud.gistId, {
+            method: 'PATCH',
+            headers: {
+              'Authorization': 'Bearer ' + cloud.token,
+              'Accept': 'application/vnd.github+json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ files: { 'board.json': { content: JSON.stringify(state) } } }),
+            keepalive: true
+          });
+        } catch (e) {}
+      }
+    });
+
+    $('#importFile').addEventListener('change', importFile);
+
+    document.addEventListener('keydown', function (e) {
+      var t = e.target;
+      var tag = (t && t.tagName ? t.tagName : '').toLowerCase();
+      var typing = tag === 'input' || tag === 'textarea' || (t && t.isContentEditable);
+      if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+        e.preventDefault();
+        save();
+        toast('已保存');
+        return;
+      }
+      if (typing) return;
+      if (e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        $('#composerInput').focus();
+      } else if (e.key === '/') {
+        e.preventDefault();
+        $('#searchInput').focus();
+      }
+    });
+  }
+
+  /* ---------------- 时钟 ---------------- */
+  function tickClock() {
+    var d = new Date();
+    var el = $('#clock');
+    if (el) el.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  }
+
+  /* ---------------- 启动 ---------------- */
+  function init() {
+    state = load();
+    normalize();
+    $('#mastDate').textContent = mastDate();
+    bind();
+    syncFilters();
+    renderAll();
+    save();
+    tickClock();
+    setInterval(tickClock, 1000);
+    if (!storageOK) toast('本地存储不可用：数据不会自动保存');
+    var joinCfg = consumeJoinLink();
+    if (joinCfg) {
+      startCloud(joinCfg, true);
+    } else if (location.protocol === 'http:' || location.protocol === 'https:') {
+      detectRemote();
+    } else {
+      startCloudFromConfig();
+    }
+  }
+  init();
+})();
+</script>
+<noscript><p style="padding:24px;font-family:sans-serif">这个便签板需要启用 JavaScript 才能使用。</p></noscript>
+</body>
+</html>
