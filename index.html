@@ -466,6 +466,72 @@ body.mode-ideas .ideas-stage{display:block}
 .idea-acts .act.del:hover{color:var(--red);border-bottom-color:var(--red)}
 .idea-acts .act.is-on{color:var(--red)}
 
+/* ============ 科技树模式 ============ */
+body.mode-skills .rail{display:none}
+body.mode-skills .layout{grid-template-columns:1fr}
+body.mode-skills .hero,
+body.mode-skills #composer,
+body.mode-skills #composer + .composer-hint,
+body.mode-skills #recordsHead,
+body.mode-skills #notes{display:none!important}
+.skills-stage{display:none}
+body.mode-skills .skills-stage{display:block}
+body.mode-skills .ideas-stage{display:none}
+.skills-hero{grid-template-columns:clamp(132px,10.5vw,184px) minmax(0,1fr) clamp(150px,13vw,200px)}
+.skills-hero .ideas-num{font-size:clamp(44px,4.3vw,66px);letter-spacing:-.05em}
+.skill-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;padding:20px 0 14px;border-bottom:1px solid var(--ink)}
+.skill-head .notes-label{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+.skill-head .notes-label b{margin-left:8px;color:var(--red);font-variant-numeric:tabular-nums}
+.skill-head .notes-sub{margin-top:7px;max-width:none;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.skill-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.skill-legend span{display:inline-flex;align-items:center;gap:6px}
+.lg-dot{width:12px;height:5px;border:1px solid var(--rule-2);display:inline-block}
+.lg-dot.on{background:var(--ink);border-color:var(--ink)}
+.lg-line{width:18px;height:2px;background:var(--ink);display:inline-block}
+.skill-group{margin-top:30px}
+.skill-group-head{display:flex;align-items:baseline;gap:14px;padding-bottom:10px;border-bottom:1px solid var(--rule-2)}
+.skill-group-idx{font-size:11px;letter-spacing:.12em;color:var(--red);font-weight:600;font-variant-numeric:tabular-nums}
+.skill-group-title{font-size:15px;font-weight:700;letter-spacing:.02em}
+.skill-group-title span{margin-left:8px;font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.skill-group-meta{margin-left:auto;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums}
+.skill-group-meta b{color:var(--ink);font-weight:600}
+.skill-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px;padding-left:18px}
+.skill-grid::before{content:"";position:absolute;left:0;top:-6px;bottom:0;width:1px;background:var(--rule)}
+.skill-card{position:relative;display:flex;flex-direction:column;gap:10px;min-height:176px;padding:15px 17px 13px;background:var(--paper-2);border:1px solid var(--rule)}
+.skill-card::before{content:"";position:absolute;left:-19px;top:34px;width:18px;height:1px;background:var(--rule)}
+.skill-card:hover{border-color:var(--rule-2)}
+.skill-card.is-new{box-shadow:inset 3px 0 0 var(--red)}
+.skill-card.is-max{border-color:var(--red)}
+.skill-card.is-max::before{background:var(--red)}
+.skill-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.skill-num{color:var(--red);font-weight:600}
+.skill-tag{font-variant-numeric:tabular-nums;letter-spacing:.1em}
+.skill-name{font-size:20px;line-height:1.25;font-weight:700;letter-spacing:.005em;outline:none;caret-color:var(--red);overflow-wrap:anywhere}
+.skill-desc{font-size:11.5px;line-height:1.55;color:var(--ink-2);outline:none;min-height:1.55em}
+.skill-desc:empty::before{content:'一句话说明（选填）';color:rgba(21,21,21,.25)}
+.skill-lv{display:flex;align-items:baseline;gap:12px;margin-top:2px}
+.skill-lv-num{font-size:42px;line-height:.85;font-weight:500;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.skill-lv-num small{margin-left:4px;font-size:10px;letter-spacing:.14em;color:var(--muted)}
+.skill-dots{display:flex;gap:4px;margin-left:auto}
+.skill-dot{width:16px;height:6px;border:1px solid var(--rule-2)}
+.skill-dot.on{background:var(--ink);border-color:var(--ink)}
+.skill-card.is-max .skill-dot.on{background:var(--red);border-color:var(--red)}
+.skill-bar{height:2px;background:var(--rule);overflow:hidden}
+.skill-bar i{display:block;height:100%;background:var(--ink);transition:width .25s}
+.skill-card.is-max .skill-bar i{background:var(--red)}
+.skill-sp{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums}
+.skill-sp b{color:var(--ink);font-weight:600}
+.skill-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:10px;border-top:1px solid var(--rule)}
+.skill-train{display:flex;gap:6px}
+.skill-train .act{padding:5px 8px;border:1px solid var(--rule-2);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.skill-train .act:hover{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.skill-train .act[disabled]{opacity:.35;cursor:default;background:none;color:var(--ink-2)}
+.skill-acts{display:flex;gap:10px;opacity:0;transition:opacity .12s}
+.skill-card:hover .skill-acts,.skill-card:focus-within .skill-acts{opacity:1}
+.skill-acts .act{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid transparent;padding-bottom:1px}
+.skill-acts .act:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.skill-acts .act.del:hover{color:var(--red);border-bottom-color:var(--red)}
+
 /* ============ 响应式 ============ */
 @media (max-width:1279px){
   .note-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -516,6 +582,12 @@ body.mode-ideas .ideas-stage{display:block}
   .ideas-num{font-size:38px}
   .ideas-meta{flex-direction:row;flex-wrap:wrap;gap:18px 28px}
   .idea-grid{grid-template-columns:1fr}
+  .skill-grid{grid-template-columns:1fr;padding-left:14px}
+  .skill-grid::before{left:0}
+  .skill-group-head{flex-wrap:wrap;gap:8px 12px}
+  .skill-group-meta{margin-left:0}
+  .skill-head{display:block;padding-top:16px}
+  .skills-hero .ideas-num{font-size:38px}
   .modebar{padding:0 var(--pad)}
   .search{width:130px}
   .footer{gap:12px 20px}
@@ -537,6 +609,8 @@ body.mode-ideas .ideas-stage{display:block}
   .section-acts{opacity:1}
   .rail-del{opacity:1}
   .idea-acts{opacity:1;gap:14px}
+  .skill-acts{opacity:1;gap:14px}
+  .skill-acts .act{padding:5px 2px;font-size:10px}
   .act{padding:5px 2px;font-size:10px}
   .toggle{padding:5px 0}
   .rail-add{width:30px;height:30px;font-size:16px}
@@ -553,7 +627,7 @@ body.mode-ideas .ideas-stage{display:block}
 @media print{
   :root{--paper:#fff;--paper-2:#fff}
   html,body{background:#fff}
-  .masthead,.rail,.composer,.composer-hint,.notes-tools,.notes-sub,.footer,.toast,.modal,.danger-link,.act,.note-edit,.modebar{display:none!important}
+  .masthead,.rail,.composer,.composer-hint,.notes-tools,.notes-sub,.footer,.toast,.modal,.danger-link,.act,.note-edit,.modebar,.skills-stage,.skill-legend{display:none!important}
   .layout{display:block}
   .stage{padding:0}
   .stage::before{display:none}
@@ -598,6 +672,7 @@ body.mode-ideas .ideas-stage{display:block}
   <nav class="modebar" aria-label="模式">
     <button type="button" class="mode-tab is-on" data-mode="notes"><span class="m-num">01</span>记录 / Notes</button>
     <button type="button" class="mode-tab" data-mode="ideas"><span class="m-num">02</span>好点子 / Good Ideas</button>
+    <button type="button" class="mode-tab" data-mode="skills"><span class="m-num">03</span>科技树 / Skill Tree</button>
   </nav>
 
   <div class="layout">
@@ -734,6 +809,66 @@ body.mode-ideas .ideas-stage{display:block}
         </div>
         <div class="notes" id="ideas"></div>
       </section>
+
+      <section class="skills-stage" aria-label="科技树">
+        <section class="ideas-hero skills-hero">
+          <div class="ideas-idx">
+            <div class="ideas-num" id="skillsBig">0000</div>
+            <div class="ideas-idx-k">技能点<br>Skill Points</div>
+          </div>
+          <div class="ideas-main">
+            <div class="eyebrow"><span class="sq"></span>Skill Tree / 科技树</div>
+            <h1 class="ideas-title" id="skillBoardTitle" contenteditable="true" spellcheck="false" data-placeholder="给技能树起个名字"></h1>
+            <p class="ideas-desc" id="skillBoardDesc" contenteditable="true" spellcheck="false" data-placeholder="一句话说明（选填）"></p>
+          </div>
+          <div class="ideas-meta">
+            <div class="meta-block">
+              <div class="meta-k">技能 / Skills</div>
+              <div class="meta-nums"><span class="stat-num" id="skillCountTotal">00</span><span class="meta-done">个技能</span></div>
+            </div>
+            <div class="meta-block">
+              <div class="meta-k">等级 / Levels</div>
+              <div class="meta-nums"><span class="stat-num" id="skillLevelsTotal">00</span><span class="meta-done">级</span></div>
+            </div>
+            <div class="meta-block">
+              <div class="meta-k">满级 / Maxed</div>
+              <div class="meta-nums"><span class="stat-num" id="skillMaxTotal">00</span><span class="meta-done">个 Lv.5</span></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="skill-head">
+          <div class="notes-label-wrap">
+            <div class="notes-label">科技树 / Skill Tree <b id="skillTreeCount">00</b></div>
+            <div class="notes-sub">100 / 300 / 700 / 1500 / 3100 点升一级 · Lv.5 封顶</div>
+            <div class="skill-legend" aria-hidden="true">
+              <span><i class="lg-dot on"></i>已点亮</span>
+              <span><i class="lg-dot"></i>未点亮</span>
+              <span><i class="lg-line"></i>下一级进度</span>
+            </div>
+          </div>
+        </div>
+
+        <section class="skill-group">
+          <div class="skill-group-head">
+            <div class="skill-group-idx">01</div>
+            <div class="skill-group-title">通用技能 <span>General</span></div>
+            <div class="skill-group-meta"><b id="skillGeneralCount">00</b> 技能 · <span id="skillGeneralPoints">0000</span> SP</div>
+            <button type="button" class="section-add" data-add-skill="general">＋ 技能</button>
+          </div>
+          <div class="skill-grid" id="skillGeneral"></div>
+        </section>
+
+        <section class="skill-group">
+          <div class="skill-group-head">
+            <div class="skill-group-idx">02</div>
+            <div class="skill-group-title">专业技能 <span>Professional</span></div>
+            <div class="skill-group-meta"><b id="skillProCount">00</b> 技能 · <span id="skillProPoints">0000</span> SP</div>
+            <button type="button" class="section-add" data-add-skill="pro">＋ 技能</button>
+          </div>
+          <div class="skill-grid" id="skillPro"></div>
+        </section>
+      </section>
     </main>
   </div>
 
@@ -803,7 +938,7 @@ body.mode-ideas .ideas-stage{display:block}
   })();
 
   var state = null;
-  var ui = { filter: 'all', search: '', newId: null, sectionId: null, mode: 'notes', ideaFilter: 'all', ideaSearch: '', ideaNewId: null, ideaTopicId: null };
+  var ui = { filter: 'all', search: '', newId: null, sectionId: null, mode: 'notes', ideaFilter: 'all', ideaSearch: '', ideaNewId: null, ideaTopicId: null, skillNewId: null };
   var saveTimer = null;
   var toastTimer = null;
   var remote = {
@@ -982,6 +1117,16 @@ body.mode-ideas .ideas-stage{display:block}
       updatedAt: Date.now()
     };
   }
+  function defaultSkillSeeds() {
+    var now = Date.now();
+    return [
+      { id: 'skill-english', group: 'general', name: '英语', desc: '', points: 0, createdAt: now - 500000, updatedAt: now - 500000 },
+      { id: 'skill-gaoshu', group: 'general', name: '高数', desc: '', points: 0, createdAt: now - 400000, updatedAt: now - 400000 },
+      { id: 'skill-drafting', group: 'pro', name: '机械制图', desc: '', points: 0, createdAt: now - 300000, updatedAt: now - 300000 },
+      { id: 'skill-cad', group: 'pro', name: '计算机绘图', desc: '', points: 0, createdAt: now - 200000, updatedAt: now - 200000 },
+      { id: 'skill-heat', group: 'pro', name: '材料热处理学', desc: '', points: 0, createdAt: now - 100000, updatedAt: now - 100000 }
+    ];
+  }
   function seedState() {
     var ev = newEvent('开始使用便签板', '一个主事件，从这里引导出下面所有记录。');
     var now = Date.now();
@@ -999,6 +1144,8 @@ body.mode-ideas .ideas-stage{display:block}
         { id: uid(), topicId: null, image: '', text: '把便签板做成手机也能用的云同步工具', favorite: true, createdAt: now - 200000, updatedAt: now - 200000 },
         { id: uid(), topicId: null, image: '', text: '每周日晚上回顾一次这周的记录', favorite: false, createdAt: now - 100000, updatedAt: now - 100000 }
       ],
+      skillBoard: { title: '科技树', desc: '通用技能打底，专业技能往上点。', updatedAt: now },
+      skills: defaultSkillSeeds(),
       notes: [
         note('在下面的输入框写下第一条便签，按回车记录；双击便签文字可以直接修改。', false, false, 180000),
         note('左侧每个条目是一个主事件：切换它，下面的记录就跟着切换；点「＋」新建。', false, false, 120000),
@@ -1019,12 +1166,19 @@ body.mode-ideas .ideas-stage{display:block}
     var sections = Array.isArray(state.sections) ? state.sections : [];
     var ideas = Array.isArray(state.ideas) ? state.ideas : [];
     var ideaTopics = Array.isArray(state.ideaTopics) ? state.ideaTopics : [];
+    var skills = Array.isArray(state.skills) ? state.skills : [];
     var notes = Array.isArray(state.notes) ? state.notes : [];
     var rawBoard = (state.ideaBoard && typeof state.ideaBoard === 'object') ? state.ideaBoard : {};
     state.ideaBoard = {
       title: (typeof rawBoard.title === 'string' && rawBoard.title) ? rawBoard.title : '我的好点子',
       desc: typeof rawBoard.desc === 'string' ? rawBoard.desc : '想到什么，先记下来。',
       updatedAt: Number(rawBoard.updatedAt) || 0
+    };
+    var rawSkillBoard = (state.skillBoard && typeof state.skillBoard === 'object') ? state.skillBoard : {};
+    state.skillBoard = {
+      title: (typeof rawSkillBoard.title === 'string' && rawSkillBoard.title) ? rawSkillBoard.title : '科技树',
+      desc: typeof rawSkillBoard.desc === 'string' ? rawSkillBoard.desc : '通用技能打底，专业技能往上点。',
+      updatedAt: Number(rawSkillBoard.updatedAt) || 0
     };
     state.events = events.filter(function (e) { return e && e.id; }).map(function (e) {
       return {
@@ -1065,6 +1219,18 @@ body.mode-ideas .ideas-stage{display:block}
         updatedAt: idea.updatedAt || idea.createdAt || Date.now()
       };
     });
+    state.skills = skills.filter(function (s) { return s && s.id; }).map(function (s) {
+      var points = Math.max(0, Math.floor(Number(s.points) || 0));
+      return {
+        id: s.id,
+        group: s.group === 'pro' ? 'pro' : 'general',
+        name: (typeof s.name === 'string' && s.name) ? s.name : '新技能',
+        desc: typeof s.desc === 'string' ? s.desc : '',
+        points: points,
+        createdAt: s.createdAt || Date.now(),
+        updatedAt: s.updatedAt || s.createdAt || Date.now()
+      };
+    });
     state.notes = notes.filter(function (n) { return n && n.id && typeof n.text === 'string'; }).map(function (n) {
       return {
         id: n.id,
@@ -1094,14 +1260,21 @@ body.mode-ideas .ideas-stage{display:block}
       if (idea.topicId && !topicIds[idea.topicId]) idea.topicId = null;
     });
     if (!ids[state.activeEventId]) state.activeEventId = state.events[0].id;
-    if (!state.tombstones || typeof state.tombstones !== 'object') state.tombstones = { events: {}, sections: {}, notes: {}, ideas: {}, ideaTopics: {} };
+    if (!state.tombstones || typeof state.tombstones !== 'object') state.tombstones = { events: {}, sections: {}, notes: {}, ideas: {}, ideaTopics: {}, skills: {} };
     if (!state.tombstones.events || typeof state.tombstones.events !== 'object') state.tombstones.events = {};
     if (!state.tombstones.sections || typeof state.tombstones.sections !== 'object') state.tombstones.sections = {};
     if (!state.tombstones.notes || typeof state.tombstones.notes !== 'object') state.tombstones.notes = {};
     if (!state.tombstones.ideas || typeof state.tombstones.ideas !== 'object') state.tombstones.ideas = {};
     if (!state.tombstones.ideaTopics || typeof state.tombstones.ideaTopics !== 'object') state.tombstones.ideaTopics = {};
+    if (!state.tombstones.skills || typeof state.tombstones.skills !== 'object') state.tombstones.skills = {};
+    if (!state.skillInit) {
+      state.skillInit = true;
+      if (!state.skills.length && !Object.keys(state.tombstones.skills).length) {
+        state.skills = defaultSkillSeeds();
+      }
+    }
     var cutoff = Date.now() - 30 * 24 * 3600 * 1000;
-    ['events', 'sections', 'notes', 'ideas', 'ideaTopics'].forEach(function (kind) {
+    ['events', 'sections', 'notes', 'ideas', 'ideaTopics', 'skills'].forEach(function (kind) {
       var grave = state.tombstones[kind];
       for (var id in grave) {
         if (!Object.prototype.hasOwnProperty.call(grave, id)) continue;
@@ -1185,18 +1358,18 @@ body.mode-ideas .ideas-stage{display:block}
     var ae = document.activeElement;
     if (!ae) return false;
     var id = ae.id || '';
-    if (id === 'heroTitle' || id === 'heroDesc' || id === 'ideaBoardTitle' || id === 'ideaBoardDesc') return true;
-    if (ae.classList && ae.classList.contains('note-edit')) return true;
+    if (id === 'heroTitle' || id === 'heroDesc' || id === 'ideaBoardTitle' || id === 'ideaBoardDesc' || id === 'skillBoardTitle' || id === 'skillBoardDesc') return true;
+    if (ae.classList && (ae.classList.contains('note-edit') || ae.classList.contains('skill-name') || ae.classList.contains('skill-desc'))) return true;
     return false;
   }
 
   function mergeStates(a, b) {
     a = (a && typeof a === 'object') ? a : {};
     b = (b && typeof b === 'object') ? b : {};
-    var tombstones = { events: {}, sections: {}, notes: {}, ideas: {}, ideaTopics: {} };
+    var tombstones = { events: {}, sections: {}, notes: {}, ideas: {}, ideaTopics: {}, skills: {} };
     [a.tombstones, b.tombstones].forEach(function (t) {
       if (!t || typeof t !== 'object') return;
-      ['events', 'sections', 'notes', 'ideas', 'ideaTopics'].forEach(function (kind) {
+      ['events', 'sections', 'notes', 'ideas', 'ideaTopics', 'skills'].forEach(function (kind) {
         var src = t[kind];
         if (!src || typeof src !== 'object') return;
         for (var id in src) {
@@ -1256,6 +1429,13 @@ body.mode-ideas .ideas-stage{display:block}
     if (!ideaBoard || (!ideaBoard.title && !ideaBoard.desc)) {
       ideaBoard = boardB.title || boardB.desc ? boardB : boardA;
     }
+    var skillBoardA = (a.skillBoard && typeof a.skillBoard === 'object') ? a.skillBoard : {};
+    var skillBoardB = (b.skillBoard && typeof b.skillBoard === 'object') ? b.skillBoard : {};
+    var skillBoard = (Number(skillBoardB.updatedAt) || 0) >= (Number(skillBoardA.updatedAt) || 0) ? skillBoardB : skillBoardA;
+    if (!skillBoard || (!skillBoard.title && !skillBoard.desc)) {
+      skillBoard = skillBoardB.title || skillBoardB.desc ? skillBoardB : skillBoardA;
+    }
+    var skills = pickNewer(a.skills, b.skills, 'skills');
 
     var prefer = null;
     if (b.activeEventId && ids[b.activeEventId]) prefer = b.activeEventId;
@@ -1269,6 +1449,8 @@ body.mode-ideas .ideas-stage{display:block}
       ideaBoard: ideaBoard,
       ideaTopics: ideaTopics,
       ideas: ideas,
+      skillBoard: skillBoard,
+      skills: skills,
       notes: notes,
       tombstones: tombstones
     };
@@ -1519,6 +1701,8 @@ body.mode-ideas .ideas-stage{display:block}
       ib: s.ideaBoard || {},
       it: s.ideaTopics || [],
       i: s.ideas || [],
+      sb: s.skillBoard || {},
+      sk: s.skills || [],
       n: s.notes || [],
       t: s.tombstones || {}
     });
@@ -2478,17 +2662,20 @@ body.mode-ideas .ideas-stage{display:block}
   /* ---------------- 好点子模式 ---------------- */
   function readStoredMode() {
     try {
-      return localStorage.getItem('sb-mode-v1') === 'ideas' ? 'ideas' : 'notes';
+      var m = localStorage.getItem('sb-mode-v1');
+      return (m === 'ideas' || m === 'skills') ? m : 'notes';
     } catch (e) { return 'notes'; }
   }
   function applyMode(mode, silent) {
-    ui.mode = mode === 'ideas' ? 'ideas' : 'notes';
+    ui.mode = (mode === 'ideas' || mode === 'skills') ? mode : 'notes';
     document.body.classList.toggle('mode-ideas', ui.mode === 'ideas');
+    document.body.classList.toggle('mode-skills', ui.mode === 'skills');
     $$('.mode-tab').forEach(function (b) {
       b.classList.toggle('is-on', b.getAttribute('data-mode') === ui.mode);
     });
     try { localStorage.setItem('sb-mode-v1', ui.mode); } catch (e) {}
     if (ui.mode === 'ideas') renderIdeas();
+    else if (ui.mode === 'skills') renderSkills();
     else updateTargetChip();
     if (!silent) window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -3000,6 +3187,277 @@ body.mode-ideas .ideas-stage{display:block}
     setTimeout(function () { ui.ideaNewId = null; }, 700);
   }
 
+  /* ---------------- 科技树 / 技能 ---------------- */
+  var SKILL_TH = [0, 100, 300, 700, 1500, 3100];
+  function points4(n) {
+    n = Math.max(0, Math.floor(Number(n) || 0));
+    var s = '' + n;
+    while (s.length < 4) s = '0' + s;
+    return s;
+  }
+  function skillLevelInfo(points) {
+    points = Math.max(0, Math.floor(Number(points) || 0));
+    var lv = 0, i;
+    for (i = 1; i < SKILL_TH.length; i++) {
+      if (points >= SKILL_TH[i]) lv = i;
+    }
+    if (lv >= 5) return { level: 5, prev: SKILL_TH[5], next: null, pct: 100, max: true, points: points };
+    var prev = SKILL_TH[lv], next = SKILL_TH[lv + 1];
+    var pct = Math.round((points - prev) / (next - prev) * 100);
+    return { level: lv, prev: prev, next: next, pct: Math.max(0, Math.min(100, pct)), max: false, points: points };
+  }
+  function skillsOf(group) {
+    return state.skills.filter(function (s) { return s.group === group; })
+      .sort(function (a, b) { return (a.createdAt || 0) - (b.createdAt || 0); });
+  }
+  function skillEmpty(group) {
+    var el = document.createElement('div');
+    el.className = 'empty skill-empty';
+    var n = document.createElement('div');
+    n.className = 'empty-num';
+    n.textContent = '00';
+    var p = document.createElement('p');
+    p.textContent = group === 'pro' ? '还没有专业技能。点「＋ 技能」加一个。' : '还没有通用技能。点「＋ 技能」加一个。';
+    el.appendChild(n);
+    el.appendChild(p);
+    return el;
+  }
+  function trainSkill(skill, amount) {
+    var before = skillLevelInfo(skill.points).level;
+    if (before >= 5) return;
+    skill.points = Math.max(0, (Number(skill.points) || 0) + amount);
+    skill.updatedAt = Date.now();
+    var info = skillLevelInfo(skill.points);
+    ui.skillNewId = skill.id;
+    save();
+    renderSkills();
+    if (info.level > before) toast('「' + (skill.name || '技能') + '」升到 Lv.' + info.level);
+    setTimeout(function () { ui.skillNewId = null; }, 900);
+  }
+  function resetSkill(skill) {
+    if (!window.confirm('把「' + (skill.name || '技能') + '」的技能点清零？')) return;
+    skill.points = 0;
+    skill.updatedAt = Date.now();
+    save();
+    renderSkills();
+    toast('已重置技能点');
+  }
+  function deleteSkill(skill) {
+    if (!window.confirm('删除技能「' + (skill.name || '技能') + '」？')) return;
+    state.tombstones.skills[skill.id] = Date.now();
+    state.skills = state.skills.filter(function (s) { return s.id !== skill.id; });
+    save();
+    renderSkills();
+    toast('已删除技能');
+  }
+  function addSkill(group) {
+    var skill = {
+      id: uid(),
+      group: group === 'pro' ? 'pro' : 'general',
+      name: '新技能',
+      desc: '',
+      points: 0,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    state.skills.push(skill);
+    ui.skillNewId = skill.id;
+    save();
+    renderSkills();
+    var grid = $(group === 'pro' ? '#skillPro' : '#skillGeneral');
+    var last = grid ? grid.querySelector('.skill-card:last-child .skill-name') : null;
+    if (last) {
+      last.focus();
+      var range = document.createRange();
+      range.selectNodeContents(last);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+    setTimeout(function () { ui.skillNewId = null; }, 900);
+  }
+  function skillCard(skill, number) {
+    var info = skillLevelInfo(skill.points);
+    var card = document.createElement('article');
+    card.className = 'skill-card'
+      + (info.max ? ' is-max' : '')
+      + (ui.skillNewId === skill.id ? ' is-new' : '');
+    card.setAttribute('data-skill-id', skill.id);
+
+    var top = document.createElement('div');
+    top.className = 'skill-top';
+    var num = document.createElement('span');
+    num.className = 'skill-num';
+    num.textContent = pad(number);
+    var tag = document.createElement('span');
+    tag.className = 'skill-tag';
+    tag.textContent = (skill.group === 'pro' ? '专业 / PRO' : '通用 / GENERAL') + ' · ' + points4(skill.points) + ' SP';
+    top.appendChild(num);
+    top.appendChild(tag);
+
+    var name = document.createElement('div');
+    name.className = 'skill-name';
+    name.setAttribute('contenteditable', 'true');
+    name.setAttribute('spellcheck', 'false');
+    name.textContent = skill.name || '新技能';
+    name.addEventListener('input', function () {
+      skill.name = name.textContent.replace(/\s+/g, ' ').trimStart();
+      skill.updatedAt = Date.now();
+      saveSoon();
+    });
+    name.addEventListener('blur', function () {
+      var v = name.textContent.replace(/\s+/g, ' ').trim();
+      if (!v) {
+        v = '新技能';
+        name.textContent = v;
+      }
+      skill.name = v;
+      skill.updatedAt = Date.now();
+      save();
+    });
+    name.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        name.blur();
+      }
+    });
+
+    var desc = document.createElement('div');
+    desc.className = 'skill-desc';
+    desc.setAttribute('contenteditable', 'true');
+    desc.setAttribute('spellcheck', 'false');
+    desc.textContent = skill.desc || '';
+    desc.addEventListener('input', function () {
+      skill.desc = desc.textContent.replace(/\s+/g, ' ').trimStart();
+      skill.updatedAt = Date.now();
+      saveSoon();
+    });
+    desc.addEventListener('blur', function () {
+      skill.desc = desc.textContent.replace(/\s+/g, ' ').trim();
+      skill.updatedAt = Date.now();
+      save();
+    });
+
+    var lv = document.createElement('div');
+    lv.className = 'skill-lv';
+    var lvNum = document.createElement('div');
+    lvNum.className = 'skill-lv-num';
+    lvNum.textContent = '' + info.level;
+    var lvSmall = document.createElement('small');
+    lvSmall.textContent = 'LV';
+    lvNum.appendChild(lvSmall);
+    var dots = document.createElement('div');
+    dots.className = 'skill-dots';
+    for (var d = 0; d < 5; d++) {
+      var dot = document.createElement('span');
+      dot.className = 'skill-dot' + (d < info.level ? ' on' : '');
+      dots.appendChild(dot);
+    }
+    lv.appendChild(lvNum);
+    lv.appendChild(dots);
+
+    var bar = document.createElement('div');
+    bar.className = 'skill-bar';
+    var fill = document.createElement('i');
+    fill.style.width = info.pct + '%';
+    bar.appendChild(fill);
+
+    var sp = document.createElement('div');
+    sp.className = 'skill-sp';
+    var spLeft = document.createElement('span');
+    spLeft.textContent = info.max ? ('MAX · ' + points4(skill.points) + ' SP') : (points4(skill.points) + ' / ' + points4(info.next) + ' SP');
+    var spRight = document.createElement('span');
+    if (info.max) spRight.textContent = '已满级';
+    else spRight.innerHTML = '距下一级 <b>' + (info.next - info.points) + '</b> SP';
+    sp.appendChild(spLeft);
+    sp.appendChild(spRight);
+
+    var foot = document.createElement('div');
+    foot.className = 'skill-foot';
+    var train = document.createElement('div');
+    train.className = 'skill-train';
+    var b25 = document.createElement('button');
+    b25.type = 'button';
+    b25.className = 'act';
+    b25.textContent = '+25';
+    b25.title = '训练 +25 技能点';
+    b25.disabled = info.max;
+    b25.addEventListener('click', function () { trainSkill(skill, 25); });
+    var b100 = document.createElement('button');
+    b100.type = 'button';
+    b100.className = 'act';
+    b100.textContent = '+100';
+    b100.title = '训练 +100 技能点';
+    b100.disabled = info.max;
+    b100.addEventListener('click', function () { trainSkill(skill, 100); });
+    train.appendChild(b25);
+    train.appendChild(b100);
+
+    var acts = document.createElement('div');
+    acts.className = 'skill-acts';
+    var reset = document.createElement('button');
+    reset.type = 'button';
+    reset.className = 'act';
+    reset.textContent = '重置';
+    reset.addEventListener('click', function () { resetSkill(skill); });
+    var del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'act del';
+    del.textContent = '删除';
+    del.addEventListener('click', function () { deleteSkill(skill); });
+    acts.appendChild(reset);
+    acts.appendChild(del);
+    foot.appendChild(train);
+    foot.appendChild(acts);
+
+    card.appendChild(top);
+    card.appendChild(name);
+    card.appendChild(desc);
+    card.appendChild(lv);
+    card.appendChild(bar);
+    card.appendChild(sp);
+    card.appendChild(foot);
+    return card;
+  }
+  function renderSkills() {
+    var board = state.skillBoard || {};
+    var titleEl = $('#skillBoardTitle');
+    var descEl = $('#skillBoardDesc');
+    if (titleEl && document.activeElement !== titleEl) titleEl.textContent = board.title || '';
+    if (descEl && document.activeElement !== descEl) descEl.textContent = board.desc || '';
+
+    var totalPoints = 0, totalLevels = 0, maxed = 0;
+    var groups = [
+      { key: 'general', grid: '#skillGeneral', count: '#skillGeneralCount', pts: '#skillGeneralPoints' },
+      { key: 'pro', grid: '#skillPro', count: '#skillProCount', pts: '#skillProPoints' }
+    ];
+    groups.forEach(function (g) {
+      var grid = $(g.grid);
+      if (!grid) return;
+      var list = skillsOf(g.key);
+      grid.innerHTML = '';
+      var sum = 0;
+      list.forEach(function (skill, i) {
+        var info = skillLevelInfo(skill.points);
+        sum += info.points;
+        totalPoints += info.points;
+        totalLevels += info.level;
+        if (info.max) maxed++;
+        grid.appendChild(skillCard(skill, i + 1));
+      });
+      if (!list.length) grid.appendChild(skillEmpty(g.key));
+      var countEl = $(g.count);
+      var ptsEl = $(g.pts);
+      if (countEl) countEl.textContent = pad(list.length);
+      if (ptsEl) ptsEl.textContent = points4(sum);
+    });
+    $('#skillsBig').textContent = points4(totalPoints);
+    $('#skillCountTotal').textContent = pad(state.skills.length);
+    $('#skillLevelsTotal').textContent = pad(totalLevels);
+    $('#skillMaxTotal').textContent = pad(maxed);
+    $('#skillTreeCount').textContent = pad(state.skills.length);
+  }
+
   function renderStats() {
     var ev = activeEvent();
     var list = state.notes.filter(function (n) { return n.eventId === ev.id; });
@@ -3022,6 +3480,7 @@ body.mode-ideas .ideas-stage{display:block}
     renderRail();
     renderNotes();
     renderIdeas();
+    renderSkills();
     renderStats();
   }
   function refresh() {
@@ -3198,6 +3657,8 @@ body.mode-ideas .ideas-stage{display:block}
       ideaBoard: state.ideaBoard,
       ideaTopics: state.ideaTopics,
       ideas: state.ideas,
+      skillBoard: state.skillBoard,
+      skills: state.skills,
       notes: state.notes,
       tombstones: state.tombstones
     };
@@ -3258,6 +3719,24 @@ body.mode-ideas .ideas-stage{display:block}
         out += '\n';
       }
       if (!state.ideas.length) out += '_暂无想法_\n\n';
+    }
+    if (state.skills.length) {
+      var skb = state.skillBoard || {};
+      out += '## 科技树 / Skill Tree\n\n';
+      if (skb.title) out += '**' + skb.title + '**\n\n';
+      [['general', '通用技能 / General'], ['pro', '专业技能 / Professional']].forEach(function (g) {
+        var list = state.skills.filter(function (s) { return s.group === g[0]; })
+          .sort(function (a, b) { return (a.createdAt || 0) - (b.createdAt || 0); });
+        if (!list.length) return;
+        out += '### ' + g[1] + '\n\n';
+        list.forEach(function (s) {
+          var info = skillLevelInfo(s.points);
+          out += '- ' + (s.name || '新技能') + ' — Lv.' + info.level + ' · ' + info.points + ' SP';
+          if (info.max) out += '（满级）\n';
+          else out += '（距下一级 ' + (info.next - info.points) + ' SP）\n';
+        });
+        out += '\n';
+      });
     }
     download('便签板-' + dateStamp() + '.md', out, 'text/markdown');
     toast('已导出 Markdown');
@@ -3500,6 +3979,56 @@ body.mode-ideas .ideas-stage{display:block}
     });
     $$('[data-image-close]').forEach(function (el) {
       el.addEventListener('click', closeImageModal);
+    });
+    $$('[data-add-skill]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        addSkill(btn.getAttribute('data-add-skill'));
+      });
+    });
+    var skillBoardTitle = $('#skillBoardTitle');
+    var skillBoardDesc = $('#skillBoardDesc');
+    if (skillBoardTitle) {
+      skillBoardTitle.addEventListener('input', function () {
+        state.skillBoard.title = skillBoardTitle.textContent.replace(/\s+/g, ' ').trimStart();
+        state.skillBoard.updatedAt = Date.now();
+        saveSoon();
+      });
+      skillBoardTitle.addEventListener('blur', function () {
+        var t = skillBoardTitle.textContent.replace(/\s+/g, ' ').trim();
+        if (!t) {
+          t = '科技树';
+          skillBoardTitle.textContent = t;
+        }
+        state.skillBoard.title = t;
+        state.skillBoard.updatedAt = Date.now();
+        save();
+      });
+      skillBoardTitle.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          skillBoardTitle.blur();
+        }
+      });
+    }
+    if (skillBoardDesc) {
+      skillBoardDesc.addEventListener('input', function () {
+        state.skillBoard.desc = skillBoardDesc.textContent.replace(/\s+/g, ' ').trimStart();
+        state.skillBoard.updatedAt = Date.now();
+        saveSoon();
+      });
+      skillBoardDesc.addEventListener('blur', function () {
+        state.skillBoard.desc = skillBoardDesc.textContent.replace(/\s+/g, ' ').trim();
+        state.skillBoard.updatedAt = Date.now();
+        save();
+      });
+    }
+    [skillBoardTitle, skillBoardDesc].forEach(function (el) {
+      if (!el) return;
+      el.addEventListener('paste', function (e) {
+        e.preventDefault();
+        var text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        document.execCommand('insertText', false, text);
+      });
     });
     $('#targetChip').addEventListener('click', function (e) {
       e.stopPropagation();
