@@ -466,7 +466,8 @@ body.mode-ideas .ideas-stage{display:block}
 .idea-acts .act.del:hover{color:var(--red);border-bottom-color:var(--red)}
 .idea-acts .act.is-on{color:var(--red)}
 
-/* ============ 科技树模式 ============ */
+/* ============ 科技树模式（横向 · 瑞士蓝底） ============ */
+body.mode-skills{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#DFE5EA}
 body.mode-skills .rail{display:none}
 body.mode-skills .layout{grid-template-columns:1fr}
 body.mode-skills .hero,
@@ -477,60 +478,166 @@ body.mode-skills #notes{display:none!important}
 .skills-stage{display:none}
 body.mode-skills .skills-stage{display:block}
 body.mode-skills .ideas-stage{display:none}
-.skills-hero{grid-template-columns:clamp(132px,10.5vw,184px) minmax(0,1fr) clamp(150px,13vw,200px)}
-.skills-hero .ideas-num{font-size:clamp(44px,4.3vw,66px);letter-spacing:-.05em}
-.skill-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;padding:20px 0 14px;border-bottom:1px solid var(--ink)}
-.skill-head .notes-label{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
-.skill-head .notes-label b{margin-left:8px;color:var(--red);font-variant-numeric:tabular-nums}
-.skill-head .notes-sub{margin-top:7px;max-width:none;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.skill-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.skill-legend span{display:inline-flex;align-items:center;gap:6px}
-.lg-dot{width:12px;height:5px;border:1px solid var(--rule-2);display:inline-block}
-.lg-dot.on{background:var(--ink);border-color:var(--ink)}
-.lg-line{width:18px;height:2px;background:var(--ink);display:inline-block}
-.skill-group{margin-top:30px}
-.skill-group-head{display:flex;align-items:baseline;gap:14px;padding-bottom:10px;border-bottom:1px solid var(--rule-2)}
-.skill-group-idx{font-size:11px;letter-spacing:.12em;color:var(--red);font-weight:600;font-variant-numeric:tabular-nums}
-.skill-group-title{font-size:15px;font-weight:700;letter-spacing:.02em}
-.skill-group-title span{margin-left:8px;font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.skill-group-meta{margin-left:auto;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums}
-.skill-group-meta b{color:var(--ink);font-weight:600}
-.skill-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px;padding-left:18px}
-.skill-grid::before{content:"";position:absolute;left:0;top:-6px;bottom:0;width:1px;background:var(--rule)}
-.skill-card{position:relative;display:flex;flex-direction:column;gap:10px;min-height:176px;padding:15px 17px 13px;background:var(--paper-2);border:1px solid var(--rule)}
-.skill-card::before{content:"";position:absolute;left:-19px;top:34px;width:18px;height:1px;background:var(--rule)}
-.skill-card:hover{border-color:var(--rule-2)}
-.skill-card.is-new{box-shadow:inset 3px 0 0 var(--red)}
-.skill-card.is-max{border-color:var(--red)}
-.skill-card.is-max::before{background:var(--red)}
-.skill-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-.skill-num{color:var(--red);font-weight:600}
-.skill-tag{font-variant-numeric:tabular-nums;letter-spacing:.1em}
-.skill-name{font-size:20px;line-height:1.25;font-weight:700;letter-spacing:.005em;outline:none;caret-color:var(--red);overflow-wrap:anywhere}
-.skill-desc{font-size:11.5px;line-height:1.55;color:var(--ink-2);outline:none;min-height:1.55em}
-.skill-desc:empty::before{content:'一句话说明（选填）';color:rgba(21,21,21,.25)}
-.skill-lv{display:flex;align-items:baseline;gap:12px;margin-top:2px}
-.skill-lv-num{font-size:42px;line-height:.85;font-weight:500;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
-.skill-lv-num small{margin-left:4px;font-size:10px;letter-spacing:.14em;color:var(--muted)}
-.skill-dots{display:flex;gap:4px;margin-left:auto}
-.skill-dot{width:16px;height:6px;border:1px solid var(--rule-2)}
-.skill-dot.on{background:var(--ink);border-color:var(--ink)}
-.skill-card.is-max .skill-dot.on{background:var(--red);border-color:var(--red)}
-.skill-bar{height:2px;background:var(--rule);overflow:hidden}
-.skill-bar i{display:block;height:100%;background:var(--ink);transition:width .25s}
-.skill-card.is-max .skill-bar i{background:var(--red)}
-.skill-sp{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums}
-.skill-sp b{color:var(--ink);font-weight:600}
-.skill-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:10px;border-top:1px solid var(--rule)}
-.skill-train{display:flex;gap:6px}
-.skill-train .act{padding:5px 8px;border:1px solid var(--rule-2);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
-.skill-train .act:hover{background:var(--ink);border-color:var(--ink);color:var(--paper)}
-.skill-train .act[disabled]{opacity:.35;cursor:default;background:none;color:var(--ink-2)}
-.skill-acts{display:flex;gap:10px;opacity:0;transition:opacity .12s}
-.skill-card:hover .skill-acts,.skill-card:focus-within .skill-acts{opacity:1}
-.skill-acts .act{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid transparent;padding-bottom:1px}
-.skill-acts .act:hover{color:var(--ink);border-bottom-color:var(--ink)}
-.skill-acts .act.del:hover{color:var(--red);border-bottom-color:var(--red)}
+.tree-shell{
+  margin-top:18px;padding:20px clamp(16px,2.6vw,30px) 16px;
+  border:1px solid var(--ink);
+  background:repeating-linear-gradient(90deg,transparent 0 79px,rgba(21,21,21,.05) 79px 80px);
+  color:var(--ink);
+}
+.tree-top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:10px;border-bottom:1px solid var(--ink)}
+.tree-eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--red)}
+.tree-eyebrow .sq{width:8px;height:8px;background:var(--red)}
+.tree-sys{display:inline-flex;align-items:center;gap:7px;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.tree-sys .sys-dot{width:6px;height:6px;border-radius:50%;background:var(--red)}
+.tree-headline{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:start;padding:16px 0 20px;border-bottom:1px solid var(--ink)}
+.tree-title{font-size:clamp(30px,4vw,52px);line-height:1.02;font-weight:700;letter-spacing:-.02em;color:var(--ink);outline:none;overflow-wrap:break-word}
+.tree-title:empty::before{content:attr(data-placeholder);color:rgba(21,21,21,.22)}
+.tree-desc{margin-top:12px;max-width:56ch;min-height:1.6em;font-size:12.5px;line-height:1.7;color:var(--ink-2);outline:none}
+.tree-desc:empty::before{content:attr(data-placeholder);color:rgba(21,21,21,.28)}
+.tree-stats{display:grid;grid-template-columns:repeat(2,minmax(92px,1fr));gap:12px 18px}
+.tree-stat{padding-left:10px;border-left:1px solid var(--rule)}
+.tree-stat b{display:block;font-size:23px;line-height:1.05;font-weight:600;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.tree-stat span{display:block;margin-top:4px;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.tree-body{display:grid;grid-template-columns:150px minmax(0,1fr);margin-top:16px}
+.tree-root{position:relative;display:flex;align-items:center;justify-content:flex-end;padding:24px 24px 24px 0}
+.tree-root::after{content:"";position:absolute;right:0;top:16%;bottom:16%;width:1px;background:var(--rule-2)}
+.root-node{position:relative;display:flex;flex-direction:column;gap:5px;min-width:118px;padding:13px 14px;border:1px solid var(--ink);background:var(--paper-2)}
+.root-node::after{content:"";position:absolute;right:-25px;top:50%;width:24px;height:1px;background:var(--rule-2)}
+.root-k{font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--red)}
+.root-node b{font-size:16px;color:var(--ink);letter-spacing:.01em}
+.root-sub{font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.tree-lanes{min-width:0;padding-left:26px}
+.tree-lane{position:relative;padding:0 0 8px 22px}
+.tree-lane + .tree-lane{margin-top:10px}
+.tree-lane::before{content:"";position:absolute;left:0;top:34px;width:22px;height:1px;background:var(--rule-2)}
+.tree-lane::after{content:"";position:absolute;left:0;top:31px;width:6px;height:6px;background:var(--red)}
+.lane-head{display:flex;align-items:center;gap:11px;position:relative;z-index:1;padding-bottom:2px}
+.lane-idx{font-size:9px;letter-spacing:.12em;color:var(--red);font-weight:600;font-variant-numeric:tabular-nums}
+.lane-name{display:flex;align-items:baseline;gap:8px}
+.lane-name b{font-size:13.5px;color:var(--ink);letter-spacing:.01em}
+.lane-name span{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.lane-meta{margin-left:auto;font-size:8.5px;letter-spacing:.1em;color:var(--muted);font-variant-numeric:tabular-nums}
+.lane-meta b{color:var(--ink);font-weight:600}
+.lane-add{width:22px;height:22px;display:grid;place-items:center;border:1px solid var(--rule-2);color:var(--ink-2);font-size:13px;line-height:1}
+.lane-add:hover{background:var(--ink);color:var(--paper-2);border-color:var(--ink)}
+.lane-track{position:relative;display:flex;align-items:flex-start;padding:16px 4px 8px 12px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--rule-2) transparent}
+.lane-track::-webkit-scrollbar{height:6px}
+.lane-track::-webkit-scrollbar-thumb{background:var(--rule-2)}
+.lane-track::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--rule-2)}
+.tree-node{
+  position:relative;z-index:1;flex:0 0 248px;display:flex;flex-direction:column;gap:8px;
+  min-height:198px;padding:12px 14px;background:var(--paper-2);border:1px solid var(--rule-2);
+  transition:border-color .14s,box-shadow .14s;
+}
+.tree-node:hover{border-color:var(--ink)}
+.tree-node.is-max{border-color:var(--red);box-shadow:0 0 0 2px var(--red),0 0 0 5px rgba(224,36,27,.14)}
+.tree-node.is-new{box-shadow:inset 3px 0 0 var(--red)}
+.node-link{position:relative;flex:0 0 30px;z-index:0;display:flex;align-items:center;justify-content:center}
+.node-link::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--rule-2)}
+.node-link::after{content:"";position:relative;width:6px;height:6px;background:var(--red)}
+.node-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums}
+.node-num{color:var(--red);font-weight:700}
+.node-sp{letter-spacing:.1em}
+.node-name{font-size:18px;line-height:1.25;font-weight:700;color:var(--ink);outline:none;caret-color:var(--red);overflow-wrap:anywhere}
+.node-desc{font-size:10px;line-height:1.5;color:var(--ink-2);outline:none;min-height:1.5em}
+.node-desc:empty::before{content:'一句话说明（选填）';color:rgba(21,21,21,.25)}
+.node-lv{display:flex;align-items:flex-end;gap:10px;margin-top:auto}
+.node-lv-num{font-size:40px;line-height:.82;font-weight:500;letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums}
+.node-lv-num small{margin-left:4px;font-size:8.5px;letter-spacing:.16em;color:var(--muted)}
+.node-dots{display:flex;gap:3px;margin-left:auto;padding-bottom:6px}
+.node-dot{width:13px;height:4px;border:1px solid var(--rule-2)}
+.node-dot.on{background:var(--ink);border-color:var(--ink)}
+.tree-node.is-max .node-dot.on{background:var(--red);border-color:var(--red)}
+.node-bar{height:2px;background:var(--rule);overflow:hidden}
+.node-bar i{display:block;height:100%;background:var(--ink);transition:width .25s}
+.tree-node.is-max .node-bar i{background:var(--red)}
+.node-sp-line{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:8px;letter-spacing:.08em;color:var(--muted);font-variant-numeric:tabular-nums}
+.node-sp-line b{color:var(--ink-2);font-weight:600}
+.node-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:2px;padding-top:8px;border-top:1px solid var(--rule)}
+.node-train{display:flex;gap:5px}
+.node-train .act{padding:4px 7px;border:1px solid var(--rule-2);font-size:8px;letter-spacing:.1em;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.node-train .act:hover{background:var(--ink);border-color:var(--ink);color:var(--paper-2)}
+.node-train .act[disabled]{opacity:.3;cursor:default;background:none;color:var(--muted)}
+.node-acts{display:flex;gap:9px;opacity:0;transition:opacity .12s}
+.tree-node:hover .node-acts,.tree-node:focus-within .node-acts{opacity:1}
+.node-acts .act{font-size:8px;letter-spacing:.1em;color:var(--muted);border-bottom:1px solid transparent;padding-bottom:1px}
+.node-acts .act:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.node-acts .act.del:hover{color:var(--red);border-bottom-color:var(--red)}
+.node-children{margin-top:8px;padding-top:8px;border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:7px}
+.child-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.child-head b{margin-left:4px;color:var(--ink);font-weight:600}
+.child-add{font-size:8px;letter-spacing:.08em;color:var(--ink-2);border-bottom:1px solid transparent;padding-bottom:1px}
+.child-add:hover{color:var(--red);border-bottom-color:var(--red)}
+.child-item{position:relative;display:flex;flex-direction:column;gap:4px;padding:7px 8px 6px;background:rgba(21,21,21,.035);border:1px solid var(--rule);border-left:2px solid var(--rule-2)}
+.child-item.is-max{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
+.child-row{display:flex;align-items:baseline;gap:7px}
+.child-num{flex:none;font-size:8px;color:var(--red);font-variant-numeric:tabular-nums}
+.child-name{flex:1;min-width:0;font-size:12px;line-height:1.35;font-weight:600;color:var(--ink);outline:none;caret-color:var(--red);overflow-wrap:anywhere}
+.child-lv{flex:none;font-size:8px;letter-spacing:.06em;color:var(--muted);font-variant-numeric:tabular-nums}
+.child-bar{height:2px;background:var(--rule);overflow:hidden}
+.child-bar i{display:block;height:100%;background:var(--ink);transition:width .25s}
+.child-item.is-max .child-bar i{background:var(--red)}
+.child-meta{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.child-sp{font-size:7.5px;letter-spacing:.05em;color:var(--muted);font-variant-numeric:tabular-nums}
+.child-train{display:flex;gap:4px}
+.child-train .act{padding:2px 5px;border:1px solid var(--rule-2);font-size:7.5px;letter-spacing:.05em;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.child-train .act:hover{background:var(--ink);border-color:var(--ink);color:var(--paper-2)}
+.child-train .act[disabled]{opacity:.3;cursor:default;background:none;color:var(--muted)}
+.child-acts{display:flex;justify-content:flex-end;gap:8px;opacity:0;transition:opacity .12s}
+.child-item:hover .child-acts,.child-item:focus-within .child-acts{opacity:1}
+.child-acts .act{font-size:7.5px;letter-spacing:.05em;color:var(--muted);border-bottom:1px solid transparent;padding-bottom:1px}
+.child-acts .act:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.child-acts .act.del:hover{color:var(--red);border-bottom-color:var(--red)}
+.tree-empty{flex:0 0 248px;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:14px;border:1px dashed var(--rule-2);color:var(--muted);font-size:10px;line-height:1.6;background:transparent}
+.tree-empty b{color:var(--red);font-size:22px;font-weight:500}
+.tree-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;margin-top:16px;padding-top:11px;border-top:1px solid var(--rule-2);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* 视图切换 / 设置 / 卡片视图 */
+.tree-top-right{display:flex;align-items:center;gap:10px}
+.skill-viewbar{display:flex;border:1px solid var(--rule-2)}
+.skill-view-btn{padding:5px 10px 4px;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);border-right:1px solid var(--rule-2)}
+.skill-view-btn:last-child{border-right:0}
+.skill-view-btn:hover{color:var(--ink)}
+.skill-view-btn.is-on{background:var(--ink);color:var(--paper-2)}
+.skill-config-btn{padding:5px 10px 4px;border:1px solid var(--rule-2);font-size:8.5px;letter-spacing:.12em;color:var(--ink-2)}
+.skill-config-btn:hover{background:var(--ink);color:var(--paper-2);border-color:var(--ink)}
+.skill-view[hidden]{display:none!important}
+body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#DFE5EA}
+.skill-view-cards{padding-top:4px}
+.sc-group{margin-top:26px}
+.sc-group-head{display:flex;align-items:baseline;gap:14px;padding-bottom:10px;border-bottom:1px solid var(--rule-2)}
+.sc-idx{font-size:10px;letter-spacing:.12em;color:var(--red);font-weight:600;font-variant-numeric:tabular-nums}
+.sc-name{min-width:60px;font-size:15px;font-weight:700;outline:none;caret-color:var(--red);overflow-wrap:anywhere}
+.sc-name:empty::before{content:attr(data-placeholder);color:rgba(21,21,21,.25);font-weight:500}
+.sc-meta{margin-left:auto;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums}
+.sc-meta b{color:var(--ink);font-weight:600}
+.sc-add{padding:6px 11px 5px;border:1px solid var(--rule-2);font-size:9px;letter-spacing:.12em;color:var(--ink-2)}
+.sc-add:hover{background:var(--ink);color:var(--paper-2);border-color:var(--ink)}
+.sc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px;align-items:start}
+.sc-card{flex:0 0 auto;width:100%;min-height:190px;background:var(--paper-2)}
+.sc-card.is-max{box-shadow:0 0 0 2px var(--red),0 0 0 5px rgba(224,36,27,.14)}
+
+/* 设置弹层 */
+.skill-cfg{padding-top:6px}
+.cfg-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid var(--rule)}
+.cfg-row label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.cfg-row input{flex:1;max-width:260px;padding:6px 8px;border:1px solid var(--rule-2);background:var(--paper);font-size:12px;outline:none}
+.cfg-row input:focus{border-color:var(--red)}
+.cfg-sep{height:14px}
+.cfg-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.cfg-lv-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.cfg-lv-grid label{display:flex;flex-direction:column;gap:4px;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.cfg-lv-grid input{width:100%;padding:7px 6px;border:1px solid var(--rule-2);background:var(--paper);font-size:13px;outline:none;font-variant-numeric:tabular-nums}
+.cfg-lv-grid input:focus{border-color:var(--red)}
+.cfg-tip{margin-top:10px;font-size:10px;line-height:1.6;color:var(--muted)}
+.cfg-actions{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:12px;border-top:1px solid var(--rule)}
+.cfg-spacer{flex:1}
+.cfg-link{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid transparent;padding-bottom:1px}
+.cfg-link:hover{color:var(--red);border-bottom-color:var(--red)}
+.cfg-btn{padding:7px 14px;border:1px solid var(--rule-2);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.cfg-btn:hover{border-color:var(--ink);color:var(--ink)}
+.cfg-btn.is-primary{background:var(--ink);color:var(--paper-2);border-color:var(--ink)}
+.cfg-btn.is-primary:hover{background:var(--red);border-color:var(--red);color:#fff}
 
 /* ============ 响应式 ============ */
 @media (max-width:1279px){
@@ -582,12 +689,21 @@ body.mode-skills .ideas-stage{display:none}
   .ideas-num{font-size:38px}
   .ideas-meta{flex-direction:row;flex-wrap:wrap;gap:18px 28px}
   .idea-grid{grid-template-columns:1fr}
-  .skill-grid{grid-template-columns:1fr;padding-left:14px}
-  .skill-grid::before{left:0}
-  .skill-group-head{flex-wrap:wrap;gap:8px 12px}
-  .skill-group-meta{margin-left:0}
-  .skill-head{display:block;padding-top:16px}
-  .skills-hero .ideas-num{font-size:38px}
+  .tree-shell{margin-top:14px;padding:16px 14px 12px}
+  .tree-top{flex-wrap:wrap;row-gap:10px}
+  .tree-top-right{width:100%;justify-content:space-between;gap:8px}
+  .tree-headline{grid-template-columns:1fr;gap:14px}
+  .tree-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tree-body{grid-template-columns:1fr}
+  .tree-root{display:none}
+  .tree-lanes{padding-left:0}
+  .tree-lane{padding-left:16px}
+  .tree-lane::before{width:16px}
+  .lane-track{padding-left:8px}
+  .tree-node{flex-basis:232px;min-height:190px}
+  .tree-foot{font-size:7.5px;letter-spacing:.08em}
+  .sc-grid{grid-template-columns:1fr}
+  .cfg-lv-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .modebar{padding:0 var(--pad)}
   .search{width:130px}
   .footer{gap:12px 20px}
@@ -609,8 +725,10 @@ body.mode-skills .ideas-stage{display:none}
   .section-acts{opacity:1}
   .rail-del{opacity:1}
   .idea-acts{opacity:1;gap:14px}
-  .skill-acts{opacity:1;gap:14px}
-  .skill-acts .act{padding:5px 2px;font-size:10px}
+  .node-acts{opacity:1;gap:14px}
+  .node-acts .act{padding:4px 2px;font-size:9px}
+  .child-acts{opacity:1;gap:10px}
+  .child-acts .act{padding:4px 2px;font-size:8px}
   .act{padding:5px 2px;font-size:10px}
   .toggle{padding:5px 0}
   .rail-add{width:30px;height:30px;font-size:16px}
@@ -811,63 +929,89 @@ body.mode-skills .ideas-stage{display:none}
       </section>
 
       <section class="skills-stage" aria-label="科技树">
-        <section class="ideas-hero skills-hero">
-          <div class="ideas-idx">
-            <div class="ideas-num" id="skillsBig">0000</div>
-            <div class="ideas-idx-k">技能点<br>Skill Points</div>
-          </div>
-          <div class="ideas-main">
-            <div class="eyebrow"><span class="sq"></span>Skill Tree / 科技树</div>
-            <h1 class="ideas-title" id="skillBoardTitle" contenteditable="true" spellcheck="false" data-placeholder="给技能树起个名字"></h1>
-            <p class="ideas-desc" id="skillBoardDesc" contenteditable="true" spellcheck="false" data-placeholder="一句话说明（选填）"></p>
-          </div>
-          <div class="ideas-meta">
-            <div class="meta-block">
-              <div class="meta-k">技能 / Skills</div>
-              <div class="meta-nums"><span class="stat-num" id="skillCountTotal">00</span><span class="meta-done">个技能</span></div>
-            </div>
-            <div class="meta-block">
-              <div class="meta-k">等级 / Levels</div>
-              <div class="meta-nums"><span class="stat-num" id="skillLevelsTotal">00</span><span class="meta-done">级</span></div>
-            </div>
-            <div class="meta-block">
-              <div class="meta-k">满级 / Maxed</div>
-              <div class="meta-nums"><span class="stat-num" id="skillMaxTotal">00</span><span class="meta-done">个 Lv.5</span></div>
+        <div class="tree-shell">
+          <div class="tree-top">
+            <div class="tree-eyebrow"><span class="sq"></span>Skill Tree / 科技树</div>
+            <div class="tree-top-right">
+              <div class="skill-viewbar" role="group" aria-label="科技树视图">
+                <button type="button" class="skill-view-btn is-on" data-skill-view="tree">科技树</button>
+                <button type="button" class="skill-view-btn" data-skill-view="cards">卡片</button>
+              </div>
+              <button type="button" class="skill-config-btn" id="skillConfigBtn">⚙ 支线 / 等级</button>
             </div>
           </div>
-        </section>
 
-        <div class="skill-head">
-          <div class="notes-label-wrap">
-            <div class="notes-label">科技树 / Skill Tree <b id="skillTreeCount">00</b></div>
-            <div class="notes-sub">100 / 300 / 700 / 1500 / 3100 点升一级 · Lv.5 封顶</div>
-            <div class="skill-legend" aria-hidden="true">
-              <span><i class="lg-dot on"></i>已点亮</span>
-              <span><i class="lg-dot"></i>未点亮</span>
-              <span><i class="lg-line"></i>下一级进度</span>
+          <div class="tree-headline">
+            <div class="tree-title-wrap">
+              <h1 class="tree-title" id="skillBoardTitle" contenteditable="true" spellcheck="false" data-placeholder="给技能树起个名字"></h1>
+              <p class="tree-desc" id="skillBoardDesc" contenteditable="true" spellcheck="false" data-placeholder="一句话说明（选填）"></p>
             </div>
+            <div class="tree-stats">
+              <div class="tree-stat"><b id="skillsBig">0000</b><span>Total SP</span></div>
+              <div class="tree-stat"><b id="skillCountTotal">00</b><span>Skills</span></div>
+              <div class="tree-stat"><b id="skillLevelsTotal">00</b><span>Levels</span></div>
+              <div class="tree-stat"><b id="skillMaxTotal">00</b><span>Maxed</span></div>
+            </div>
+          </div>
+
+          <div class="skill-view skill-view-tree" id="skillTreeView">
+            <div class="tree-body">
+              <div class="tree-root">
+                <div class="root-node">
+                  <span class="root-k">ROOT</span>
+                  <b>科技树</b>
+                  <span class="root-sub">GENERAL + PRO</span>
+                </div>
+              </div>
+              <div class="tree-lanes">
+                <section class="tree-lane" data-group="general">
+                  <div class="lane-head">
+                    <span class="lane-idx">01</span>
+                    <div class="lane-name"><b class="branch-name" data-branch="general" contenteditable="true" spellcheck="false"></b><span>General</span></div>
+                    <span class="lane-meta"><b id="skillGeneralCount">00</b> SKILLS · <span id="skillGeneralPoints">0000</span> SP</span>
+                    <button type="button" class="lane-add" data-add-skill="general" aria-label="新建通用技能" title="新建通用技能">＋</button>
+                  </div>
+                  <div class="lane-track" id="skillGeneral"></div>
+                </section>
+                <section class="tree-lane" data-group="pro">
+                  <div class="lane-head">
+                    <span class="lane-idx">02</span>
+                    <div class="lane-name"><b class="branch-name" data-branch="pro" contenteditable="true" spellcheck="false"></b><span>Professional</span></div>
+                    <span class="lane-meta"><b id="skillProCount">00</b> SKILLS · <span id="skillProPoints">0000</span> SP</span>
+                    <button type="button" class="lane-add" data-add-skill="pro" aria-label="新建专业技能" title="新建专业技能">＋</button>
+                  </div>
+                  <div class="lane-track" id="skillPro"></div>
+                </section>
+              </div>
+            </div>
+          </div>
+
+          <div class="skill-view skill-view-cards" id="skillCardsView" hidden>
+            <section class="sc-group" data-group="general">
+              <div class="sc-group-head">
+                <span class="sc-idx">01</span>
+                <b class="branch-name sc-name" data-branch="general" contenteditable="true" spellcheck="false"></b>
+                <span class="sc-meta"><b id="scGeneralCount">00</b> SKILLS · <span id="scGeneralPoints">0000</span> SP</span>
+                <button type="button" class="sc-add" data-add-skill="general">＋ 技能</button>
+              </div>
+              <div class="sc-grid" id="scGeneral"></div>
+            </section>
+            <section class="sc-group" data-group="pro">
+              <div class="sc-group-head">
+                <span class="sc-idx">02</span>
+                <b class="branch-name sc-name" data-branch="pro" contenteditable="true" spellcheck="false"></b>
+                <span class="sc-meta"><b id="scProCount">00</b> SKILLS · <span id="scProPoints">0000</span> SP</span>
+                <button type="button" class="sc-add" data-add-skill="pro">＋ 技能</button>
+              </div>
+              <div class="sc-grid" id="scPro"></div>
+            </section>
+          </div>
+
+          <div class="tree-foot">
+            <span id="skillScaleHint">Lv.1 100 · Lv.2 300 · Lv.3 700 · Lv.4 1500 · Lv.5 3100 SP</span>
+            <span id="skillFootHint">点 ＋25 / ＋100 训练 · 名称可改 · 手机可左右滑动</span>
           </div>
         </div>
-
-        <section class="skill-group">
-          <div class="skill-group-head">
-            <div class="skill-group-idx">01</div>
-            <div class="skill-group-title">通用技能 <span>General</span></div>
-            <div class="skill-group-meta"><b id="skillGeneralCount">00</b> 技能 · <span id="skillGeneralPoints">0000</span> SP</div>
-            <button type="button" class="section-add" data-add-skill="general">＋ 技能</button>
-          </div>
-          <div class="skill-grid" id="skillGeneral"></div>
-        </section>
-
-        <section class="skill-group">
-          <div class="skill-group-head">
-            <div class="skill-group-idx">02</div>
-            <div class="skill-group-title">专业技能 <span>Professional</span></div>
-            <div class="skill-group-meta"><b id="skillProCount">00</b> 技能 · <span id="skillProPoints">0000</span> SP</div>
-            <button type="button" class="section-add" data-add-skill="pro">＋ 技能</button>
-          </div>
-          <div class="skill-grid" id="skillPro"></div>
-        </section>
       </section>
     </main>
   </div>
@@ -919,6 +1063,36 @@ body.mode-skills .ideas-stage{display:none}
   <div class="image-view"><img id="imageView" alt="图片预览"></div>
 </div>
 
+<div class="modal" id="skillConfigModal" hidden>
+  <div class="modal-back" data-skillcfg-close></div>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="skillCfgTitle">
+    <div class="modal-head">
+      <span class="micro" id="skillCfgTitle">科技树设置 / Skill Config</span>
+      <button type="button" class="modal-x" data-skillcfg-close aria-label="关闭">×</button>
+    </div>
+    <div class="skill-cfg">
+      <div class="cfg-row"><label for="cfgBranchGeneral">通用支线名称</label><input id="cfgBranchGeneral" type="text" maxlength="40" autocomplete="off"></div>
+      <div class="cfg-row"><label for="cfgBranchPro">专业支线名称</label><input id="cfgBranchPro" type="text" maxlength="40" autocomplete="off"></div>
+      <div class="cfg-sep"></div>
+      <div class="cfg-label">升到每一级所需累计经验（SP）</div>
+      <div class="cfg-lv-grid">
+        <label>Lv.1<input id="cfgTh1" type="number" min="1" step="10" inputmode="numeric"></label>
+        <label>Lv.2<input id="cfgTh2" type="number" min="1" step="10" inputmode="numeric"></label>
+        <label>Lv.3<input id="cfgTh3" type="number" min="1" step="10" inputmode="numeric"></label>
+        <label>Lv.4<input id="cfgTh4" type="number" min="1" step="10" inputmode="numeric"></label>
+        <label>Lv.5<input id="cfgTh5" type="number" min="1" step="10" inputmode="numeric"></label>
+      </div>
+      <p class="cfg-tip">例：Lv.1 100、Lv.5 3100；达到 Lv.5 即满级。数值会自动从小到大排列。</p>
+      <div class="cfg-actions">
+        <button type="button" class="cfg-link" id="cfgReset">恢复默认</button>
+        <span class="cfg-spacer"></span>
+        <button type="button" class="cfg-btn" id="cfgCancel">取消</button>
+        <button type="button" class="cfg-btn is-primary" id="cfgSave">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -938,7 +1112,7 @@ body.mode-skills .ideas-stage{display:none}
   })();
 
   var state = null;
-  var ui = { filter: 'all', search: '', newId: null, sectionId: null, mode: 'notes', ideaFilter: 'all', ideaSearch: '', ideaNewId: null, ideaTopicId: null, skillNewId: null };
+  var ui = { filter: 'all', search: '', newId: null, sectionId: null, mode: 'notes', ideaFilter: 'all', ideaSearch: '', ideaNewId: null, ideaTopicId: null, skillNewId: null, skillView: 'tree' };
   var saveTimer = null;
   var toastTimer = null;
   var remote = {
@@ -1120,11 +1294,11 @@ body.mode-skills .ideas-stage{display:none}
   function defaultSkillSeeds() {
     var now = Date.now();
     return [
-      { id: 'skill-english', group: 'general', name: '英语', desc: '', points: 0, createdAt: now - 500000, updatedAt: now - 500000 },
-      { id: 'skill-gaoshu', group: 'general', name: '高数', desc: '', points: 0, createdAt: now - 400000, updatedAt: now - 400000 },
-      { id: 'skill-drafting', group: 'pro', name: '机械制图', desc: '', points: 0, createdAt: now - 300000, updatedAt: now - 300000 },
-      { id: 'skill-cad', group: 'pro', name: '计算机绘图', desc: '', points: 0, createdAt: now - 200000, updatedAt: now - 200000 },
-      { id: 'skill-heat', group: 'pro', name: '材料热处理学', desc: '', points: 0, createdAt: now - 100000, updatedAt: now - 100000 }
+      { id: 'skill-english', group: 'general', parentId: null, name: '英语', desc: '', points: 0, createdAt: now - 500000, updatedAt: now - 500000 },
+      { id: 'skill-gaoshu', group: 'general', parentId: null, name: '高数', desc: '', points: 0, createdAt: now - 400000, updatedAt: now - 400000 },
+      { id: 'skill-drafting', group: 'pro', parentId: null, name: '机械制图', desc: '', points: 0, createdAt: now - 300000, updatedAt: now - 300000 },
+      { id: 'skill-cad', group: 'pro', parentId: null, name: '计算机绘图', desc: '', points: 0, createdAt: now - 200000, updatedAt: now - 200000 },
+      { id: 'skill-heat', group: 'pro', parentId: null, name: '材料热处理学', desc: '', points: 0, createdAt: now - 100000, updatedAt: now - 100000 }
     ];
   }
   function seedState() {
@@ -1144,7 +1318,7 @@ body.mode-skills .ideas-stage{display:none}
         { id: uid(), topicId: null, image: '', text: '把便签板做成手机也能用的云同步工具', favorite: true, createdAt: now - 200000, updatedAt: now - 200000 },
         { id: uid(), topicId: null, image: '', text: '每周日晚上回顾一次这周的记录', favorite: false, createdAt: now - 100000, updatedAt: now - 100000 }
       ],
-      skillBoard: { title: '科技树', desc: '通用技能打底，专业技能往上点。', updatedAt: now },
+      skillBoard: { title: '科技树', desc: '通用技能打底，专业技能往上点。', branchGeneral: '通用技能', branchPro: '专业技能', thresholds: [100, 300, 700, 1500, 3100], updatedAt: now },
       skills: defaultSkillSeeds(),
       notes: [
         note('在下面的输入框写下第一条便签，按回车记录；双击便签文字可以直接修改。', false, false, 180000),
@@ -1178,6 +1352,9 @@ body.mode-skills .ideas-stage{display:none}
     state.skillBoard = {
       title: (typeof rawSkillBoard.title === 'string' && rawSkillBoard.title) ? rawSkillBoard.title : '科技树',
       desc: typeof rawSkillBoard.desc === 'string' ? rawSkillBoard.desc : '通用技能打底，专业技能往上点。',
+      branchGeneral: (typeof rawSkillBoard.branchGeneral === 'string' && rawSkillBoard.branchGeneral) ? rawSkillBoard.branchGeneral : '通用技能',
+      branchPro: (typeof rawSkillBoard.branchPro === 'string' && rawSkillBoard.branchPro) ? rawSkillBoard.branchPro : '专业技能',
+      thresholds: normalizeThresholds(rawSkillBoard.thresholds),
       updatedAt: Number(rawSkillBoard.updatedAt) || 0
     };
     state.events = events.filter(function (e) { return e && e.id; }).map(function (e) {
@@ -1224,12 +1401,24 @@ body.mode-skills .ideas-stage{display:none}
       return {
         id: s.id,
         group: s.group === 'pro' ? 'pro' : 'general',
+        parentId: (typeof s.parentId === 'string' && s.parentId) ? s.parentId : null,
         name: (typeof s.name === 'string' && s.name) ? s.name : '新技能',
         desc: typeof s.desc === 'string' ? s.desc : '',
         points: points,
         createdAt: s.createdAt || Date.now(),
         updatedAt: s.updatedAt || s.createdAt || Date.now()
       };
+    });
+    var skillById = {};
+    state.skills.forEach(function (s) { skillById[s.id] = s; });
+    state.skills.forEach(function (s) {
+      if (!s.parentId) return;
+      var parent = skillById[s.parentId];
+      if (!parent || parent.id === s.id || parent.parentId) {
+        s.parentId = null;
+      } else {
+        s.group = parent.group;
+      }
     });
     state.notes = notes.filter(function (n) { return n && n.id && typeof n.text === 'string'; }).map(function (n) {
       return {
@@ -1359,7 +1548,7 @@ body.mode-skills .ideas-stage{display:none}
     if (!ae) return false;
     var id = ae.id || '';
     if (id === 'heroTitle' || id === 'heroDesc' || id === 'ideaBoardTitle' || id === 'ideaBoardDesc' || id === 'skillBoardTitle' || id === 'skillBoardDesc') return true;
-    if (ae.classList && (ae.classList.contains('note-edit') || ae.classList.contains('skill-name') || ae.classList.contains('skill-desc'))) return true;
+    if (ae.classList && (ae.classList.contains('note-edit') || ae.classList.contains('skill-name') || ae.classList.contains('skill-desc') || ae.classList.contains('branch-name') || ae.classList.contains('child-name'))) return true;
     return false;
   }
 
@@ -3188,37 +3377,133 @@ body.mode-skills .ideas-stage{display:none}
   }
 
   /* ---------------- 科技树 / 技能 ---------------- */
-  var SKILL_TH = [0, 100, 300, 700, 1500, 3100];
+  var DEFAULT_SKILL_TH = [100, 300, 700, 1500, 3100];
+  function normalizeThresholds(arr) {
+    var def = DEFAULT_SKILL_TH;
+    if (!Array.isArray(arr)) return def.slice();
+    var out = [];
+    for (var i = 0; i < 5; i++) {
+      var v = Math.floor(Number(arr[i]) || 0);
+      if (v <= 0) v = def[i];
+      if (i > 0 && v <= out[i - 1]) v = out[i - 1] + 100;
+      out.push(Math.min(v, 20000000));
+    }
+    return out;
+  }
+  function skillThresholds() {
+    var t = (state && state.skillBoard && state.skillBoard.thresholds) || null;
+    return normalizeThresholds(t);
+  }
+  function skillBranchName(group) {
+    var board = state.skillBoard || {};
+    if (group === 'pro') return board.branchPro || '专业技能';
+    return board.branchGeneral || '通用技能';
+  }
+  function syncSkillBranchNames(except) {
+    var board = state.skillBoard || {};
+    $$('.skills-stage .branch-name').forEach(function (el) {
+      if (el === except) return;
+      var key = el.getAttribute('data-branch') === 'pro' ? 'pro' : 'general';
+      el.textContent = key === 'pro' ? (board.branchPro || '专业技能') : (board.branchGeneral || '通用技能');
+    });
+  }
+  function readSkillView() {
+    try {
+      return localStorage.getItem('sb-skill-view-v1') === 'cards' ? 'cards' : 'tree';
+    } catch (e) { return 'tree'; }
+  }
+  function applySkillView(view, silent) {
+    ui.skillView = view === 'cards' ? 'cards' : 'tree';
+    document.body.classList.toggle('skill-view-cards', ui.skillView === 'cards');
+    var tree = $('#skillTreeView');
+    var cards = $('#skillCardsView');
+    if (tree) tree.hidden = ui.skillView !== 'tree';
+    if (cards) cards.hidden = ui.skillView !== 'cards';
+    $$('.skill-view-btn').forEach(function (b) {
+      b.classList.toggle('is-on', b.getAttribute('data-skill-view') === ui.skillView);
+    });
+    var hint = $('#skillFootHint');
+    if (hint) {
+      hint.textContent = ui.skillView === 'cards'
+        ? '点 ＋25 / ＋100 训练 · 名称可改 · 悬停 重置 / 删除'
+        : '点 ＋25 / ＋100 训练 · 名称可改 · 手机可左右滑动';
+    }
+    try { localStorage.setItem('sb-skill-view-v1', ui.skillView); } catch (e) {}
+    if (!silent) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function openSkillConfig() {
+    var board = state.skillBoard || {};
+    var th = skillThresholds();
+    var names = {
+      general: board.branchGeneral || '通用技能',
+      pro: board.branchPro || '专业技能'
+    };
+    if ($('#cfgBranchGeneral')) $('#cfgBranchGeneral').value = names.general;
+    if ($('#cfgBranchPro')) $('#cfgBranchPro').value = names.pro;
+    for (var i = 1; i <= 5; i++) {
+      var el = $('#cfgTh' + i);
+      if (el) el.value = th[i - 1];
+    }
+    var modal = $('#skillConfigModal');
+    if (modal) modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSkillConfig() {
+    var modal = $('#skillConfigModal');
+    if (modal) modal.hidden = true;
+    document.body.style.overflow = '';
+  }
+  function saveSkillConfig() {
+    var board = state.skillBoard || {};
+    var g = ($('#cfgBranchGeneral').value || '').replace(/\s+/g, ' ').trim() || '通用技能';
+    var p = ($('#cfgBranchPro').value || '').replace(/\s+/g, ' ').trim() || '专业技能';
+    var raw = [];
+    for (var i = 1; i <= 5; i++) {
+      raw.push(Number($('#cfgTh' + i).value) || 0);
+    }
+    board.branchGeneral = g;
+    board.branchPro = p;
+    board.thresholds = normalizeThresholds(raw);
+    board.updatedAt = Date.now();
+    save();
+    closeSkillConfig();
+    renderSkills();
+    toast('科技树设置已保存');
+  }
+  function skillLevelInfo(points) {
+    var th = [0].concat(skillThresholds());
+    points = Math.max(0, Math.floor(Number(points) || 0));
+    var lv = 0, i;
+    for (i = 1; i < th.length; i++) {
+      if (points >= th[i]) lv = i;
+    }
+    if (lv >= 5) return { level: 5, prev: th[5], next: null, pct: 100, max: true, points: points };
+    var prev = th[lv], next = th[lv + 1];
+    var pct = Math.round((points - prev) / (next - prev) * 100);
+    return { level: lv, prev: prev, next: next, pct: Math.max(0, Math.min(100, pct)), max: false, points: points };
+  }
   function points4(n) {
     n = Math.max(0, Math.floor(Number(n) || 0));
     var s = '' + n;
     while (s.length < 4) s = '0' + s;
     return s;
   }
-  function skillLevelInfo(points) {
-    points = Math.max(0, Math.floor(Number(points) || 0));
-    var lv = 0, i;
-    for (i = 1; i < SKILL_TH.length; i++) {
-      if (points >= SKILL_TH[i]) lv = i;
-    }
-    if (lv >= 5) return { level: 5, prev: SKILL_TH[5], next: null, pct: 100, max: true, points: points };
-    var prev = SKILL_TH[lv], next = SKILL_TH[lv + 1];
-    var pct = Math.round((points - prev) / (next - prev) * 100);
-    return { level: lv, prev: prev, next: next, pct: Math.max(0, Math.min(100, pct)), max: false, points: points };
-  }
   function skillsOf(group) {
-    return state.skills.filter(function (s) { return s.group === group; })
+    return state.skills.filter(function (s) { return s.group === group && !s.parentId; })
+      .sort(function (a, b) { return (a.createdAt || 0) - (b.createdAt || 0); });
+  }
+  function childrenOf(skillId) {
+    return state.skills.filter(function (s) { return s.parentId === skillId; })
       .sort(function (a, b) { return (a.createdAt || 0) - (b.createdAt || 0); });
   }
   function skillEmpty(group) {
     var el = document.createElement('div');
-    el.className = 'empty skill-empty';
-    var n = document.createElement('div');
-    n.className = 'empty-num';
-    n.textContent = '00';
+    el.className = 'tree-empty';
+    var b = document.createElement('b');
+    b.textContent = '00';
     var p = document.createElement('p');
-    p.textContent = group === 'pro' ? '还没有专业技能。点「＋ 技能」加一个。' : '还没有通用技能。点「＋ 技能」加一个。';
-    el.appendChild(n);
+    p.textContent = group === 'pro' ? '还没有专业技能，点右上角 ＋ 新建。' : '还没有通用技能，点右上角 ＋ 新建。';
+    el.appendChild(b);
     el.appendChild(p);
     return el;
   }
@@ -3243,17 +3528,28 @@ body.mode-skills .ideas-stage{display:none}
     toast('已重置技能点');
   }
   function deleteSkill(skill) {
-    if (!window.confirm('删除技能「' + (skill.name || '技能') + '」？')) return;
-    state.tombstones.skills[skill.id] = Date.now();
+    var kids = skill.parentId ? [] : childrenOf(skill.id);
+    var label = skill.name || '技能';
+    var msg = kids.length
+      ? '删除主技能「' + label + '」及其 ' + kids.length + ' 个附属技能？\n此操作不可撤销。'
+      : '删除技能「' + label + '」？';
+    if (!window.confirm(msg)) return;
+    var now = Date.now();
+    state.tombstones.skills[skill.id] = now;
+    kids.forEach(function (child) {
+      state.tombstones.skills[child.id] = now;
+      state.skills = state.skills.filter(function (s) { return s.id !== child.id; });
+    });
     state.skills = state.skills.filter(function (s) { return s.id !== skill.id; });
     save();
     renderSkills();
-    toast('已删除技能');
+    toast(kids.length ? '已删除主技能及附属技能' : '已删除技能');
   }
   function addSkill(group) {
     var skill = {
       id: uid(),
       group: group === 'pro' ? 'pro' : 'general',
+      parentId: null,
       name: '新技能',
       desc: '',
       points: 0,
@@ -3264,8 +3560,11 @@ body.mode-skills .ideas-stage{display:none}
     ui.skillNewId = skill.id;
     save();
     renderSkills();
-    var grid = $(group === 'pro' ? '#skillPro' : '#skillGeneral');
-    var last = grid ? grid.querySelector('.skill-card:last-child .skill-name') : null;
+    var prefix = ui.skillView === 'cards' ? (group === 'pro' ? '#scPro' : '#scGeneral') : (group === 'pro' ? '#skillPro' : '#skillGeneral');
+    var grid = $(prefix);
+    var nodes = grid ? grid.querySelectorAll('.tree-node') : [];
+    var lastNode = nodes.length ? nodes[nodes.length - 1] : null;
+    var last = lastNode ? lastNode.querySelector('.node-name') : null;
     if (last) {
       last.focus();
       var range = document.createRange();
@@ -3276,27 +3575,152 @@ body.mode-skills .ideas-stage{display:none}
     }
     setTimeout(function () { ui.skillNewId = null; }, 900);
   }
-  function skillCard(skill, number) {
+  function addChildSkill(parent) {
+    var child = {
+      id: uid(),
+      group: parent.group,
+      parentId: parent.id,
+      name: '附属技能',
+      desc: '',
+      points: 0,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    state.skills.push(child);
+    ui.skillNewId = child.id;
+    save();
+    renderSkills();
+    var view = ui.skillView === 'cards' ? '#skillCardsView' : '#skillTreeView';
+    var el = document.querySelector(view + ' .child-item[data-skill-id="' + child.id + '"] .child-name');
+    if (el) {
+      el.focus();
+      var range = document.createRange();
+      range.selectNodeContents(el);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+    setTimeout(function () { ui.skillNewId = null; }, 900);
+  }
+  function childSkillItem(skill, number) {
+    var info = skillLevelInfo(skill.points);
+    var el = document.createElement('div');
+    el.className = 'child-item' + (info.max ? ' is-max' : '');
+    el.setAttribute('data-skill-id', skill.id);
+
+    var row = document.createElement('div');
+    row.className = 'child-row';
+    var num = document.createElement('span');
+    num.className = 'child-num';
+    num.textContent = pad(number);
+    var name = document.createElement('span');
+    name.className = 'child-name';
+    name.setAttribute('contenteditable', 'true');
+    name.setAttribute('spellcheck', 'false');
+    name.textContent = skill.name || '附属技能';
+    name.addEventListener('input', function () {
+      skill.name = name.textContent.replace(/\s+/g, ' ').trimStart();
+      skill.updatedAt = Date.now();
+      saveSoon();
+    });
+    name.addEventListener('blur', function () {
+      var v = name.textContent.replace(/\s+/g, ' ').trim();
+      if (!v) {
+        v = '附属技能';
+        name.textContent = v;
+      }
+      skill.name = v;
+      skill.updatedAt = Date.now();
+      save();
+    });
+    name.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        name.blur();
+      }
+    });
+    var lv = document.createElement('span');
+    lv.className = 'child-lv';
+    lv.textContent = 'Lv.' + info.level;
+    row.appendChild(num);
+    row.appendChild(name);
+    row.appendChild(lv);
+
+    var bar = document.createElement('div');
+    bar.className = 'child-bar';
+    var fill = document.createElement('i');
+    fill.style.width = info.pct + '%';
+    bar.appendChild(fill);
+
+    var meta = document.createElement('div');
+    meta.className = 'child-meta';
+    var sp = document.createElement('span');
+    sp.className = 'child-sp';
+    sp.textContent = info.max
+      ? ('MAX · ' + points4(skill.points) + ' SP')
+      : (points4(skill.points) + ' / ' + points4(info.next) + ' SP');
+    var train = document.createElement('div');
+    train.className = 'child-train';
+    var b25 = document.createElement('button');
+    b25.type = 'button';
+    b25.className = 'act';
+    b25.textContent = '+25';
+    b25.disabled = info.max;
+    b25.addEventListener('click', function () { trainSkill(skill, 25); });
+    var b100 = document.createElement('button');
+    b100.type = 'button';
+    b100.className = 'act';
+    b100.textContent = '+100';
+    b100.disabled = info.max;
+    b100.addEventListener('click', function () { trainSkill(skill, 100); });
+    train.appendChild(b25);
+    train.appendChild(b100);
+    meta.appendChild(sp);
+    meta.appendChild(train);
+
+    var acts = document.createElement('div');
+    acts.className = 'child-acts';
+    var reset = document.createElement('button');
+    reset.type = 'button';
+    reset.className = 'act';
+    reset.textContent = '重置';
+    reset.addEventListener('click', function () { resetSkill(skill); });
+    var del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'act del';
+    del.textContent = '删除';
+    del.addEventListener('click', function () { deleteSkill(skill); });
+    acts.appendChild(reset);
+    acts.appendChild(del);
+
+    el.appendChild(row);
+    el.appendChild(bar);
+    el.appendChild(meta);
+    el.appendChild(acts);
+    return el;
+  }
+  function skillCard(skill, number, variant) {
     var info = skillLevelInfo(skill.points);
     var card = document.createElement('article');
-    card.className = 'skill-card'
+    card.className = 'tree-node'
+      + (variant === 'card' ? ' sc-card' : '')
       + (info.max ? ' is-max' : '')
       + (ui.skillNewId === skill.id ? ' is-new' : '');
     card.setAttribute('data-skill-id', skill.id);
 
     var top = document.createElement('div');
-    top.className = 'skill-top';
+    top.className = 'node-top';
     var num = document.createElement('span');
-    num.className = 'skill-num';
+    num.className = 'node-num';
     num.textContent = pad(number);
     var tag = document.createElement('span');
-    tag.className = 'skill-tag';
-    tag.textContent = (skill.group === 'pro' ? '专业 / PRO' : '通用 / GENERAL') + ' · ' + points4(skill.points) + ' SP';
+    tag.className = 'node-sp';
+    tag.textContent = (skill.group === 'pro' ? 'PRO' : 'GENERAL') + ' · ' + points4(skill.points) + ' SP';
     top.appendChild(num);
     top.appendChild(tag);
 
     var name = document.createElement('div');
-    name.className = 'skill-name';
+    name.className = 'skill-name node-name';
     name.setAttribute('contenteditable', 'true');
     name.setAttribute('spellcheck', 'false');
     name.textContent = skill.name || '新技能';
@@ -3323,7 +3747,7 @@ body.mode-skills .ideas-stage{display:none}
     });
 
     var desc = document.createElement('div');
-    desc.className = 'skill-desc';
+    desc.className = 'skill-desc node-desc';
     desc.setAttribute('contenteditable', 'true');
     desc.setAttribute('spellcheck', 'false');
     desc.textContent = skill.desc || '';
@@ -3339,31 +3763,31 @@ body.mode-skills .ideas-stage{display:none}
     });
 
     var lv = document.createElement('div');
-    lv.className = 'skill-lv';
+    lv.className = 'node-lv';
     var lvNum = document.createElement('div');
-    lvNum.className = 'skill-lv-num';
+    lvNum.className = 'node-lv-num';
     lvNum.textContent = '' + info.level;
     var lvSmall = document.createElement('small');
     lvSmall.textContent = 'LV';
     lvNum.appendChild(lvSmall);
     var dots = document.createElement('div');
-    dots.className = 'skill-dots';
+    dots.className = 'node-dots';
     for (var d = 0; d < 5; d++) {
       var dot = document.createElement('span');
-      dot.className = 'skill-dot' + (d < info.level ? ' on' : '');
+      dot.className = 'node-dot' + (d < info.level ? ' on' : '');
       dots.appendChild(dot);
     }
     lv.appendChild(lvNum);
     lv.appendChild(dots);
 
     var bar = document.createElement('div');
-    bar.className = 'skill-bar';
+    bar.className = 'node-bar';
     var fill = document.createElement('i');
     fill.style.width = info.pct + '%';
     bar.appendChild(fill);
 
     var sp = document.createElement('div');
-    sp.className = 'skill-sp';
+    sp.className = 'node-sp-line';
     var spLeft = document.createElement('span');
     spLeft.textContent = info.max ? ('MAX · ' + points4(skill.points) + ' SP') : (points4(skill.points) + ' / ' + points4(info.next) + ' SP');
     var spRight = document.createElement('span');
@@ -3373,9 +3797,9 @@ body.mode-skills .ideas-stage{display:none}
     sp.appendChild(spRight);
 
     var foot = document.createElement('div');
-    foot.className = 'skill-foot';
+    foot.className = 'node-foot';
     var train = document.createElement('div');
-    train.className = 'skill-train';
+    train.className = 'node-train';
     var b25 = document.createElement('button');
     b25.type = 'button';
     b25.className = 'act';
@@ -3394,7 +3818,7 @@ body.mode-skills .ideas-stage{display:none}
     train.appendChild(b100);
 
     var acts = document.createElement('div');
-    acts.className = 'skill-acts';
+    acts.className = 'node-acts';
     var reset = document.createElement('button');
     reset.type = 'button';
     reset.className = 'act';
@@ -3417,45 +3841,105 @@ body.mode-skills .ideas-stage{display:none}
     card.appendChild(bar);
     card.appendChild(sp);
     card.appendChild(foot);
+
+    if (!skill.parentId) {
+      var kids = childrenOf(skill.id);
+      var kidsBox = document.createElement('div');
+      kidsBox.className = 'node-children';
+      var kidsHead = document.createElement('div');
+      kidsHead.className = 'child-head';
+      var kidsTitle = document.createElement('span');
+      kidsTitle.className = 'child-title';
+      kidsTitle.textContent = '附属 / SUB ';
+      var kidsCount = document.createElement('b');
+      kidsCount.textContent = pad(kids.length);
+      kidsTitle.appendChild(kidsCount);
+      var addChild = document.createElement('button');
+      addChild.type = 'button';
+      addChild.className = 'child-add';
+      addChild.textContent = '＋ 附属技能';
+      addChild.addEventListener('click', function () { addChildSkill(skill); });
+      kidsHead.appendChild(kidsTitle);
+      kidsHead.appendChild(addChild);
+      kidsBox.appendChild(kidsHead);
+      kids.forEach(function (kid, i) {
+        kidsBox.appendChild(childSkillItem(kid, i + 1));
+      });
+      card.appendChild(kidsBox);
+    }
     return card;
   }
   function renderSkills() {
+    var ae = document.activeElement;
+    if (ae && ae.isContentEditable && ae.closest && ae.closest('.skills-stage')) return;
     var board = state.skillBoard || {};
     var titleEl = $('#skillBoardTitle');
     var descEl = $('#skillBoardDesc');
     if (titleEl && document.activeElement !== titleEl) titleEl.textContent = board.title || '';
     if (descEl && document.activeElement !== descEl) descEl.textContent = board.desc || '';
 
+    $$('.skills-stage .branch-name').forEach(function (el) {
+      var key = el.getAttribute('data-branch');
+      var val = key === 'pro' ? (board.branchPro || '专业技能') : (board.branchGeneral || '通用技能');
+      if (document.activeElement !== el) el.textContent = val;
+    });
+    var th = skillThresholds();
+    var scaleHint = $('#skillScaleHint');
+    if (scaleHint) {
+      scaleHint.textContent = 'Lv.1 ' + th[0] + ' · Lv.2 ' + th[1] + ' · Lv.3 ' + th[2] + ' · Lv.4 ' + th[3] + ' · Lv.5 ' + th[4] + ' SP';
+    }
+
     var totalPoints = 0, totalLevels = 0, maxed = 0;
     var groups = [
-      { key: 'general', grid: '#skillGeneral', count: '#skillGeneralCount', pts: '#skillGeneralPoints' },
-      { key: 'pro', grid: '#skillPro', count: '#skillProCount', pts: '#skillProPoints' }
+      { key: 'general', tree: '#skillGeneral', card: '#scGeneral', tCount: '#skillGeneralCount', tPts: '#skillGeneralPoints', cCount: '#scGeneralCount', cPts: '#scGeneralPoints' },
+      { key: 'pro', tree: '#skillPro', card: '#scPro', tCount: '#skillProCount', tPts: '#skillProPoints', cCount: '#scProCount', cPts: '#scProPoints' }
     ];
     groups.forEach(function (g) {
-      var grid = $(g.grid);
-      if (!grid) return;
+      var groupAll = state.skills.filter(function (s) { return s.group === g.key; });
       var list = skillsOf(g.key);
-      grid.innerHTML = '';
       var sum = 0;
-      list.forEach(function (skill, i) {
+      groupAll.forEach(function (skill) {
         var info = skillLevelInfo(skill.points);
         sum += info.points;
         totalPoints += info.points;
         totalLevels += info.level;
         if (info.max) maxed++;
-        grid.appendChild(skillCard(skill, i + 1));
       });
-      if (!list.length) grid.appendChild(skillEmpty(g.key));
-      var countEl = $(g.count);
-      var ptsEl = $(g.pts);
-      if (countEl) countEl.textContent = pad(list.length);
-      if (ptsEl) ptsEl.textContent = points4(sum);
+
+      var tree = $(g.tree);
+      if (tree) {
+        tree.innerHTML = '';
+        list.forEach(function (skill, i) {
+          tree.appendChild(skillCard(skill, i + 1, 'tree'));
+          if (i < list.length - 1) {
+            var link = document.createElement('span');
+            link.className = 'node-link';
+            link.setAttribute('aria-hidden', 'true');
+            tree.appendChild(link);
+          }
+        });
+        if (!list.length) tree.appendChild(skillEmpty(g.key));
+      }
+
+      var cards = $(g.card);
+      if (cards) {
+        cards.innerHTML = '';
+        list.forEach(function (skill, i) {
+          cards.appendChild(skillCard(skill, i + 1, 'card'));
+        });
+        if (!list.length) cards.appendChild(skillEmpty(g.key));
+      }
+
+      var countEls = [$(g.tCount), $(g.cCount)];
+      countEls.forEach(function (el) { if (el) el.textContent = pad(groupAll.length); });
+      var ptsEls = [$(g.tPts), $(g.cPts)];
+      ptsEls.forEach(function (el) { if (el) el.textContent = points4(sum); });
     });
     $('#skillsBig').textContent = points4(totalPoints);
     $('#skillCountTotal').textContent = pad(state.skills.length);
     $('#skillLevelsTotal').textContent = pad(totalLevels);
     $('#skillMaxTotal').textContent = pad(maxed);
-    $('#skillTreeCount').textContent = pad(state.skills.length);
+    applySkillView(ui.skillView, true);
   }
 
   function renderStats() {
@@ -3724,16 +4208,22 @@ body.mode-skills .ideas-stage{display:none}
       var skb = state.skillBoard || {};
       out += '## 科技树 / Skill Tree\n\n';
       if (skb.title) out += '**' + skb.title + '**\n\n';
-      [['general', '通用技能 / General'], ['pro', '专业技能 / Professional']].forEach(function (g) {
-        var list = state.skills.filter(function (s) { return s.group === g[0]; })
+      [['general', state.skillBoard.branchGeneral || '通用技能'], ['pro', state.skillBoard.branchPro || '专业技能']].forEach(function (g) {
+        var mains = state.skills.filter(function (s) { return s.group === g[0] && !s.parentId; })
           .sort(function (a, b) { return (a.createdAt || 0) - (b.createdAt || 0); });
-        if (!list.length) return;
+        if (!mains.length) return;
         out += '### ' + g[1] + '\n\n';
-        list.forEach(function (s) {
+        mains.forEach(function (s) {
           var info = skillLevelInfo(s.points);
           out += '- ' + (s.name || '新技能') + ' — Lv.' + info.level + ' · ' + info.points + ' SP';
           if (info.max) out += '（满级）\n';
           else out += '（距下一级 ' + (info.next - info.points) + ' SP）\n';
+          childrenOf(s.id).forEach(function (child) {
+            var ci = skillLevelInfo(child.points);
+            out += '  - ' + (child.name || '附属技能') + ' — Lv.' + ci.level + ' · ' + ci.points + ' SP';
+            if (ci.max) out += '（满级）\n';
+            else out += '（距下一级 ' + (ci.next - ci.points) + ' SP）\n';
+          });
         });
         out += '\n';
       });
@@ -3985,6 +4475,63 @@ body.mode-skills .ideas-stage{display:none}
         addSkill(btn.getAttribute('data-add-skill'));
       });
     });
+    $$('.skill-view-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        applySkillView(btn.getAttribute('data-skill-view'));
+      });
+    });
+    var skillConfigBtn = $('#skillConfigBtn');
+    if (skillConfigBtn) skillConfigBtn.addEventListener('click', openSkillConfig);
+    $$('[data-skillcfg-close]').forEach(function (el) {
+      el.addEventListener('click', closeSkillConfig);
+    });
+    if ($('#cfgCancel')) $('#cfgCancel').addEventListener('click', closeSkillConfig);
+    if ($('#cfgSave')) $('#cfgSave').addEventListener('click', saveSkillConfig);
+    if ($('#cfgReset')) {
+      $('#cfgReset').addEventListener('click', function () {
+        var defaults = DEFAULT_SKILL_TH;
+        for (var i = 1; i <= 5; i++) {
+          var el = $('#cfgTh' + i);
+          if (el) el.value = defaults[i - 1];
+        }
+        if ($('#cfgBranchGeneral')) $('#cfgBranchGeneral').value = '通用技能';
+        if ($('#cfgBranchPro')) $('#cfgBranchPro').value = '专业技能';
+      });
+    }
+    $$('.skills-stage .branch-name').forEach(function (el) {
+      var key = el.getAttribute('data-branch') === 'pro' ? 'pro' : 'general';
+      var fallback = key === 'pro' ? '专业技能' : '通用技能';
+      function commit(trim) {
+        var v = el.textContent.replace(/\s+/g, ' ').trimStart();
+        if (trim) v = v.trim() || fallback;
+        if (key === 'pro') state.skillBoard.branchPro = v;
+        else state.skillBoard.branchGeneral = v;
+        state.skillBoard.updatedAt = Date.now();
+      }
+      el.addEventListener('input', function () {
+        commit(false);
+        syncSkillBranchNames(el);
+        saveSoon();
+      });
+      el.addEventListener('blur', function () {
+        commit(true);
+        el.textContent = key === 'pro' ? state.skillBoard.branchPro : state.skillBoard.branchGeneral;
+        syncSkillBranchNames(el);
+        save();
+        setTimeout(function () { renderSkills(); }, 0);
+      });
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          el.blur();
+        }
+      });
+      el.addEventListener('paste', function (e) {
+        e.preventDefault();
+        var text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        document.execCommand('insertText', false, text);
+      });
+    });
     var skillBoardTitle = $('#skillBoardTitle');
     var skillBoardDesc = $('#skillBoardDesc');
     if (skillBoardTitle) {
@@ -4146,6 +4693,7 @@ body.mode-skills .ideas-stage{display:none}
       closeIdeaTargetMenu();
       closeMoveMenu();
       if (!$('#imageModal').hidden) closeImageModal();
+      if (!$('#skillConfigModal').hidden) closeSkillConfig();
       if (!$('#shareModal').hidden) closeShare();
       if (!$('#cloudModal').hidden) closeCloud();
     });
@@ -4223,6 +4771,7 @@ body.mode-skills .ideas-stage{display:none}
     $('#mastDate').textContent = mastDate();
     bind();
     syncFilters();
+    applySkillView(readSkillView(), true);
     applyMode(readStoredMode(), true);
     renderAll();
     save();
