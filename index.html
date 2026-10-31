@@ -717,7 +717,10 @@ body.mode-timetable .timetable-stage{display:block}
 .tt-course-name{font-size:11px;line-height:1.35;font-weight:600}
 .tt-course-meta{font-size:7.5px;line-height:1.5;color:var(--ink-2)}
 .tt-course-weeks{font-size:7px;line-height:1.4;color:var(--muted)}
-.tt-cell-empty{font-size:8px;color:rgba(21,21,21,.2)}
+.tt-cell-empty{font-size:12px;color:rgba(21,21,21,.18)}
+.tt-cell.is-add{cursor:pointer;transition:background .12s}
+.tt-cell.is-add:hover{background:rgba(224,36,27,.06)}
+.tt-cell.is-add:hover .tt-cell-empty{color:var(--red)}
 .tt-foot{margin-top:10px;padding-top:10px;border-top:1px solid var(--rule-2);font-size:8.5px;line-height:1.8;color:var(--muted)}
 
 /* ============ 响应式 ============ */
@@ -1108,8 +1111,8 @@ body.mode-timetable .timetable-stage{display:block}
           <div class="tt-head">
             <div class="tt-head-main">
               <div class="tt-eyebrow"><span class="sq"></span>Timetable / 课程表</div>
-              <h1 class="tt-title" id="ttTitle">课程表</h1>
-              <p class="tt-sub" id="ttSub">2026—2027 学年第 1 学期 · 共 20 周</p>
+              <h1 class="tt-title" id="ttTitle" contenteditable="true" spellcheck="false">课程表</h1>
+              <p class="tt-sub" id="ttSub" contenteditable="true" spellcheck="false">2026—2027 学年第 1 学期 · 共 20 周</p>
             </div>
             <div class="tt-weekbox">
               <button type="button" class="tt-week-btn" id="ttPrev" aria-label="上一周">◀</button>
@@ -1557,6 +1560,7 @@ body.mode-timetable .timetable-stage{display:block}
       skills: defaultSkillSeeds(),
       courses: defaultCourseSeeds(),
       courseVersion: 3,
+      timetable: { title: '徐新苒课表 · 课程表', sub: '2026—2027 学年第 1 学期 · 共 20 周', updatedAt: 0 },
       notes: [
         note('在下面的输入框写下第一条便签，按回车记录；双击便签文字可以直接修改。', false, false, 180000),
         note('左侧每个条目是一个主事件：切换它，下面的记录就跟着切换；点「＋」新建。', false, false, 120000),
@@ -1587,6 +1591,12 @@ body.mode-timetable .timetable-stage{display:block}
       updatedAt: Number(rawBoard.updatedAt) || 0
     };
     var rawSkillBoard = (state.skillBoard && typeof state.skillBoard === 'object') ? state.skillBoard : {};
+    var rawTt = (state.timetable && typeof state.timetable === 'object') ? state.timetable : {};
+    state.timetable = {
+      title: (typeof rawTt.title === 'string' && rawTt.title) ? rawTt.title : '徐新苒课表 · 课程表',
+      sub: typeof rawTt.sub === 'string' ? rawTt.sub : '2026—2027 学年第 1 学期 · 共 20 周',
+      updatedAt: Number(rawTt.updatedAt) || 0
+    };
     state.skillBoard = {
       title: (typeof rawSkillBoard.title === 'string' && rawSkillBoard.title) ? rawSkillBoard.title : '科技树',
       desc: typeof rawSkillBoard.desc === 'string' ? rawSkillBoard.desc : '通用技能打底，专业技能往上点。',
@@ -1897,6 +1907,9 @@ body.mode-timetable .timetable-stage{display:block}
     }
     var skills = pickNewer(a.skills, b.skills, 'skills');
     var courses = pickNewer(a.courses, b.courses, 'courses');
+    var ttA = (a.timetable && typeof a.timetable === 'object') ? a.timetable : {};
+    var ttB = (b.timetable && typeof b.timetable === 'object') ? b.timetable : {};
+    var timetable = (Number(ttB.updatedAt) || 0) >= (Number(ttA.updatedAt) || 0) ? ttB : ttA;
 
     var prefer = null;
     if (b.activeEventId && ids[b.activeEventId]) prefer = b.activeEventId;
@@ -1914,6 +1927,7 @@ body.mode-timetable .timetable-stage{display:block}
       skills: skills,
       courses: courses,
       courseVersion: Math.max(Number(a.courseVersion) || 0, Number(b.courseVersion) || 0),
+      timetable: timetable,
       notes: notes,
       tombstones: tombstones
     };
@@ -4490,8 +4504,9 @@ body.mode-timetable .timetable-stage{display:block}
     var nowMin = now.getHours() * 60 + now.getMinutes();
     var todayIdx = nowDay;
 
-    $('#ttTitle').textContent = TT_META.title + ' · 课程表';
-    $('#ttSub').textContent = TT_META.sub;
+    var ttb = state.timetable || {};
+    if ($('#ttTitle') && document.activeElement !== $('#ttTitle')) $('#ttTitle').textContent = ttb.title || (TT_META.title + ' · 课程表');
+    if ($('#ttSub') && document.activeElement !== $('#ttSub')) $('#ttSub').textContent = ttb.sub || TT_META.sub;
     $('#ttWeekNum').textContent = '第 ' + week + ' 周';
     $('#ttWeekHint').textContent = week === 9 ? '当前周' : '共 ' + TT_META.totalWeeks + ' 周';
     $('#ttMemo').textContent = TT_META.memo;
@@ -4563,7 +4578,16 @@ body.mode-timetable .timetable-stage{display:block}
         if (!list.length) {
           var empty = document.createElement('span');
           empty.className = 'tt-cell-empty';
-          empty.textContent = '—';
+          empty.textContent = '＋';
+          cell.classList.add('is-add');
+          cell.title = '点击在这里新建课程';
+          cell.addEventListener('click', function () {
+            openCourseEditor({
+              name: '', teacher: '', room: '',
+              day: day, period: slot.period, start: slot.start, end: slot.end,
+              segments: [{ weeks: [week], label: week + '周', room: '' }]
+            });
+          });
           cell.appendChild(empty);
         } else {
           list.forEach(function (course) {
@@ -5154,20 +5178,32 @@ body.mode-timetable .timetable-stage{display:block}
         if ($('#cfgBranchPro')) $('#cfgBranchPro').value = '专业技能';
       });
     }
-    if ($('#ttPrev')) {
-      $('#ttPrev').addEventListener('click', function () {
-        ui.ttWeek = Math.max(1, (ui.ttWeek || readTtWeek()) - 1);
-        saveTtWeek(ui.ttWeek);
-        renderTimetable();
+    [['#ttTitle', 'title'], ['#ttSub', 'sub']].forEach(function (pair) {
+      var el = $(pair[0]);
+      if (!el) return;
+      el.addEventListener('input', function () {
+        state.timetable[pair[1]] = el.textContent.replace(/\s+/g, ' ').trimStart();
+        state.timetable.updatedAt = Date.now();
+        saveSoon();
       });
-    }
-    if ($('#ttNext')) {
-      $('#ttNext').addEventListener('click', function () {
-        ui.ttWeek = Math.min(TT_META.totalWeeks, (ui.ttWeek || readTtWeek()) + 1);
-        saveTtWeek(ui.ttWeek);
-        renderTimetable();
+      el.addEventListener('blur', function () {
+        state.timetable[pair[1]] = el.textContent.replace(/\s+/g, ' ').trim();
+        state.timetable.updatedAt = Date.now();
+        save();
       });
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+      });
+    });
+    function shiftTtDate(days) {
+      var d = ttParseIso(ui.ttDate || ttTodayIso());
+      d.setDate(d.getDate() + days);
+      ui.ttDate = ttIso(d);
+      try { localStorage.setItem('sb-tt-date-v1', ui.ttDate); } catch (e) {}
+      renderTimetable();
     }
+    if ($('#ttPrev')) $('#ttPrev').addEventListener('click', function () { shiftTtDate(-7); });
+    if ($('#ttNext')) $('#ttNext').addEventListener('click', function () { shiftTtDate(7); });
     $$('.tt-filter').forEach(function (b) {
       b.addEventListener('click', function () {
         var f = b.getAttribute('data-tt-filter');
@@ -5180,6 +5216,7 @@ body.mode-timetable .timetable-stage{display:block}
       $('#ttDate').addEventListener('change', function () {
         ui.ttDate = $('#ttDate').value || ttTodayIso();
         ui.ttFilter = 'day';
+        try { localStorage.setItem('sb-tt-date-v1', ui.ttDate); } catch (e) {}
         renderTimetable();
       });
     }
@@ -5462,7 +5499,7 @@ body.mode-timetable .timetable-stage{display:block}
     bind();
     syncFilters();
     applySkillView(readSkillView(), true);
-    ui.ttWeek = readTtWeek();
+    try { var savedTtDate = localStorage.getItem('sb-tt-date-v1'); ui.ttDate = /^\d{4}-\d{2}-\d{2}$/.test(savedTtDate || '') ? savedTtDate : ttTodayIso(); } catch (e) { ui.ttDate = ttTodayIso(); }
     applyMode(readStoredMode(), true);
     renderAll();
     save();
