@@ -663,7 +663,14 @@ body.mode-timetable .timetable-stage{display:block}
 .tt-eyebrow .sq{width:8px;height:8px;background:var(--red)}
 .tt-title{margin-top:10px;font-size:clamp(26px,3.2vw,42px);line-height:1.1;font-weight:700;letter-spacing:-.02em}
 .tt-sub{margin-top:8px;font-size:11.5px;line-height:1.6;color:var(--ink-2)}
-.tt-weekbox{display:flex;align-items:center;gap:8px;border:1px solid var(--rule-2);padding:7px 9px;background:var(--paper-2)}
+.tt-weekbox{border:1px solid var(--rule-2);padding:7px 9px;background:var(--paper-2)}
+.tt-week-row{display:flex;align-items:center;gap:8px}
+.tt-daybar{display:flex;gap:0;margin-top:7px;border-top:1px solid var(--rule)}
+.tt-daybar button{flex:1;padding:5px 2px 4px;font-size:9px;letter-spacing:.02em;color:var(--ink-2);border-right:1px solid var(--rule)}
+.tt-daybar button:last-child{border-right:0}
+.tt-daybar button:hover{background:rgba(21,21,21,.05)}
+.tt-daybar button.is-on{background:var(--red);color:#fff}
+.tt-daybar button small{display:block;margin-top:1px;font-size:7.5px;opacity:.65}
 .tt-week-btn{width:26px;height:26px;display:grid;place-items:center;border:1px solid var(--rule-2);font-size:9px;color:var(--ink-2)}
 .tt-week-btn:hover{background:var(--ink);border-color:var(--ink);color:var(--paper-2)}
 .tt-week-label{min-width:86px;text-align:center}
@@ -700,23 +707,23 @@ body.mode-timetable .timetable-stage{display:block}
 .course-grid label{display:flex;flex-direction:column;gap:4px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
 .course-grid select{padding:6px;border:1px solid var(--rule-2);background:var(--paper);font-size:12px}
 .tt-grid-wrap{overflow-x:auto}
-.tt-grid{min-width:1180px;border-top:1px solid var(--ink)}
+.tt-grid{min-width:1100px;border-top:1px solid var(--ink)}
 .tt-row{display:grid;grid-template-columns:86px repeat(7,minmax(0,1fr));border-bottom:1px solid var(--rule)}
 .tt-row.tt-head-row{background:rgba(21,21,21,.045);border-bottom:1px solid var(--ink);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
-.tt-head-cell{padding:9px 8px;border-right:1px solid var(--rule);font-weight:600}
+.tt-head-cell{padding:12px 8px;border-right:1px solid var(--rule);font-weight:600;font-size:9px}
 .tt-head-cell:last-child{border-right:0}
 .tt-head-cell.is-today{background:rgba(224,36,27,.08);color:var(--red)}
-.tt-time{padding:8px;border-right:1px solid var(--rule);font-size:7.5px;line-height:1.6;color:var(--muted);font-variant-numeric:tabular-nums}
+.tt-time{padding:10px 8px;border-right:1px solid var(--rule);font-size:8px;line-height:1.7;color:var(--muted);font-variant-numeric:tabular-nums}
 .tt-time b{display:block;margin-bottom:2px;font-size:10px;color:var(--ink)}
-.tt-cell{display:flex;flex-direction:column;gap:5px;min-height:72px;padding:7px;border-right:1px solid var(--rule)}
+.tt-cell{display:flex;flex-direction:column;gap:7px;min-height:96px;padding:10px;border-right:1px solid var(--rule)}
 .tt-cell:last-child{border-right:0}
 .tt-cell.is-today{background:rgba(224,36,27,.03)}
 .tt-course{display:flex;flex-direction:column;gap:3px;padding:5px 7px;border-left:3px solid var(--rule-2);background:rgba(255,255,255,.55)}
 .tt-course.is-on{border-left-color:var(--red);background:#fff}
 .tt-course.is-off{opacity:.5}
-.tt-course-name{font-size:11px;line-height:1.35;font-weight:600}
-.tt-course-meta{font-size:7.5px;line-height:1.5;color:var(--ink-2)}
-.tt-course-weeks{font-size:7px;line-height:1.4;color:var(--muted)}
+.tt-course-name{font-size:13px;line-height:1.35;font-weight:600}
+.tt-course-meta{font-size:8.5px;line-height:1.5;color:var(--ink-2)}
+.tt-course-weeks{font-size:8px;line-height:1.4;color:var(--muted)}
 .tt-cell-empty{font-size:12px;color:rgba(21,21,21,.18)}
 .tt-cell.is-add{cursor:pointer;transition:background .12s}
 .tt-cell.is-add:hover{background:rgba(224,36,27,.06)}
@@ -1115,9 +1122,12 @@ body.mode-timetable .timetable-stage{display:block}
               <p class="tt-sub" id="ttSub" contenteditable="true" spellcheck="false">2026—2027 学年第 1 学期 · 共 20 周</p>
             </div>
             <div class="tt-weekbox">
-              <button type="button" class="tt-week-btn" id="ttPrev" aria-label="上一周">◀</button>
-              <div class="tt-week-label"><b id="ttWeekNum">第 9 周</b><span id="ttWeekHint">当前周</span></div>
-              <button type="button" class="tt-week-btn" id="ttNext" aria-label="下一周">▶</button>
+              <div class="tt-week-row">
+                <button type="button" class="tt-week-btn" id="ttPrev" aria-label="上一周">◀</button>
+                <div class="tt-week-label"><b id="ttWeekNum">第 9 周</b><span id="ttWeekHint">当前周</span></div>
+                <button type="button" class="tt-week-btn" id="ttNext" aria-label="下一周">▶</button>
+              </div>
+              <div class="tt-daybar" id="ttDaybar" role="group" aria-label="按天切换"></div>
             </div>
           </div>
 
@@ -4359,6 +4369,11 @@ body.mode-timetable .timetable-stage{display:block}
     var diff = Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(start.getFullYear(), start.getMonth(), start.getDate())) / 86400000);
     return Math.max(1, Math.min(20, Math.floor(diff / 7) + 1));
   }
+  function ttDateForWeekDay(week, day) {
+    var d = new Date(2026, 7, 31);
+    d.setDate(d.getDate() + (week - 1) * 7 + (day - 1));
+    return ttIso(d);
+  }
   function ttDayIndex(iso) {
     var d = ttParseIso(iso).getDay();
     return d === 0 ? 7 : d;
@@ -4508,7 +4523,32 @@ body.mode-timetable .timetable-stage{display:block}
     if ($('#ttTitle') && document.activeElement !== $('#ttTitle')) $('#ttTitle').textContent = ttb.title || (TT_META.title + ' · 课程表');
     if ($('#ttSub') && document.activeElement !== $('#ttSub')) $('#ttSub').textContent = ttb.sub || TT_META.sub;
     $('#ttWeekNum').textContent = '第 ' + week + ' 周';
-    $('#ttWeekHint').textContent = week === 9 ? '当前周' : '共 ' + TT_META.totalWeeks + ' 周';
+    $('#ttWeekHint').textContent = week === ttWeekFromDate(ttTodayIso()) ? '当前周' : '共 ' + TT_META.totalWeeks + ' 周';
+    var daybar = $('#ttDaybar');
+    if (daybar) {
+      daybar.innerHTML = '';
+      var activeDay = ttDayIndex(ui.ttDate);
+      for (var dd = 1; dd <= 7; dd++) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = dd === activeDay ? 'is-on' : '';
+        var dateIso = ttDateForWeekDay(week, dd);
+        b.appendChild(document.createTextNode(dayNames[dd].replace('周', '')));
+        var sm = document.createElement('small');
+        sm.textContent = dateIso.slice(8);
+        b.appendChild(sm);
+        b.title = dateIso;
+        (function (dnum, iso) {
+          b.addEventListener('click', function () {
+            ui.ttDate = iso;
+            ui.ttFilter = 'day';
+            try { localStorage.setItem('sb-tt-date-v1', iso); } catch (e) {}
+            renderTimetable();
+          });
+        })(dd, dateIso);
+        daybar.appendChild(b);
+      }
+    }
     $('#ttMemo').textContent = TT_META.memo;
     $('#ttFoot').textContent = TT_META.foot + ' · ' + TT_META.practice;
     $('#ttPractice').textContent = '实习 1-20周';
