@@ -565,6 +565,12 @@ body.mode-skills .ideas-stage{display:none}
 .node-acts .act.del:hover{color:var(--red);border-bottom-color:var(--red)}
 .node-children{margin-top:8px;padding-top:8px;border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:7px}
 .child-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.child-toggle{display:inline-flex;align-items:center;gap:5px;padding:0;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.child-toggle:hover{color:var(--ink)}
+.child-toggle b{margin-left:3px;color:var(--ink);font-weight:600}
+.child-caret{color:var(--muted);font-size:9px;line-height:1}
+.node-children.is-collapsed .child-list{display:none}
+.child-list{display:flex;flex-direction:column;gap:7px}
 .child-head b{margin-left:4px;color:var(--ink);font-weight:600}
 .child-add{font-size:8px;letter-spacing:.08em;color:var(--ink-2);border-bottom:1px solid transparent;padding-bottom:1px}
 .child-add:hover{color:var(--red);border-bottom-color:var(--red)}
@@ -639,6 +645,81 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
 .cfg-btn.is-primary{background:var(--ink);color:var(--paper-2);border-color:var(--ink)}
 .cfg-btn.is-primary:hover{background:var(--red);border-color:var(--red);color:#fff}
 
+/* ============ 课程表模式 ============ */
+body.mode-timetable .rail{display:none}
+body.mode-timetable .layout{grid-template-columns:1fr}
+body.mode-timetable .hero,
+body.mode-timetable #composer,
+body.mode-timetable #composer + .composer-hint,
+body.mode-timetable #recordsHead,
+body.mode-timetable #notes,
+body.mode-timetable .ideas-stage,
+body.mode-timetable .skills-stage{display:none!important}
+.timetable-stage{display:none}
+body.mode-timetable .timetable-stage{display:block}
+.tt-shell{margin-top:18px;padding:20px clamp(16px,2.6vw,30px) 16px;border:1px solid var(--ink);background:var(--paper)}
+.tt-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:16px;border-bottom:1px solid var(--ink)}
+.tt-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--red)}
+.tt-eyebrow .sq{width:8px;height:8px;background:var(--red)}
+.tt-title{margin-top:10px;font-size:clamp(26px,3.2vw,42px);line-height:1.1;font-weight:700;letter-spacing:-.02em}
+.tt-sub{margin-top:8px;font-size:11.5px;line-height:1.6;color:var(--ink-2)}
+.tt-weekbox{display:flex;align-items:center;gap:8px;border:1px solid var(--rule-2);padding:7px 9px;background:var(--paper-2)}
+.tt-week-btn{width:26px;height:26px;display:grid;place-items:center;border:1px solid var(--rule-2);font-size:9px;color:var(--ink-2)}
+.tt-week-btn:hover{background:var(--ink);border-color:var(--ink);color:var(--paper-2)}
+.tt-week-label{min-width:86px;text-align:center}
+.tt-week-label b{display:block;font-size:14px;line-height:1.2}
+.tt-week-label span{display:block;margin-top:2px;font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.tt-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:14px 0;border-bottom:1px solid var(--rule-2)}
+.tt-stat{padding-left:10px;border-left:1px solid var(--rule)}
+.tt-stat span{display:block;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.tt-stat b{display:block;margin-top:3px;font-size:19px;line-height:1.15;font-weight:600;font-variant-numeric:tabular-nums}
+.tt-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:12px 0}
+.tt-filters{display:flex}
+.tt-filter{padding:6px 12px 5px;border:1px solid var(--rule-2);border-right:0;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.tt-filter:last-child{border-right:1px solid var(--rule-2)}
+.tt-filter:hover{color:var(--ink)}
+.tt-filter.is-on{background:var(--ink);border-color:var(--ink);color:var(--paper-2)}
+.tt-memo{font-size:9px;line-height:1.5;letter-spacing:.05em;color:var(--muted)}
+.tt-date-wrap{display:flex;align-items:center;gap:8px}
+#ttDate{padding:5px 7px;border:1px solid var(--rule-2);background:var(--paper-2);font-size:11px;outline:none}
+.tt-add-course{padding:6px 10px;border:1px solid var(--ink);background:var(--ink);color:var(--paper-2);font-size:9px;letter-spacing:.1em}
+.tt-day{padding:14px 0}
+.tt-day-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:1px solid var(--ink);padding-bottom:10px}
+.tt-day-title{font-size:20px;font-weight:700}
+.tt-day-sub{font-size:9px;letter-spacing:.12em;color:var(--muted)}
+.tt-day-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.tt-day-item{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--rule-2);background:var(--paper-2)}
+.tt-day-time{font-size:8px;line-height:1.5;color:var(--muted);font-variant-numeric:tabular-nums}
+.tt-day-time b{display:block;font-size:11px;color:var(--ink)}
+.tt-day-name{font-size:14px;font-weight:600}
+.tt-day-meta{margin-top:3px;font-size:9px;color:var(--muted)}
+.tt-day-edit{font-size:9px;letter-spacing:.1em;color:var(--ink-2);border-bottom:1px solid var(--rule-2);padding-bottom:1px}
+.tt-day-edit:hover{color:var(--red);border-bottom-color:var(--red)}
+.tt-day-empty{padding:20px 0;font-size:11px;color:var(--muted)}
+.course-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 0}
+.course-grid label{display:flex;flex-direction:column;gap:4px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.course-grid select{padding:6px;border:1px solid var(--rule-2);background:var(--paper);font-size:12px}
+.tt-grid-wrap{overflow-x:auto}
+.tt-grid{min-width:1180px;border-top:1px solid var(--ink)}
+.tt-row{display:grid;grid-template-columns:86px repeat(7,minmax(0,1fr));border-bottom:1px solid var(--rule)}
+.tt-row.tt-head-row{background:rgba(21,21,21,.045);border-bottom:1px solid var(--ink);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.tt-head-cell{padding:9px 8px;border-right:1px solid var(--rule);font-weight:600}
+.tt-head-cell:last-child{border-right:0}
+.tt-head-cell.is-today{background:rgba(224,36,27,.08);color:var(--red)}
+.tt-time{padding:8px;border-right:1px solid var(--rule);font-size:7.5px;line-height:1.6;color:var(--muted);font-variant-numeric:tabular-nums}
+.tt-time b{display:block;margin-bottom:2px;font-size:10px;color:var(--ink)}
+.tt-cell{display:flex;flex-direction:column;gap:5px;min-height:72px;padding:7px;border-right:1px solid var(--rule)}
+.tt-cell:last-child{border-right:0}
+.tt-cell.is-today{background:rgba(224,36,27,.03)}
+.tt-course{display:flex;flex-direction:column;gap:3px;padding:5px 7px;border-left:3px solid var(--rule-2);background:rgba(255,255,255,.55)}
+.tt-course.is-on{border-left-color:var(--red);background:#fff}
+.tt-course.is-off{opacity:.5}
+.tt-course-name{font-size:11px;line-height:1.35;font-weight:600}
+.tt-course-meta{font-size:7.5px;line-height:1.5;color:var(--ink-2)}
+.tt-course-weeks{font-size:7px;line-height:1.4;color:var(--muted)}
+.tt-cell-empty{font-size:8px;color:rgba(21,21,21,.2)}
+.tt-foot{margin-top:10px;padding-top:10px;border-top:1px solid var(--rule-2);font-size:8.5px;line-height:1.8;color:var(--muted)}
+
 /* ============ 响应式 ============ */
 @media (max-width:1279px){
   .note-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -704,6 +785,11 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
   .tree-foot{font-size:7.5px;letter-spacing:.08em}
   .sc-grid{grid-template-columns:1fr}
   .cfg-lv-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tt-head{display:block}
+  .tt-weekbox{margin-top:14px;width:max-content}
+  .tt-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tt-grid{min-width:980px}
+  .tt-title{font-size:clamp(22px,6vw,32px)}
   .modebar{padding:0 var(--pad)}
   .search{width:130px}
   .footer{gap:12px 20px}
@@ -729,6 +815,8 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
   .node-acts .act{padding:4px 2px;font-size:9px}
   .child-acts{opacity:1;gap:10px}
   .child-acts .act{padding:4px 2px;font-size:8px}
+  .child-toggle{padding:4px 2px;font-size:9px}
+  .child-add{padding:4px 2px;font-size:9px}
   .act{padding:5px 2px;font-size:10px}
   .toggle{padding:5px 0}
   .rail-add{width:30px;height:30px;font-size:16px}
@@ -745,7 +833,7 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
 @media print{
   :root{--paper:#fff;--paper-2:#fff}
   html,body{background:#fff}
-  .masthead,.rail,.composer,.composer-hint,.notes-tools,.notes-sub,.footer,.toast,.modal,.danger-link,.act,.note-edit,.modebar,.skills-stage,.skill-legend{display:none!important}
+  .masthead,.rail,.composer,.composer-hint,.notes-tools,.notes-sub,.footer,.toast,.modal,.danger-link,.act,.note-edit,.modebar,.skills-stage,.skill-legend,.timetable-stage{display:none!important}
   .layout{display:block}
   .stage{padding:0}
   .stage::before{display:none}
@@ -791,6 +879,7 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
     <button type="button" class="mode-tab is-on" data-mode="notes"><span class="m-num">01</span>记录 / Notes</button>
     <button type="button" class="mode-tab" data-mode="ideas"><span class="m-num">02</span>好点子 / Good Ideas</button>
     <button type="button" class="mode-tab" data-mode="skills"><span class="m-num">03</span>科技树 / Skill Tree</button>
+    <button type="button" class="mode-tab" data-mode="timetable"><span class="m-num">04</span>课程表 / Timetable</button>
   </nav>
 
   <div class="layout">
@@ -1013,6 +1102,46 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
           </div>
         </div>
       </section>
+
+      <section class="timetable-stage" aria-label="课程表">
+        <div class="tt-shell">
+          <div class="tt-head">
+            <div class="tt-head-main">
+              <div class="tt-eyebrow"><span class="sq"></span>Timetable / 课程表</div>
+              <h1 class="tt-title" id="ttTitle">课程表</h1>
+              <p class="tt-sub" id="ttSub">2026—2027 学年第 1 学期 · 共 20 周</p>
+            </div>
+            <div class="tt-weekbox">
+              <button type="button" class="tt-week-btn" id="ttPrev" aria-label="上一周">◀</button>
+              <div class="tt-week-label"><b id="ttWeekNum">第 9 周</b><span id="ttWeekHint">当前周</span></div>
+              <button type="button" class="tt-week-btn" id="ttNext" aria-label="下一周">▶</button>
+            </div>
+          </div>
+
+          <div class="tt-stats">
+            <div class="tt-stat"><span>本周课程</span><b id="ttCount">00</b></div>
+            <div class="tt-stat"><span>今天</span><b id="ttToday">—</b></div>
+            <div class="tt-stat"><span>下一节</span><b id="ttNextClass">—</b></div>
+            <div class="tt-stat"><span>学期实践</span><b id="ttPractice">—</b></div>
+          </div>
+
+          <div class="tt-toolbar">
+            <div class="tt-filters" role="group" aria-label="课程筛选">
+              <button type="button" class="tt-filter is-on" data-tt-filter="week">本周</button>
+              <button type="button" class="tt-filter" data-tt-filter="day">当天</button>
+              <button type="button" class="tt-filter" data-tt-filter="all">全部</button>
+            </div>
+            <div class="tt-date-wrap">
+              <input type="date" id="ttDate" aria-label="选择日期">
+              <button type="button" class="tt-add-course" id="ttAddCourse">＋ 添加课程</button>
+            </div>
+            <div class="tt-memo" id="ttMemo">—</div>
+          </div>
+
+          <div class="tt-grid-wrap"><div class="tt-grid" id="ttGrid"></div></div>
+          <div class="tt-foot" id="ttFoot"></div>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -1093,6 +1222,33 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
   </div>
 </div>
 
+<div class="modal" id="courseModal" hidden>
+  <div class="modal-back" data-course-close></div>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="courseTitle">
+    <div class="modal-head">
+      <span class="micro" id="courseTitle">课程设置 / Course</span>
+      <button type="button" class="modal-x" data-course-close aria-label="关闭">×</button>
+    </div>
+    <div class="course-form">
+      <div class="cfg-row"><label for="cName">课程名称</label><input id="cName" type="text" maxlength="60" autocomplete="off" placeholder="例：职场通用英语1"></div>
+      <div class="cfg-row"><label for="cTeacher">教师</label><input id="cTeacher" type="text" maxlength="30" autocomplete="off" placeholder="选填"></div>
+      <div class="cfg-row"><label for="cRoom">教室</label><input id="cRoom" type="text" maxlength="30" autocomplete="off" placeholder="例：D2501"></div>
+      <div class="course-grid">
+        <label>星期<select id="cDay"><option value="1">周一</option><option value="2">周二</option><option value="3">周三</option><option value="4">周四</option><option value="5">周五</option><option value="6">周六</option><option value="7">周日</option></select></label>
+        <label>节次<select id="cPeriod"><option>1-2</option><option>3-4</option><option>7-8</option><option>9-10</option><option>11-12</option></select></label>
+      </div>
+      <div class="cfg-row"><label for="cWeeks">周次</label><input id="cWeeks" type="text" maxlength="80" autocomplete="off" placeholder="例：10-12周(双),13-17周"></div>
+      <p class="cfg-tip">周次支持：<code>3-7</code>、<code>10-12(双)</code>、<code>5-7(单)</code>，多个用逗号隔开；不填则默认 1-20 周。</p>
+      <div class="cfg-actions">
+        <button type="button" class="cfg-link" id="cDelete">删除课程</button>
+        <span class="cfg-spacer"></span>
+        <button type="button" class="cfg-btn" id="cCancel">取消</button>
+        <button type="button" class="cfg-btn is-primary" id="cSave">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -1112,7 +1268,7 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
   })();
 
   var state = null;
-  var ui = { filter: 'all', search: '', newId: null, sectionId: null, mode: 'notes', ideaFilter: 'all', ideaSearch: '', ideaNewId: null, ideaTopicId: null, skillNewId: null, skillView: 'tree' };
+  var ui = { filter: 'all', search: '', newId: null, sectionId: null, mode: 'notes', ideaFilter: 'all', ideaSearch: '', ideaNewId: null, ideaTopicId: null, skillNewId: null, skillView: 'tree', ttWeek: null, ttFilter: 'week' };
   var saveTimer = null;
   var toastTimer = null;
   var remote = {
@@ -1291,6 +1447,85 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
       updatedAt: Date.now()
     };
   }
+  function weeksFromSpec(spec) {
+    var out = [];
+    String(spec || '').split(/[,，]/).forEach(function (part) {
+      part = part.trim();
+      if (!part) return;
+      var parity = '';
+      if (/[（(]双[）)]/.test(part)) parity = 'even';
+      if (/[（(]单[）)]/.test(part)) parity = 'odd';
+      part = part.replace(/[（(](双|单)[）)]/g, '').replace(/周/g, '').trim();
+      var m = part.match(/^(\d+)\s*[-—~]\s*(\d+)$/);
+      if (m) {
+        for (var w = Number(m[1]); w <= Number(m[2]); w++) {
+          if (parity === 'even' && w % 2) continue;
+          if (parity === 'odd' && w % 2 === 0) continue;
+          out.push(w);
+        }
+      } else {
+        var n = parseInt(part, 10);
+        if (n) out.push(n);
+      }
+    });
+    out.sort(function (a, b) { return a - b; });
+    return out.filter(function (v, i, arr) { return arr.indexOf(v) === i; });
+  }
+  var TT_META = {
+    title: '徐新苒课表',
+    sub: '2026—2027 学年第 1 学期 · 共 20 周',
+    totalWeeks: 20,
+    practice: '职岗认识实习（航天装备精密制造技术）· 张夫恩 · 1-20周',
+    memo: '打印时间 2026-10-12',
+    foot: '本学期 2026-09-09 正式上课，2027-01-17 结束，共 20 周'
+  };
+  function defaultCourseSeeds() {
+    function c(id, name, teacher, day, period, start, end, segs) {
+      return {
+        id: id,
+        name: name,
+        teacher: teacher || '',
+        day: day,
+        period: period,
+        start: start,
+        end: end,
+        segments: segs.map(function (s) {
+          return { weeks: weeksFromSpec(s.w), label: s.label || (s.w + '周'), room: s.room || '' };
+        }),
+        createdAt: 1,
+        updatedAt: 1
+      };
+    }
+    return [
+      c('p-eng-mon', '职场通用英语1', '张丹', 1, '1-2', '09:00', '10:30', [{ w: '11-19', room: 'D2501' }]),
+      c('p-draw-mon34', '机械制图与计算机绘图', '郑婷婷', 1, '3-4', '10:50', '12:20', [{ w: '10-12(双),13-17', label: '10-12周(双) / 13-17周', room: 'D1303' }]),
+      c('p-aero-mon34', '航空航天概论', '吴璇', 1, '3-4', '10:50', '12:20', [{ w: '18-19', room: 'D2404' }]),
+      c('p-aero-mon78', '航空航天概论', '吴璇', 1, '7-8', '14:00', '15:30', [{ w: '4-7,10-12(双),13-17', label: '4-7 / 10-12(双) / 13-17周', room: 'D2411' }]),
+      c('p-draw-mon910', '机械制图与计算机绘图', '郑婷婷', 1, '9-10', '15:50', '17:20', [{ w: '3-7,10-12(双),13-19', label: '3-7 / 10-12(双) / 13-19周', room: 'D1617' }]),
+      c('p-fit-tue12', '钳工基本技能训练', '唐启金', 2, '1-2', '09:00', '10:30', [{ w: '4-5,7,10-17', label: '4-5 / 7 / 10-17周', room: 'D1115' }]),
+      c('p-qm-tue34', '航天质量管理基础', '张夫恩', 2, '3-4', '10:50', '12:20', [{ w: '4-5,7,10-19', label: '4-5 / 7 / 10-19周', room: 'D2403' }]),
+      c('p-draw-tue78', '机械制图与计算机绘图', '郑婷婷', 2, '7-8', '14:00', '15:30', [{ w: '3-5,10-12(双),13-19', label: '3-5 / 10-12(双) / 13-19周', room: 'D2521' }]),
+      c('p-aero-tue910', '航空航天概论', '吴璇', 2, '9-10', '15:50', '17:20', [{ w: '3,18-19', label: '3 / 18-19周', room: 'D2411' }]),
+      c('p-fit-tue1112', '钳工基本技能训练', '唐启金', 2, '11-12', '18:30', '20:00', [{ w: '4-5,7', label: '4-5 / 7周', room: 'D1115' }]),
+      c('p-eng-wed', '职场通用英语1', '张丹', 3, '1-2', '09:00', '10:30', [{ w: '3-5,7,10-19', label: '3-5 / 7 / 10-19周', room: 'D1410' }]),
+      c('p-pe-wed', '体育1', '任媛媛', 3, '3-4', '10:50', '12:20', [{ w: '3-5,7,10-13', label: '3-5 / 7 / 10-13周', room: '操场' }]),
+      c('p-it-wed34', '信息技术1', '贺小丽', 3, '3-4', '10:50', '12:20', [{ w: '18', label: '18周', room: 'D1619' }]),
+      c('p-it-wed78', '信息技术1', '贺小丽', 3, '7-8', '14:00', '15:30', [{ w: '3-7(单),10-19', label: '3-7周(单) / 10-19周', room: 'D1621' }]),
+      c('p-mor-wed', '思想道德与法治', '魏艳', 3, '9-10', '15:50', '17:20', [{ w: '5-7(单),10-19', label: '5-7周(单) / 10-19周', room: 'D2412' }]),
+      c('p-pol-thu12', '形势与政策1', '钟建军', 4, '1-2', '09:00', '10:30', [{ w: '16-19', room: 'D2501' }]),
+      c('p-draw-thu34', '机械制图与计算机绘图', '郑婷婷', 4, '3-4', '10:50', '12:20', [{ w: '13', label: '13周', room: 'D2407' }]),
+      c('p-mor-fri34', '思想道德与法治', '魏艳', 5, '3-4', '10:50', '12:20', [{ w: '5-7,10-17', label: '5-7 / 10-17周', room: 'D1410' }]),
+      c('p-draw-fri78', '机械制图与计算机绘图', '郑婷婷', 5, '7-8', '14:00', '15:30', [{ w: '3-7', room: 'D1304' }]),
+      c('p-it-fri910', '信息技术1', '贺小丽', 5, '9-10', '15:50', '17:20', [{ w: '19', label: '19周', room: 'D1625' }]),
+      c('p-eng-sat', '职场通用英语1', '张丹', 6, '1-2', '09:00', '10:30', [{ w: '6', label: '6周', room: 'D1410' }]),
+      c('p-it-sat', '信息技术1', '贺小丽', 6, '7-8', '14:00', '15:30', [{ w: '6', label: '6周', room: 'D1621' }]),
+      c('p-mor-sat', '思想道德与法治', '魏艳', 6, '9-10', '15:50', '17:20', [{ w: '6', label: '6周', room: 'D2412' }]),
+      c('p-fit-sun12', '钳工基本技能训练', '唐启金', 7, '1-2', '09:00', '10:30', [{ w: '3', label: '3周', room: 'D1115' }]),
+      c('p-qm-sun34', '航天质量管理基础', '张夫恩', 7, '3-4', '10:50', '12:20', [{ w: '3', label: '3周', room: 'D2403' }]),
+      c('p-draw-sun78', '机械制图与计算机绘图', '郑婷婷', 7, '7-8', '14:00', '15:30', [{ w: '3', label: '3周', room: 'D2521' }]),
+      c('p-fit-sun1112', '钳工基本技能训练', '唐启金', 7, '11-12', '18:30', '20:00', [{ w: '3', label: '3周', room: 'D1115' }])
+    ];
+  }
   function defaultSkillSeeds() {
     var now = Date.now();
     return [
@@ -1320,6 +1555,8 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
       ],
       skillBoard: { title: '科技树', desc: '通用技能打底，专业技能往上点。', branchGeneral: '通用技能', branchPro: '专业技能', thresholds: [100, 300, 700, 1500, 3100], updatedAt: now },
       skills: defaultSkillSeeds(),
+      courses: defaultCourseSeeds(),
+      courseVersion: 3,
       notes: [
         note('在下面的输入框写下第一条便签，按回车记录；双击便签文字可以直接修改。', false, false, 180000),
         note('左侧每个条目是一个主事件：切换它，下面的记录就跟着切换；点「＋」新建。', false, false, 120000),
@@ -1341,6 +1578,7 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
     var ideas = Array.isArray(state.ideas) ? state.ideas : [];
     var ideaTopics = Array.isArray(state.ideaTopics) ? state.ideaTopics : [];
     var skills = Array.isArray(state.skills) ? state.skills : [];
+    var courses = Array.isArray(state.courses) ? state.courses : [];
     var notes = Array.isArray(state.notes) ? state.notes : [];
     var rawBoard = (state.ideaBoard && typeof state.ideaBoard === 'object') ? state.ideaBoard : {};
     state.ideaBoard = {
@@ -1420,6 +1658,38 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
         s.group = parent.group;
       }
     });
+    state.courses = courses.filter(function (c) {
+      return c && c.id && typeof c.name === 'string';
+    }).map(function (c) {
+      var day = Math.floor(Number(c.day) || 0);
+      if (day < 1 || day > 7) day = 1;
+      var segs = Array.isArray(c.segments) ? c.segments : [];
+      var cleanSegs = segs.map(function (seg) {
+        var weeks = Array.isArray(seg.weeks) ? seg.weeks.map(function (w) { return Math.floor(Number(w) || 0); }).filter(function (w) { return w >= 1 && w <= 60; }) : [];
+        return {
+          weeks: weeks,
+          label: typeof seg.label === 'string' ? seg.label : '',
+          room: typeof seg.room === 'string' ? seg.room : ''
+        };
+      }).filter(function (seg) { return seg.weeks.length; });
+      if (!cleanSegs.length) cleanSegs = [{ weeks: [], label: '', room: '' }];
+      return {
+        id: c.id,
+        name: c.name || '课程',
+        teacher: typeof c.teacher === 'string' ? c.teacher : '',
+        day: day,
+        period: typeof c.period === 'string' ? c.period : '1-2',
+        start: typeof c.start === 'string' ? c.start : '08:00',
+        end: typeof c.end === 'string' ? c.end : '09:30',
+        segments: cleanSegs,
+        createdAt: c.createdAt || Date.now(),
+        updatedAt: c.updatedAt || c.createdAt || Date.now()
+      };
+    });
+    if (state.courseVersion !== 3) {
+      state.courseVersion = 3;
+      state.courses = defaultCourseSeeds();
+    }
     state.notes = notes.filter(function (n) { return n && n.id && typeof n.text === 'string'; }).map(function (n) {
       return {
         id: n.id,
@@ -1449,13 +1719,14 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
       if (idea.topicId && !topicIds[idea.topicId]) idea.topicId = null;
     });
     if (!ids[state.activeEventId]) state.activeEventId = state.events[0].id;
-    if (!state.tombstones || typeof state.tombstones !== 'object') state.tombstones = { events: {}, sections: {}, notes: {}, ideas: {}, ideaTopics: {}, skills: {} };
+    if (!state.tombstones || typeof state.tombstones !== 'object') state.tombstones = { events: {}, sections: {}, notes: {}, ideas: {}, ideaTopics: {}, skills: {}, courses: {} };
     if (!state.tombstones.events || typeof state.tombstones.events !== 'object') state.tombstones.events = {};
     if (!state.tombstones.sections || typeof state.tombstones.sections !== 'object') state.tombstones.sections = {};
     if (!state.tombstones.notes || typeof state.tombstones.notes !== 'object') state.tombstones.notes = {};
     if (!state.tombstones.ideas || typeof state.tombstones.ideas !== 'object') state.tombstones.ideas = {};
     if (!state.tombstones.ideaTopics || typeof state.tombstones.ideaTopics !== 'object') state.tombstones.ideaTopics = {};
     if (!state.tombstones.skills || typeof state.tombstones.skills !== 'object') state.tombstones.skills = {};
+    if (!state.tombstones.courses || typeof state.tombstones.courses !== 'object') state.tombstones.courses = {};
     if (!state.skillInit) {
       state.skillInit = true;
       if (!state.skills.length && !Object.keys(state.tombstones.skills).length) {
@@ -1463,7 +1734,7 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
       }
     }
     var cutoff = Date.now() - 30 * 24 * 3600 * 1000;
-    ['events', 'sections', 'notes', 'ideas', 'ideaTopics', 'skills'].forEach(function (kind) {
+    ['events', 'sections', 'notes', 'ideas', 'ideaTopics', 'skills', 'courses'].forEach(function (kind) {
       var grave = state.tombstones[kind];
       for (var id in grave) {
         if (!Object.prototype.hasOwnProperty.call(grave, id)) continue;
@@ -1555,10 +1826,10 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
   function mergeStates(a, b) {
     a = (a && typeof a === 'object') ? a : {};
     b = (b && typeof b === 'object') ? b : {};
-    var tombstones = { events: {}, sections: {}, notes: {}, ideas: {}, ideaTopics: {}, skills: {} };
+    var tombstones = { events: {}, sections: {}, notes: {}, ideas: {}, ideaTopics: {}, skills: {}, courses: {} };
     [a.tombstones, b.tombstones].forEach(function (t) {
       if (!t || typeof t !== 'object') return;
-      ['events', 'sections', 'notes', 'ideas', 'ideaTopics', 'skills'].forEach(function (kind) {
+      ['events', 'sections', 'notes', 'ideas', 'ideaTopics', 'skills', 'courses'].forEach(function (kind) {
         var src = t[kind];
         if (!src || typeof src !== 'object') return;
         for (var id in src) {
@@ -1625,6 +1896,7 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
       skillBoard = skillBoardB.title || skillBoardB.desc ? skillBoardB : skillBoardA;
     }
     var skills = pickNewer(a.skills, b.skills, 'skills');
+    var courses = pickNewer(a.courses, b.courses, 'courses');
 
     var prefer = null;
     if (b.activeEventId && ids[b.activeEventId]) prefer = b.activeEventId;
@@ -1640,6 +1912,8 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
       ideas: ideas,
       skillBoard: skillBoard,
       skills: skills,
+      courses: courses,
+      courseVersion: Math.max(Number(a.courseVersion) || 0, Number(b.courseVersion) || 0),
       notes: notes,
       tombstones: tombstones
     };
@@ -1892,6 +2166,7 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
       i: s.ideas || [],
       sb: s.skillBoard || {},
       sk: s.skills || [],
+      co: s.courses || [],
       n: s.notes || [],
       t: s.tombstones || {}
     });
@@ -2852,19 +3127,21 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
   function readStoredMode() {
     try {
       var m = localStorage.getItem('sb-mode-v1');
-      return (m === 'ideas' || m === 'skills') ? m : 'notes';
+      return (m === 'ideas' || m === 'skills' || m === 'timetable') ? m : 'notes';
     } catch (e) { return 'notes'; }
   }
   function applyMode(mode, silent) {
-    ui.mode = (mode === 'ideas' || mode === 'skills') ? mode : 'notes';
+    ui.mode = (mode === 'ideas' || mode === 'skills' || mode === 'timetable') ? mode : 'notes';
     document.body.classList.toggle('mode-ideas', ui.mode === 'ideas');
     document.body.classList.toggle('mode-skills', ui.mode === 'skills');
+    document.body.classList.toggle('mode-timetable', ui.mode === 'timetable');
     $$('.mode-tab').forEach(function (b) {
       b.classList.toggle('is-on', b.getAttribute('data-mode') === ui.mode);
     });
     try { localStorage.setItem('sb-mode-v1', ui.mode); } catch (e) {}
     if (ui.mode === 'ideas') renderIdeas();
     else if (ui.mode === 'skills') renderSkills();
+    else if (ui.mode === 'timetable') renderTimetable();
     else updateTargetChip();
     if (!silent) window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -3407,6 +3684,35 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
       el.textContent = key === 'pro' ? (board.branchPro || '专业技能') : (board.branchGeneral || '通用技能');
     });
   }
+  var skillCollapsed = (function () {
+    try {
+      var raw = localStorage.getItem('sb-skill-collapsed-v1');
+      var obj = JSON.parse(raw || '{}');
+      return obj && typeof obj === 'object' ? obj : {};
+    } catch (e) { return {}; }
+  })();
+  function saveSkillCollapsed() {
+    try { localStorage.setItem('sb-skill-collapsed-v1', JSON.stringify(skillCollapsed)); } catch (e) {}
+  }
+  function applySkillChildrenState(box, id) {
+    if (!box) return;
+    var collapsed = !!skillCollapsed[id];
+    box.classList.toggle('is-collapsed', collapsed);
+    var toggle = box.querySelector('.child-toggle');
+    if (toggle) toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    var caret = box.querySelector('.child-caret');
+    if (caret) caret.textContent = collapsed ? '▸' : '▾';
+    var list = box.querySelector('.child-list');
+    if (list) list.hidden = collapsed;
+  }
+  function toggleSkillChildren(id) {
+    if (skillCollapsed[id]) delete skillCollapsed[id];
+    else skillCollapsed[id] = true;
+    saveSkillCollapsed();
+    $$('.node-children').forEach(function (box) {
+      if (box.getAttribute('data-parent') === id) applySkillChildrenState(box, id);
+    });
+  }
   function readSkillView() {
     try {
       return localStorage.getItem('sb-skill-view-v1') === 'cards' ? 'cards' : 'tree';
@@ -3588,6 +3894,8 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
     };
     state.skills.push(child);
     ui.skillNewId = child.id;
+    delete skillCollapsed[parent.id];
+    saveSkillCollapsed();
     save();
     renderSkills();
     var view = ui.skillView === 'cards' ? '#skillCardsView' : '#skillTreeView';
@@ -3848,30 +4156,54 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
       kidsBox.className = 'node-children';
       var kidsHead = document.createElement('div');
       kidsHead.className = 'child-head';
+      var kidsToggle = document.createElement('button');
+      kidsToggle.type = 'button';
+      kidsToggle.className = 'child-toggle';
+      kidsToggle.setAttribute('aria-expanded', 'true');
       var kidsTitle = document.createElement('span');
-      kidsTitle.className = 'child-title';
       kidsTitle.textContent = '附属 / SUB ';
       var kidsCount = document.createElement('b');
       kidsCount.textContent = pad(kids.length);
-      kidsTitle.appendChild(kidsCount);
+      var kidsCaret = document.createElement('span');
+      kidsCaret.className = 'child-caret';
+      kidsCaret.textContent = '▾';
+      kidsToggle.appendChild(kidsTitle);
+      kidsToggle.appendChild(kidsCount);
+      kidsToggle.appendChild(kidsCaret);
+      kidsToggle.addEventListener('click', function () { toggleSkillChildren(skill.id); });
       var addChild = document.createElement('button');
       addChild.type = 'button';
       addChild.className = 'child-add';
       addChild.textContent = '＋ 附属技能';
       addChild.addEventListener('click', function () { addChildSkill(skill); });
-      kidsHead.appendChild(kidsTitle);
+      kidsHead.appendChild(kidsToggle);
       kidsHead.appendChild(addChild);
       kidsBox.appendChild(kidsHead);
+      var kidsList = document.createElement('div');
+      kidsList.className = 'child-list';
       kids.forEach(function (kid, i) {
-        kidsBox.appendChild(childSkillItem(kid, i + 1));
+        kidsList.appendChild(childSkillItem(kid, i + 1));
       });
+      kidsBox.appendChild(kidsList);
+      kidsBox.setAttribute('data-parent', skill.id);
       card.appendChild(kidsBox);
+      applySkillChildrenState(kidsBox, skill.id);
     }
     return card;
   }
   function renderSkills() {
     var ae = document.activeElement;
     if (ae && ae.isContentEditable && ae.closest && ae.closest('.skills-stage')) return;
+    var valid = {};
+    state.skills.forEach(function (s) { valid[s.id] = true; });
+    var collapsedChanged = false;
+    Object.keys(skillCollapsed).forEach(function (id) {
+      if (!valid[id]) {
+        delete skillCollapsed[id];
+        collapsedChanged = true;
+      }
+    });
+    if (collapsedChanged) saveSkillCollapsed();
     var board = state.skillBoard || {};
     var titleEl = $('#skillBoardTitle');
     var descEl = $('#skillBoardDesc');
@@ -3942,6 +4274,328 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
     applySkillView(ui.skillView, true);
   }
 
+  /* ---------------- 课程表 ---------------- */
+  function readTtWeek() {
+    try {
+      var n = parseInt(localStorage.getItem('sb-tt-week-v1'), 10);
+      if (n >= 1 && n <= TT_META.totalWeeks) return n;
+    } catch (e) {}
+    return 9;
+  }
+  function saveTtWeek(n) {
+    try { localStorage.setItem('sb-tt-week-v1', String(n)); } catch (e) {}
+  }
+  function courseActive(course, week) {
+    return course.segments.some(function (seg) { return seg.weeks.indexOf(week) !== -1; });
+  }
+  function courseSegmentFor(course, week) {
+    for (var i = 0; i < course.segments.length; i++) {
+      if (course.segments[i].weeks.indexOf(week) !== -1) return course.segments[i];
+    }
+    return null;
+  }
+  function courseRoom(course, week) {
+    var seg = courseSegmentFor(course, week);
+    if (seg && seg.room) return seg.room;
+    return (course.segments[0] && course.segments[0].room) || '';
+  }
+  function courseWeekText(course, week) {
+    var seg = courseSegmentFor(course, week);
+    if (seg && seg.label) return seg.label;
+    var labels = course.segments.map(function (s) { return s.label; }).filter(Boolean);
+    return labels.join(' / ');
+  }
+  function ttMinutes(hhmm) {
+    var parts = String(hhmm || '0:0').split(':');
+    return (Number(parts[0]) || 0) * 60 + (Number(parts[1]) || 0);
+  }
+  function ttNextCourse(week, nowDay, nowMin) {
+    var courses = state.courses || [];
+    var maxWeek = Math.min(TT_META.totalWeeks, week + 1);
+    for (var w = week; w <= maxWeek; w++) {
+      var list = courses.filter(function (c) { return courseActive(c, w); })
+        .sort(function (a, b) {
+          if (a.day !== b.day) return a.day - b.day;
+          return ttMinutes(a.start) - ttMinutes(b.start);
+        });
+      for (var i = 0; i < list.length; i++) {
+        var c = list[i];
+        if (w === week) {
+          if (c.day < nowDay) continue;
+          if (c.day === nowDay && ttMinutes(c.end) <= nowMin) continue;
+        }
+        return { course: c, week: w, nextWeek: w > week };
+      }
+    }
+    return null;
+  }
+  function ttIso(d) {
+    var m = d.getMonth() + 1, day = d.getDate();
+    return d.getFullYear() + '-' + (m < 10 ? '0' + m : m) + '-' + (day < 10 ? '0' + day : day);
+  }
+  function ttTodayIso() { return ttIso(new Date()); }
+  function ttParseIso(iso) {
+    var m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!m) return new Date();
+    return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  }
+  function ttWeekFromDate(iso) {
+    var start = new Date(2026, 7, 31);
+    var d = ttParseIso(iso);
+    var diff = Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(start.getFullYear(), start.getMonth(), start.getDate())) / 86400000);
+    return Math.max(1, Math.min(20, Math.floor(diff / 7) + 1));
+  }
+  function ttDayIndex(iso) {
+    var d = ttParseIso(iso).getDay();
+    return d === 0 ? 7 : d;
+  }
+  function renderDayTimetable(iso, week) {
+    var dayNames = ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+    var day = ttDayIndex(iso);
+    var grid = $('#ttGrid');
+    grid.innerHTML = '';
+    var wrap = document.createElement('div');
+    wrap.className = 'tt-day';
+    var head = document.createElement('div');
+    head.className = 'tt-day-head';
+    var title = document.createElement('div');
+    title.className = 'tt-day-title';
+    title.textContent = iso + ' · ' + dayNames[day];
+    var sub = document.createElement('div');
+    sub.className = 'tt-day-sub';
+    sub.textContent = '第 ' + week + ' 周';
+    head.appendChild(title);
+    head.appendChild(sub);
+    wrap.appendChild(head);
+    var list = document.createElement('div');
+    list.className = 'tt-day-list';
+    var courses = (state.courses || []).filter(function (c) { return c.day === day && courseActive(c, week); })
+      .sort(function (a, b) { return ttMinutes(a.start) - ttMinutes(b.start); });
+    if (!courses.length) {
+      var empty = document.createElement('div');
+      empty.className = 'tt-day-empty';
+      empty.textContent = '这一天没有课。';
+      list.appendChild(empty);
+    } else {
+      courses.forEach(function (course) {
+        var item = document.createElement('div');
+        item.className = 'tt-day-item';
+        var time = document.createElement('div');
+        time.className = 'tt-day-time';
+        var t1 = document.createElement('b');
+        t1.textContent = course.period + '节';
+        time.appendChild(t1);
+        time.appendChild(document.createTextNode(course.start + ' – ' + course.end));
+        var main = document.createElement('div');
+        main.className = 'tt-day-main';
+        var nm = document.createElement('div');
+        nm.className = 'tt-day-name';
+        nm.textContent = course.name;
+        var meta = document.createElement('div');
+        meta.className = 'tt-day-meta';
+        meta.textContent = (course.teacher ? course.teacher + ' · ' : '') + courseRoom(course, week) + ' · ' + courseWeekText(course, week);
+        main.appendChild(nm);
+        main.appendChild(meta);
+        var edit = document.createElement('button');
+        edit.type = 'button';
+        edit.className = 'tt-day-edit';
+        edit.textContent = '编辑';
+        edit.setAttribute('data-course-id', course.id);
+        edit.addEventListener('click', function () { openCourseEditor(course); });
+        item.appendChild(time);
+        item.appendChild(main);
+        item.appendChild(edit);
+        list.appendChild(item);
+      });
+    }
+    wrap.appendChild(list);
+    grid.appendChild(wrap);
+  }
+  var editCourseId = null;
+  var TT_TIMES = { '1-2': ['09:00', '10:30'], '3-4': ['10:50', '12:20'], '7-8': ['14:00', '15:30'], '9-10': ['15:50', '17:20'], '11-12': ['18:30', '20:00'] };
+  function openCourseEditor(course) {
+    editCourseId = course ? course.id : null;
+    var c = course || { name: '', teacher: '', room: '', day: ttDayIndex(ui.ttDate || ttTodayIso()), period: '1-2', weeks: '' };
+    var seg = course && course.segments && course.segments[0] ? course.segments[0] : null;
+    $('#cName').value = c.name || '';
+    $('#cTeacher').value = c.teacher || '';
+    $('#cRoom').value = c.room || (seg ? seg.room : '');
+    $('#cDay').value = String(c.day || 1);
+    $('#cPeriod').value = TT_TIMES[c.period] ? c.period : '1-2';
+    $('#cWeeks').value = seg ? seg.label.replace(/周/g, '') : (c.weeks || '');
+    $('#courseTitle').textContent = course ? '编辑课程 / Edit' : '添加课程 / Add';
+    $('#cDelete').style.display = course ? '' : 'none';
+    $('#courseModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCourseEditor() {
+    $('#courseModal').hidden = true;
+    document.body.style.overflow = '';
+  }
+  function saveCourseEditor() {
+    var name = $('#cName').value.trim();
+    if (!name) { toast('请填写课程名称'); return; }
+    var weeksText = $('#cWeeks').value.trim();
+    var weeks = weeksFromSpec(weeksText || '1-20');
+    if (!weeks.length) weeks = weeksFromSpec('1-20');
+    var period = $('#cPeriod').value;
+    var times = TT_TIMES[period] || TT_TIMES['1-2'];
+    var payload = {
+      name: name,
+      teacher: $('#cTeacher').value.trim(),
+      day: Number($('#cDay').value) || 1,
+      period: period,
+      start: times[0],
+      end: times[1],
+      segments: [{ weeks: weeks, label: weeksText || '1-20周', room: $('#cRoom').value.trim() }]
+    };
+    if (editCourseId) {
+      var existing = null;
+      state.courses.forEach(function (c) { if (c.id === editCourseId) existing = c; });
+      if (existing) {
+        Object.keys(payload).forEach(function (k) { existing[k] = payload[k]; });
+        existing.updatedAt = Date.now();
+      }
+    } else {
+      payload.id = uid();
+      payload.createdAt = Date.now();
+      payload.updatedAt = Date.now();
+      state.courses.push(payload);
+    }
+    save();
+    closeCourseEditor();
+    renderTimetable();
+    toast('课程已保存');
+  }
+  function deleteEditedCourse() {
+    if (!editCourseId) return;
+    if (!window.confirm('删除这门课？')) return;
+    state.tombstones.courses = state.tombstones.courses || {};
+    state.tombstones.courses[editCourseId] = Date.now();
+    state.courses = state.courses.filter(function (c) { return c.id !== editCourseId; });
+    save();
+    closeCourseEditor();
+    renderTimetable();
+    toast('已删除课程');
+  }
+  function renderTimetable() {
+    if (!ui.ttDate) ui.ttDate = ttTodayIso();
+    var week = ttWeekFromDate(ui.ttDate);
+    ui.ttWeek = week;
+    if ($('#ttDate')) $('#ttDate').value = ui.ttDate;
+    var courses = state.courses || [];
+    var dayNames = ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+    var now = new Date();
+    var nowDay = now.getDay() === 0 ? 7 : now.getDay();
+    var nowMin = now.getHours() * 60 + now.getMinutes();
+    var todayIdx = nowDay;
+
+    $('#ttTitle').textContent = TT_META.title + ' · 课程表';
+    $('#ttSub').textContent = TT_META.sub;
+    $('#ttWeekNum').textContent = '第 ' + week + ' 周';
+    $('#ttWeekHint').textContent = week === 9 ? '当前周' : '共 ' + TT_META.totalWeeks + ' 周';
+    $('#ttMemo').textContent = TT_META.memo;
+    $('#ttFoot').textContent = TT_META.foot + ' · ' + TT_META.practice;
+    $('#ttPractice').textContent = '实习 1-20周';
+
+    var active = courses.filter(function (c) { return courseActive(c, week); });
+    $('#ttCount').textContent = pad(active.length);
+    var todayCount = active.filter(function (c) { return c.day === todayIdx; }).length;
+    $('#ttToday').textContent = dayNames[todayIdx] + (todayCount ? (' · ' + todayCount + ' 节') : ' · 无课');
+    var next = ttNextCourse(week, nowDay, nowMin);
+    if (next) {
+      var prefix = next.nextWeek ? '下' : '';
+      $('#ttNextClass').textContent = prefix + dayNames[next.course.day] + ' ' + next.course.period + '节 ' + next.course.name;
+    } else {
+      $('#ttNextClass').textContent = '本周无更多课';
+    }
+
+    if (ui.ttFilter === 'day') {
+      renderDayTimetable(ui.ttDate, week);
+      $$('.tt-filter').forEach(function (b) {
+        b.classList.toggle('is-on', b.getAttribute('data-tt-filter') === 'day');
+      });
+      return;
+    }
+
+    var slotMap = {};
+    courses.forEach(function (c) {
+      var key = c.period + '|' + c.start + '|' + c.end;
+      if (!slotMap[key]) slotMap[key] = { period: c.period, start: c.start, end: c.end };
+    });
+    var slots = Object.keys(slotMap).map(function (k) { return slotMap[k]; })
+      .sort(function (a, b) { return ttMinutes(a.start) - ttMinutes(b.start); });
+
+    var grid = $('#ttGrid');
+    grid.innerHTML = '';
+    var headRow = document.createElement('div');
+    headRow.className = 'tt-row tt-head-row';
+    var timeHead = document.createElement('div');
+    timeHead.className = 'tt-head-cell';
+    timeHead.textContent = '节次 / 时间';
+    headRow.appendChild(timeHead);
+    for (var d = 1; d <= 7; d++) {
+      var hc = document.createElement('div');
+      hc.className = 'tt-head-cell' + (d === todayIdx ? ' is-today' : '');
+      hc.textContent = dayNames[d];
+      headRow.appendChild(hc);
+    }
+    grid.appendChild(headRow);
+
+    slots.forEach(function (slot) {
+      var row = document.createElement('div');
+      row.className = 'tt-row';
+      var timeCell = document.createElement('div');
+      timeCell.className = 'tt-time';
+      var periodEl = document.createElement('b');
+      periodEl.textContent = slot.period + '节';
+      timeCell.appendChild(periodEl);
+      timeCell.appendChild(document.createTextNode(slot.start + ' – ' + slot.end));
+      row.appendChild(timeCell);
+      for (var day = 1; day <= 7; day++) {
+        var cell = document.createElement('div');
+        cell.className = 'tt-cell' + (day === todayIdx ? ' is-today' : '');
+        var list = courses.filter(function (c) {
+          if (c.day !== day || c.period !== slot.period) return false;
+          if (ui.ttFilter === 'week') return courseActive(c, week);
+          return true;
+        }).sort(function (a, b) { return a.name.localeCompare(b.name, 'zh'); });
+        if (!list.length) {
+          var empty = document.createElement('span');
+          empty.className = 'tt-cell-empty';
+          empty.textContent = '—';
+          cell.appendChild(empty);
+        } else {
+          list.forEach(function (course) {
+            var on = courseActive(course, week);
+            var card = document.createElement('div');
+            card.className = 'tt-course' + (on ? ' is-on' : ' is-off');
+            var name = document.createElement('div');
+            name.className = 'tt-course-name';
+            name.textContent = course.name;
+            var meta = document.createElement('div');
+            meta.className = 'tt-course-meta';
+            meta.textContent = (course.teacher ? course.teacher + ' · ' : '') + courseRoom(course, week);
+            var weeks = document.createElement('div');
+            weeks.className = 'tt-course-weeks';
+            weeks.textContent = courseWeekText(course, week);
+            card.appendChild(name);
+            card.appendChild(meta);
+            card.appendChild(weeks);
+            card.addEventListener('click', function () { openCourseEditor(course); });
+            cell.appendChild(card);
+          });
+        }
+        row.appendChild(cell);
+      }
+      grid.appendChild(row);
+    });
+
+    $$('.tt-filter').forEach(function (b) {
+      b.classList.toggle('is-on', b.getAttribute('data-tt-filter') === ui.ttFilter);
+    });
+  }
+
   function renderStats() {
     var ev = activeEvent();
     var list = state.notes.filter(function (n) { return n.eventId === ev.id; });
@@ -3965,6 +4619,7 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
     renderNotes();
     renderIdeas();
     renderSkills();
+    renderTimetable();
     renderStats();
   }
   function refresh() {
@@ -4143,6 +4798,7 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
       ideas: state.ideas,
       skillBoard: state.skillBoard,
       skills: state.skills,
+      courses: state.courses,
       notes: state.notes,
       tombstones: state.tombstones
     };
@@ -4498,6 +5154,40 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
         if ($('#cfgBranchPro')) $('#cfgBranchPro').value = '专业技能';
       });
     }
+    if ($('#ttPrev')) {
+      $('#ttPrev').addEventListener('click', function () {
+        ui.ttWeek = Math.max(1, (ui.ttWeek || readTtWeek()) - 1);
+        saveTtWeek(ui.ttWeek);
+        renderTimetable();
+      });
+    }
+    if ($('#ttNext')) {
+      $('#ttNext').addEventListener('click', function () {
+        ui.ttWeek = Math.min(TT_META.totalWeeks, (ui.ttWeek || readTtWeek()) + 1);
+        saveTtWeek(ui.ttWeek);
+        renderTimetable();
+      });
+    }
+    $$('.tt-filter').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var f = b.getAttribute('data-tt-filter');
+        ui.ttFilter = (f === 'all' || f === 'day') ? f : 'week';
+        if (ui.ttFilter === 'day' && !ui.ttDate) ui.ttDate = ttTodayIso();
+        renderTimetable();
+      });
+    });
+    if ($('#ttDate')) {
+      $('#ttDate').addEventListener('change', function () {
+        ui.ttDate = $('#ttDate').value || ttTodayIso();
+        ui.ttFilter = 'day';
+        renderTimetable();
+      });
+    }
+    if ($('#ttAddCourse')) $('#ttAddCourse').addEventListener('click', function () { openCourseEditor(null); });
+    $$('[data-course-close]').forEach(function (el) { el.addEventListener('click', closeCourseEditor); });
+    if ($('#cSave')) $('#cSave').addEventListener('click', saveCourseEditor);
+    if ($('#cCancel')) $('#cCancel').addEventListener('click', closeCourseEditor);
+    if ($('#cDelete')) $('#cDelete').addEventListener('click', deleteEditedCourse);
     $$('.skills-stage .branch-name').forEach(function (el) {
       var key = el.getAttribute('data-branch') === 'pro' ? 'pro' : 'general';
       var fallback = key === 'pro' ? '专业技能' : '通用技能';
@@ -4772,6 +5462,7 @@ body.mode-skills.skill-view-cards{--paper:#DFE5EA;--paper-2:#FFFFFF;background:#
     bind();
     syncFilters();
     applySkillView(readSkillView(), true);
+    ui.ttWeek = readTtWeek();
     applyMode(readStoredMode(), true);
     renderAll();
     save();
