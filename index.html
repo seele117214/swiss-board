@@ -1560,8 +1560,8 @@ body.mode-timetable .timetable-stage{display:block}
       skillBoard: { title: '科技树', desc: '通用技能打底，专业技能往上点。', branchGeneral: '通用技能', branchPro: '专业技能', thresholds: [100, 300, 700, 1500, 3100], updatedAt: now },
       skills: defaultSkillSeeds(),
       courses: defaultCourseSeeds(),
-      courseVersion: 4,
-      timetable: { title: '徐新苒课表 · 课程表', sub: '2026—2027 学年第 1 学期 · 共 20 周', updatedAt: 0 },
+      courseVersion: 5,
+      timetable: { title: '王猛课表 · 课程表', sub: '2026—2027 学年第 1 学期 · 共 20 周', updatedAt: 0 },
       notes: [
         note('在下面的输入框写下第一条便签，按回车记录；双击便签文字可以直接修改。', false, false, 180000),
         note('左侧每个条目是一个主事件：切换它，下面的记录就跟着切换；点「＋」新建。', false, false, 120000),
@@ -1594,7 +1594,7 @@ body.mode-timetable .timetable-stage{display:block}
     var rawSkillBoard = (state.skillBoard && typeof state.skillBoard === 'object') ? state.skillBoard : {};
     var rawTt = (state.timetable && typeof state.timetable === 'object') ? state.timetable : {};
     state.timetable = {
-      title: (typeof rawTt.title === 'string' && rawTt.title) ? rawTt.title : '徐新苒课表 · 课程表',
+      title: (typeof rawTt.title === 'string' && rawTt.title) ? rawTt.title : '王猛课表 · 课程表',
       sub: typeof rawTt.sub === 'string' ? rawTt.sub : '2026—2027 学年第 1 学期 · 共 20 周',
       updatedAt: Number(rawTt.updatedAt) || 0
     };
@@ -1697,9 +1697,19 @@ body.mode-timetable .timetable-stage{display:block}
         updatedAt: c.updatedAt || c.createdAt || Date.now()
       };
     });
-    if (state.courseVersion !== 4) {
-      state.courseVersion = 4;
-      state.courses = defaultCourseSeeds();
+    if (state.courseVersion !== 5) {
+      var defaultCourses = defaultCourseSeeds();
+      var defaultCourseIds = {};
+      defaultCourses.forEach(function (c) { defaultCourseIds[c.id] = true; });
+      var nowStamp = Date.now();
+      state.courses.forEach(function (c) {
+        if (c && c.id && !defaultCourseIds[c.id]) state.tombstones.courses[c.id] = nowStamp;
+      });
+      state.courseVersion = 5;
+      state.courses = defaultCourses;
+      state.timetable.title = '王猛课表 · 课程表';
+      state.timetable.sub = '2026—2027 学年第 1 学期 · 共 20 周';
+      state.timetable.updatedAt = nowStamp;
     }
     state.notes = notes.filter(function (n) { return n && n.id && typeof n.text === 'string'; }).map(function (n) {
       return {
